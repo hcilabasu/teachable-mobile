@@ -1,0 +1,426 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center, 
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* END RESET */
+
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body {
+	position: relative;
+	height: 100%;
+}
+
+body {
+	background: #EEE;
+	font-family: helvetica;
+	font-size: 12px;
+}
+
+h3 {
+	font-weight: bolder;
+	font-size: 1.4em;
+	line-height: 1.1em;
+}
+
+label {
+	display: block;
+	margin: 15px 0 5px 0;
+	font-weight: bolder;
+}
+
+input[type=text],
+select{
+	width: 100%;
+	height: 30px;
+}
+.wrapper {
+	position: relative;
+}
+
+a.action-button {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	background: #999;
+	min-width: 30px;
+	border-radius: 5px;
+	text-decoration: none;
+	color: black;
+	text-shadow: 0 1px 0 #DDD;
+	border: solid 1px #666;
+	padding-bottom: 1px;
+	height: 33px;
+	line-height: 15px;
+}
+
+	a.action-button > span {
+		display: inline-block;
+		border-bottom: solid 1px #CCC;
+		width: 100%;
+		height: 100%;
+		padding: 8px 13px;
+		border-radius: 5px;
+		background: -webkit-gradient(linear, left bottom, left top, from(#AAA), to(#CCC));
+		box-shadow: 0 0 0 1px #666;
+		font-weight: bolder;
+	}
+
+.draggable {
+	position: relative;
+	padding-left: 30px !important; /* This important is override any padding configuration in a draggable element */
+}
+
+	.draggable > span {
+		position: absolute;
+		left: 1px;
+		top: 1px;
+		display: inline-block;
+		height: 30px;
+		width: 30px;
+		background: url(../images/draggable-bg-retina.png) no-repeat 5px center transparent !important;
+		background-size: 19px 19px;
+	}
+
+#current-problem-wrapper {
+	background: -webkit-gradient(linear, left bottom, left top, from(#773F5F), to(#b05b8c));
+	color: white;
+	padding-right: 60px;
+	border-bottom: solid 1px #b05b8c;
+	box-shadow: 0 0 0 1px #333;
+	text-shadow: 0 -1px 0 #522b42;
+	padding: 15px;
+	padding-right: 60px;
+}
+
+	#current-problem-wrapper h3 {
+		cursor: pointer;
+	}
+
+	#next-problem-button {
+		position: absolute;
+		right: 15px;
+		top: 50%;
+		margin-top: -15px;
+		box-shadow: 0 1px 0 #b05b8c, -1px 1px 0 #b05b8c, 1px 1px 0px #b05b8c;
+		border-color: #333;
+		background: #7a4061;
+		padding-bottom: 0;
+		height: 30px;
+		width: 40px;
+	}
+
+		#next-problem-button > span {
+			font-size: 1.4em;
+			line-height: 5px;
+			border-bottom: solid 1px #c2659b;
+			box-shadow: 0 0 0 1px #333;
+			color: #FFF;
+			text-shadow: 0 -1px 0 #522b42;
+			background: -webkit-gradient(linear, left bottom, left top, from(#693754), to(#964e77));
+		}
+
+#procedure-steps-wrapper {
+	position: relative;
+	top: 20px;
+	margin-right: 15px;
+	margin-left: 15px;
+}
+
+#procedure-wrapper {
+	border-bottom: dashed 1px #666;
+	padding-bottom: 15px;
+	/* PROCEDURE HIDDING */
+	display: none;
+	/* END PROCEDURE HIDDING */
+}
+
+	#procedure-wrapper > h3 {
+		display: inline-block;
+		line-height: 33px;
+		height: 33px;
+	}
+
+	#procedure-wrapper > div {
+		display: inline-block;
+		float: right;
+	}
+
+		.new-procedure-button {
+		}
+		.delete-procedure-button {
+		}
+
+	#procedure-wrapper > select {
+		display: block;
+		width: 100%;
+		margin: 10px 0 0 0;
+		height: 30px;
+	}
+
+#steps-wrapper {
+	position: relative;
+	top: 89px;
+	padding-top: 0px;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	/*overflow: scroll;
+	webkit-overflow-scrolling: touch;
+	/* PROCEDURE HIDDING */
+	top: -10px;
+	/* END PROCEDURE HIDDING */
+}
+	#steps-wrapper > h3 {
+		height: 33px;
+		line-height: 33px;
+		
+	}
+
+	#steps-wrapper > h3#steps-list-title { /* Steps list title */
+		padding-top: 10px;
+	}
+
+		#steps-wrapper > h3#steps-list-title > span {
+			display: inline-block;
+			font-size: 0.6em;
+			background: #934d75;
+			border-radius: 3px;
+			line-height: 22px;
+			padding: 0 5px;
+			color: #eeeeee;	
+			visibility: hidden;
+		}
+
+	#steps-wrapper > a.action-button {
+		position:absolute;
+		right: 0;
+		top: 20px;
+	}
+
+.visible {
+	visibility: visible !important;
+}
+/*
+#steps-wrapper > * {
+	-webkit-transform: translate3d(0,0,0);
+}
+*/
+/*
+#current-step {
+	padding: 10px 0;
+	border: solid 1px #666;
+	background: white;
+	margin: 10px 0;
+	border-radius: 5px;
+}
+
+#current-step:empty {
+	height: 34px;
+	padding-left: 10px;
+	box-shadow: inset 0 1px 3px #333;
+	background-color: transparent;
+	background: #DDD;
+	text-shadow: 0 1px 0 white;
+	font-weight: bold;
+	color: #333;
+}
+
+#current-step:empty:before {
+	content: "No current step selected";
+} */
+
+
+#steps-list-container {
+}
+
+#steps-list {
+
+	background: white;
+	border: solid 1px #666;
+	border-radius: 5px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	/*list-style: decimal inside;*/
+}
+
+.ui-draggable-dragging {
+	box-shadow: 0 2px 5px #333;
+	z-index: 3 !important;
+}
+
+	#steps-list > li.draggable {
+		padding: 10px 0 10px 0;
+		z-index: 1;
+	}
+
+		#steps-list > li.draggable > span {
+			height: 40px;
+			top: -4px;
+		}
+
+	#steps-list > li.droppable {
+		background: url(../images/separator.png) transparent repeat-x 5px;
+		height: 10px;
+	}
+
+	#steps-list > li:last-child, 
+	#steps-list > li:first-child {
+		background: none;
+	}
+
+	#steps-list > li:only-child:before {
+		content: "Execute an action to add it to the list";
+	}
+
+	#steps-list > li:only-child {
+		height: 32px;
+		line-height: 32px;
+		text-indent: 5px;
+		background: #DDD;
+		border-radius: 3px;
+		box-shadow: inset 0 1px 3px #333;
+		text-shadow: 0 1px 0 white;
+		font-weight: bold;
+		color: #333;
+	}
+
+	#steps-list > li.droppable-active {
+		background-color: #b05b8c !important;
+		color: white; /* for :only-child text; */
+	}
+
+	#steps-list > li.draggable > .delete-button {
+		display: inline-block;
+		position: absolute;
+		right: 0px;
+		top: -3px;
+		height: 40px;
+		width: 40px;
+		background: url(../images/delete-icon.png) center center no-repeat;
+		background-size: 16px;
+
+	}
+
+.form-buttons-container {
+	margin: 20px 0 10px 0;
+	text-align: right;
+}
+
+/* Param form styles */
+#param-num-label{
+	line-height: 30px;
+}
+
+#increment-param-num,
+#decrement-param-num {
+	display: inline-block;
+	height: 30px;
+	width: 30px;
+	background: #EEE;
+	text-align: center;
+	margin: 0 2.5px;
+	font-weight: bolder;
+	font-size: 25px;
+	border-radius: 5px;
+}
+
+#param-inputs-wrapper > input {
+	margin-top: 5px;
+	border-color: default;
+}
+
+#current-step-select-params > label {
+	display: inline-block;
+	width: 183px;
+	font-weight: normal;
+}
+
+#current-step-select-params > input {
+	display: inline-block;
+	width: 50px;
+}
+
+#execute-steps-button {
+	float:right;
+}
+
+/* UI Dialog Theming */
+.ui-widget {
+	font-family: inherit !important;
+}
+
+.ui-dialog-titlebar-close {
+	height: 30px !important;
+	width: 30px !important;
+}
+
+	.ui-dialog-titlebar-close span {
+		background: red;
+		height: 100%;
+		width: 100%;
+		background: url(../images/delete-icon.png) top center no-repeat !important;
+		background-size: 16px;
+	} 
+
+.ui-state-hover {
+	background: none !important;
+	border-width: 0 !important;
+	padding-top: 1px !important;
+
+}
+
+.ui-dialog-titlebar {
+	background: none;
+	border-width: 0;
+	font-size: 1.4em;
+	padding-left: 10px !important;
+}
+
+.ui-dialog {
+	box-shadow: 0 1px 15px black;
+}
+
+.ui-widget-overlay {
+	background: black;
+}
+

@@ -1,0 +1,77 @@
+timestamp: 2012-11-05T10:53:51.351386
+CREATE TABLE auth_user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name CHAR(128),
+    last_name CHAR(128),
+    email CHAR(512),
+    password CHAR(512),
+    registration_key CHAR(512),
+    reset_password_key CHAR(512),
+    registration_id CHAR(512)
+);
+success!
+timestamp: 2012-11-05T10:53:51.353958
+CREATE TABLE auth_group(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2012-11-05T10:53:51.356918
+CREATE TABLE auth_membership(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2012-11-05T10:53:51.380365
+CREATE TABLE auth_permission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE,
+    name CHAR(512),
+    table_name CHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2012-11-05T10:53:51.384197
+CREATE TABLE auth_event(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    client_ip CHAR(512),
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    origin CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2012-11-05T10:53:51.388257
+CREATE TABLE auth_cas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    created_on TIMESTAMP,
+    service CHAR(512),
+    ticket CHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2013-01-24T15:26:10.148680
+CREATE TABLE problemBank(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    type CHAR(512),
+    text CHAR(512),
+    points TEXT,
+    lines TEXT
+);
+success!
+timestamp: 2013-01-24T15:26:10.158740
+CREATE TABLE procedures(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    parameters TEXT,
+    displayLabel CHAR(512),
+    label CHAR(512),
+    steps TEXT,
+    trigger CHAR(512),
+    origin CHAR(512)
+);
+success!

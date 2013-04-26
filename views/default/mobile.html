@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width = device-width">
+		<meta name="viewport" content="initial-scale = 1.0, user-scalable = no">
+		<title>Current Problem</title>
+		<link rel="stylesheet" href="{{=URL('static','css/jquery-ui-1.9.0.custom.css')}}">
+        <link rel="stylesheet" href="{{=URL('static','css/mobile_interface.css')}}">
+
+        <script src="{{=URL('static','js/jquery.js')}}"></script>
+        <script src="{{=URL('static','js/jquery_ui_1.9.0.custom.min.js')}}"></script>
+        <script src="{{=URL('static','js/jquery.ui.touch_punch.min.js')}}"></script>
+        <script src="{{=URL('static','js/web2py.js')}}"></script>
+        <script src="{{=URL('static','js/communications.js')}}"></script>
+        <script src="{{=URL('static','js/audio.js')}}"></script>
+        <script src="{{=URL('static','js/steps.js')}}"></script>
+        <script src="{{=URL('static','js/procedures.js')}}"></script>
+        <script src="{{=URL('static','js/problems.js')}}"></script>
+        <script src="{{=URL('static','js/stepsList.js')}}"></script>
+        <script src="{{=URL('static','js/main.js')}}"></script>
+        <script>
+        	// Adding URL names to global variable
+        	APP.ADD_PROCEDURE = "{{=URL('addProc')}}";
+        	APP.DELETE_PROCEDURE = "{{=URL('removeProc')}}";
+        	APP.UPDATE_STEP = "{{=URL('updateCurrentStep')}}";
+        	APP.EXECUTE_EVENT = "{{=URL('executeEvent')}}";
+        	APP.EXECUTE_STEPS = "{{=URL('executeSteps')}}";
+        	APP.GET_PROCEDURE_STEPS = "{{=URL('get_procedure_steps')}}";
+        	APP.UPDATE_PROCEDURE_STEPS = "{{=URL('update_procedure_steps')}}";
+        	APP.UPDATE_CURRENT_PROBLEM = "{{=URL('update_current_problem')}}";
+        	APP.LOG = "{{=URL('log','log')}}";
+        	APP.SEND = "{{=URL('communication','send')}}";
+
+        	// Adding problems variable to global variable
+        	var problems = "{{=problems}}";
+        	problems = problems.replace(/&quot;/g, "\"");
+        	problems = problems.replace(/&#x27;/g, "'");
+        	APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
+
+        	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
+        	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
+        	APP.currentProblemIndex = {{=current_problem}};
+        	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+        	
+        </script>
+        <script>
+        	// Logging page load
+        	// Events are logged to logs/log.txt
+        	log("Page Load");
+
+        	var olddata = undefined;
+        	var socket = false;
+        	var counter = 0;
+
+        	$(document).ready(function(){
+
+        		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+		    		try{
+		    			// Playing attention sound
+    					AUDIO.play("audio-attention");
+		    			var temp = JSON.parse(e.data)
+		    			if(counter < 2 && isTriggerEqual(olddata, temp)){
+		    				// Same trigger. Update params.
+		    				mergeObjects(olddata, temp);
+		    				updateStepParamsList();
+		    				counter++;
+		    			} else {
+		    				// Different trigger. Start over.
+				      		olddata = temp;
+				      		updateCurrentStep();
+				      		counter = 1;
+				      	}
+		      		} catch(err){
+		      			console.dir(e.data);
+		      		}
+		      	});
+		    	if(socket === false){
+		        	alert("html5 websocket not supported by your browser, try Google Chrome");
+		        } else {
+		        	console.dir(socket);
+		        }
+		    });
+        </script>
+	</head>
+	<!-- onload function hides mobile Safari's address bar -->
+	<body> <!--onload="setTimeout(function(){window.scrollTo(0,1)}, 100);"--> 
+		<div id="current-problem-wrapper" class="wrapper">
+			<h3>
+				<!-- Current problem text, set in script.js's function setCurrentProblem -->
+			</h3>
+			<a href="#" class="action-button" id="next-problem-button"><span>&gt;</span></a>
+		</div>
+		<div id="procedure-steps-wrapper" class="wrapper">
+			<!--<form id="procedure-wrapper" class="wrapper">
+				<h3>Procedure:</h3>
+				<div>
+					<a href="#" class="action-button" id="new-procedure-button"><span class="new-procedure-button">+ New</span></a>
+					<a href="#" class="action-button" id="delete-procedure-button"><span class="delete-procedure-button">- Delete</span></a>
+					<a href="#" class="action-button"><span>Test</span></a>
+				</div>
+                {{ #TODO if user_procedures is empty, display alternative message }}
+				<select id="current-procedure" name="current_procedure">
+					{{for procedure in user_procedures:}}
+	                	{{=OPTION(procedure.name, _value=procedure.name)}}
+                    {{pass}}
+				</select>
+			</form>-->
+			<div id="steps-wrapper" class="wrapper">
+				<!--<h3>Current Step:</h3>-->
+				<div id="current-step"></div>
+				<h3 id="steps-list-title">Steps: <span>Drag Mode</span> <a id="execute-steps-button" href="#" class="action-button"><span>Execute</span></a></h3>
+				<input type="hidden" id="procedure-steps" name="procedure-steps-hidden"/>
+				<ol id="steps-list">
+					<li class="droppable">&nbsp;</li><!--
+					<li class="draggable"><span></span>Rotate 90 left <img src="images/delete-icon.png" height="16" /></li>
+					<li class="droppable">&nbsp;</li>
+					<li class="draggable"><span></span>Move Right</li>
+					<li class="droppable">&nbsp;</li>-->
+				</ol>
+			</div>
+		</div>
+		<!-- Dialog forms -->
+		<!--<div id="create-procedure-dialog" title="Create a new procedure">
+			<form id="create-procedure-form">
+				<fieldset>
+					<div id="messages"></div>
+					<label for="name">Name</label>
+					<input type="text" name="name" placeholder="What's the procedure's name?" />
+					<label>Trigger</label>
+					<select name="trigger">
+						<option value="robot">Robot</option>
+						<option value="point">Point</option>
+						<option value="other">Other</option>
+					</select>
+					<label id="param-num-label">
+						Number of parameters: 
+						<span>
+							<span id="param-num-counter">0</span> 
+							<span id="increment-param-num">+</span>
+							<span id="decrement-param-num">-</span>
+						<span>
+					</label>
+					<input type="hidden" name="parameters" id="params-hidden-input"/>
+					<div id="param-inputs-wrapper"><!- - Wrapper for input fields - -></div>
+					<div class="form-buttons-container">
+						<a href="#" class="action-button" id="create-new-procedure-button"><span>Create procedure</span></a>
+					</div>
+				</fieldset>
+			</form>
+		</div>-->
+		<div id="update-step-dialog" title="Update current step">
+			<div id="update-step-form">
+				<fieldset>
+					<label for="steps">Available steps</label>
+					<select>
+						<!-- List of procedures according to trigger -->
+					</select>
+					<label>Procedure parameters</label>
+					<!-- This hidden field will have the final value for the current procedure -->
+					<input type="hidden" id="procedure_parameters" name="procedure_parameters"/>
+					<div id="current-step-select-params"><!-- Wrapper for procedure's params --></div>
+					<div class="form-buttons-container">
+						<a href="#" class="action-button" id="select-current-step-button"><span>Select step</span></a>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		<!-- Audio for event attention -->
+		<!-- Sound by "http://www.narfstuff.co.uk". Cheers, mate! -->
+		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" preload="auto" />
+	</body>
+</html>

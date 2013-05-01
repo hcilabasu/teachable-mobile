@@ -1,0 +1,6 @@
+errors/*
+sessions/*
+static/logs/log.txt
+*.pyc
+*.py.bak
+*.log

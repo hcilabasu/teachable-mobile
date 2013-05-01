@@ -4,3 +4,5 @@ static/logs/log.txt
 *.pyc
 *.py.bak
 *.log
+.DS_Store
+languages/*

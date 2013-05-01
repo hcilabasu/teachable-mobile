@@ -1,10 +1,10 @@
+import config
 from gluon.contrib.websocket_messaging import websocket_send
 
-__current_user_name = 'user'
-__current_ip = '127.0.0.1' # ip for local testing
-# __current_ip = '169.254.67.33' # ip for adhoc network
-__socket_port = '8888'
-__key = 'mykey'
+__current_user_name = config.TORNADO_USER
+__current_ip = config.TORNADO_IP
+__socket_port = config.TORNADO_PORT
+__key = config.TORNADO_KEY
 
 def send():
 	group = request.vars.group

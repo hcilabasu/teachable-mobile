@@ -3,6 +3,7 @@ import sys
 import time
 import socket
 import json
+import config
 #import gluon.contrib.simplejson as json
 from gluon.contrib.websocket_messaging import websocket_send
 from xmlrpclib import ServerProxy
@@ -10,11 +11,11 @@ from xmlrpclib import ServerProxy
 #server = ServerProxy('http://127.0.0.1:8000/testGeogebraApp/default/call/xmlrpc')
 filename = os.path.join(request.folder, 'static', 'geointerface.html')
 
-__current_user_name = 'user'
-__current_ip = '127.0.0.1' # ip for local testing
-# __current_ip = '169.254.67.33' # ip for adhoc network
-__socket_group_name = 'interface'
-__socket_port = '8888'
+__current_user_name = config.TORNADO_USER
+__current_ip = config.TORNADO_IP
+__socket_port = config.TORNADO_PORT
+__key = config.TORNADO_KEY
+__socket_group_name = config.TORNADO_GROUP
 
 # -*- coding: utf-8 -*-
 ### required - do no delete

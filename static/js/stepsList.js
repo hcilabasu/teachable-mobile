@@ -5,6 +5,9 @@ STEPS_LIST.init = function(){
     setDroppable($(".droppable"));
 }
 
+var isInDragMode = function(){
+    return $("body").hasClass("dragMode");
+}
 
 function updateCurrentProcedureStepsList(){
     var selectedProcedure = $("#current-procedure option:selected").val();
@@ -146,6 +149,9 @@ function createStepItem(value){
     var newItem = $("<li>", {"class": "draggable"}).html(value);
     // Adding the delete button the the list item
     addDeleteButton(newItem);
+    if(isInDragMode()){
+        newItem.addClass("drag");
+    }
     return newItem;
 }
 

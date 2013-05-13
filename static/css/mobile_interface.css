@@ -56,6 +56,10 @@ body {
 	font-size: 12px;
 }
 
+body.dragMode {
+	background: #7b4162;
+}
+
 h3 {
 	font-weight: bolder;
 	font-size: 1.4em;
@@ -296,6 +300,10 @@ a.action-button {
 		#steps-list > li.draggable > span {
 			height: 40px;
 			top: -4px;
+		}
+
+		#steps-list > li.draggable.drag {
+			padding-left: 50px !important;
 		}
 
 	#steps-list > li.droppable {

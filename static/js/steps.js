@@ -108,7 +108,7 @@ function selectCurrentStep(event){
         // Closing dialog
         APP.updateStepDialog.dialog("close");
         // creating label
-        var label = APP.basicProcedures[procName].label;
+        label = APP.basicProcedures[procName].label;
         label = String.prototype.format.apply(label, parametersArray);
         // Updating hidden field
         returnObject = {name: procName, label: label, op: parameters};
@@ -118,6 +118,7 @@ function selectCurrentStep(event){
         // Set current procedure label to the selected procedure
         var currentStep = $("#current-step");
         currentStep.html("<span></span>" + label);
+
         setDraggable(currentStep);
         $("span", currentStep).bind("touchstart", function(e) { e.preventDefault(); });
         // Setting current step object
@@ -132,11 +133,12 @@ function selectCurrentStep(event){
     }
     // Check if user entered drag mode
     switch(APP.currentStep.name){
-        case "movePoint":
-            $("#steps-list-title > span").css('visibility', 'visible');
+        case "movePoint":           // Fall through
+        case "movePointDistance":
+            $("body").addClass('dragMode');
             break;
         case "stopMovingPoint":
-            $("#steps-list-title > span").css('visibility', 'hidden');
+            $("body").removeClass('dragMode');
             break;
     }
 

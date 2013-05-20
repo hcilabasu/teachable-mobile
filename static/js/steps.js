@@ -1,6 +1,21 @@
 
 var STEPS = {};
 
+/*
+ * The variable *dragRestriction* defines a blacklist of actions for dragmode
+ */
+var dragRestrictions = {
+    movePoint : true,
+    movePointDistance : true
+}
+
+/*
+ * The variable *nonDragRestriction* defines a blacklist of actions for normal mode (not dragging)
+ */
+var nonDragRestrictions = {
+    stopMovingPoint : true
+}
+
 STEPS.init = function(){
     // Setting dialog
     APP.updateStepDialog = $("#update-step-dialog");
@@ -25,6 +40,10 @@ STEPS.startDragMode = function(){
 
 STEPS.stopDragMode = function() {
     $("body").removeClass('dragMode');
+}
+
+STEPS.isInDragMode = function(){
+    return $("body").hasClass("dragMode");
 }
 
 /*
@@ -54,7 +73,13 @@ function updateCurrentStepDialog_CB(object){
     select.empty();
     // Adding new procedures
     $.each(object, function(index, value){
-        select.append($("<option value='" + JSON.stringify(value) + "'>" + value.displayLabel + "</option>"));
+        var option = $("<option value='" + JSON.stringify(value) + "'>" + value.displayLabel + "</option>");
+        if(STEPS.isInDragMode() && dragRestrictions[value.name]){ // If it's in drag mode, apply restriction
+            option.attr("disabled", "disabled");
+        } else if(!STEPS.isInDragMode() && nonDragRestrictions[value.name]) { // apply non drag mode restrictions
+            option.attr("disabled", "disabled");
+        }
+        select.append(option);
     });
     // Updating step param list
     updateStepParamsList();

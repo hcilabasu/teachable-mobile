@@ -152,7 +152,7 @@ function validateInput(form, labels, procName, parameters){
      */
     if(procName === 'moveDistance'){
         // Checks if the parameters is a number or if it's within range
-        if(!isNumber(parameters['distance']) || parameters['distance'] > 5 || parameters['distance'] < -5){
+        if(!isNumber(parameters['distance'])){
             toggleError(labels, "color", "red", "black");
             return false;
         }

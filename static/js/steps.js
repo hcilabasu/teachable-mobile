@@ -19,6 +19,14 @@ STEPS.init = function(){
     updateCurrentProcedureStepsList();
 }
 
+STEPS.startDragMode = function(){
+    $("body").addClass('dragMode');
+}
+
+STEPS.stopDragMode = function() {
+    $("body").removeClass('dragMode');
+}
+
 /*
  * This function uses the 'updateCurrentStepDialog_CB' as its callback.
  * TODO Maybe we could simply store the list of procedures on the client
@@ -135,10 +143,10 @@ function selectCurrentStep(event){
     switch(APP.currentStep.name){
         case "movePoint":           // Fall through
         case "movePointDistance":
-            $("body").addClass('dragMode');
+            STEPS.startDragMode();
             break;
         case "stopMovingPoint":
-            $("body").removeClass('dragMode');
+            STEPS.stopDragMode();
             break;
     }
 
@@ -203,6 +211,24 @@ function executeStep(event){
     log("Executing ALL steps");
     if(event !== undefined){
         event.preventDefault();
+    }
+    var grabMode = false;
+    for(var i in APP.currentStepsList){
+        var step = APP.currentStepsList[i];
+        switch(step.name){ 
+            case "movePoint":         // Fall through
+            case "movePointDistance":
+                grabMode = true;
+                break;
+            case "stopMovingPoint":
+                grabMode = false;
+                break;
+        }
+    }
+    if(grabMode){
+        STEPS.startDragMode();
+    } else {
+        STEPS.stopDragMode();
     }
     COMM.sendToApplet(JSON.stringify(APP.currentStepsList));
 }

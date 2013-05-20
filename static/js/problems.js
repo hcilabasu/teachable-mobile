@@ -22,6 +22,7 @@ function refreshProblem(message){
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
         executeStep();
+        STEPS.stopDragMode();
     }
     // Do nothing...
 }

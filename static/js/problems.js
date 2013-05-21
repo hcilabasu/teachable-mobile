@@ -49,6 +49,7 @@ function nextProblem(){
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
         setCurrentProblem();
         refreshProblem();
+        STEPS.stopDragMode();
         // Logging
         log("Moving to Problem " + APP.currentProblem.id);
     }

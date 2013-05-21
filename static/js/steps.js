@@ -190,7 +190,7 @@ function validateInput(form, labels, procName, parameters){
             return false;
         }
     } else if(procName === 'turnAngle'){
-        if(parameters['angle'] > 360){
+        if(!isNumber(parameters['angle']) || parameters['angle'] > 360){
             toggleError(labels, "color", "red", "black");
             return false;
         }

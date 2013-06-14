@@ -13,6 +13,7 @@ APP.DELETE_IMAGE_CLASS = "delete-button";
 APP.MAXIMUM_PARAMS = 9
 // Seting variables
 APP.paramsCounter = 0;
+APP.currentDate = new Date();
 
 $(function(){
     // Initializing Step-related functions
@@ -130,10 +131,9 @@ function mergeObjects(data, newdata){
  * Events are logged to logs/log.txt
  */
  function log(title, data){
-    var date = new Date();
     var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
-                                                              date.getHours(), date.getMinutes(), 
-                                                              date.getMonth()+1, date.getDate(), date.getFullYear());
+                                                              APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
+                                                              APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());
     if(data !== undefined){
         logString += "    {0}%5Cn".format(data);
     }

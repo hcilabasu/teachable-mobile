@@ -44,7 +44,7 @@ function setCurrentProblem(){
 }
 
 function nextProblem(){
-    if(confirm("Are you sure you want to move to the next problem? You're not gonna be able to go back.")){
+    if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
         APP.currentProblemIndex++;
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
         setCurrentProblem();

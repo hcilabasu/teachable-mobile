@@ -86,6 +86,7 @@ db.define_table('problemBank',
     Field('name',   type='string'),
     Field('type',   type='string'),
     Field('text',   type='string'),
+    Field('prompt',   type='string'),
     Field('points', type='list:string'),
     Field('lines',  type='list:string'))
     

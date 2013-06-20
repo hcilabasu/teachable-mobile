@@ -8,6 +8,7 @@ PROBLEMS.init = function(){
     $("#current-problem-wrapper h3").click(function(){
         refreshProblem(" Restart current problem?");
     });
+    $("#prompt a").click(closePrompt);
 }
 
 
@@ -45,11 +46,30 @@ function setCurrentProblem(){
 
 function nextProblem(){
     if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
-        APP.currentProblemIndex++;
-        APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-        setCurrentProblem();
-        refreshProblem();
+        var moveToNext = function(){
+            APP.currentProblemIndex++;
+            APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+            setCurrentProblem();
+            refreshProblem();
+        }
+        if(APP.currentProblem.prompt){
+            openPrompt(APP.currentProblem.prompt, function(){
+                moveToNext();
+            });
+        } else {
+            moveToNext();
+        }
+        
         // Logging
         log("Moving to Problem " + APP.currentProblem.id);
     }
+}
+
+function openPrompt(promptMessage, callback){
+    $("#prompt span").text(promptMessage);
+    $("#prompt").fadeIn('slow', callback);
+}
+
+function closePrompt(){
+    $("#prompt").fadeOut('slow');
 }

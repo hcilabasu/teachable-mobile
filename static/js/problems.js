@@ -37,7 +37,7 @@ function setCurrentProblem(){
         APP.currentProblemIndex = 0;
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     }
-    $("#current-problem-wrapper h3").text(unescape(APP.currentProblem.text));
+    $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
     // send message to applet to update its problem
     //COMM.sendToApplet()
     ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "")

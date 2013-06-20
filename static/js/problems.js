@@ -66,7 +66,7 @@ function nextProblem(){
 }
 
 function openPrompt(promptMessage, callback){
-    $("#prompt span").text(promptMessage);
+    $("#prompt span").html($("<div/>").html(promptMessage).text());
     $("#prompt").fadeIn('slow', callback);
 }
 

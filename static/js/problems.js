@@ -8,7 +8,6 @@ PROBLEMS.init = function(){
     $("#current-problem-wrapper h3").click(function(){
         refreshProblem(" Restart current problem?");
     });
-    $("#prompt a").click(closePrompt);
 }
 
 
@@ -46,30 +45,49 @@ function setCurrentProblem(){
 
 function nextProblem(){
     if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
-        var moveToNext = function(){
-            APP.currentProblemIndex++;
-            APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-            setCurrentProblem();
-            refreshProblem();
-        }
-        if(APP.currentProblem.prompt){
-            openPrompt(APP.currentProblem.prompt, function(){
-                moveToNext();
-            });
+        if(APP.currentProblem.prompts.length > 0){
+            openPrompt(APP.currentProblem.prompts);
         } else {
             moveToNext();
         }
-        
-        // Logging
-        log("Moving to Problem " + APP.currentProblem.id);
     }
 }
 
-function openPrompt(promptMessage, callback){
-    $("#prompt span").html($("<div/>").html(promptMessage).text());
-    $("#prompt").fadeIn('slow', callback);
+function moveToNext(callback){
+    APP.currentProblemIndex++;
+    APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+    setCurrentProblem();
+    refreshProblem();
+    // Logging
+    log("Moving to Problem " + APP.currentProblem.id);
+    if(callback){
+        callback();
+    }
+}
+
+function openPrompt(promptMessages){
+
+    var button = $("#prompt a");
+
+    $("#prompt span").html($("<div/>").html(promptMessages[0]).text());
+
+    if(promptMessages.length == 1){
+        button.text("Close");
+        button.click(closePrompt);
+    } else {
+        button.text("Next");
+        button.click(function(){
+            promptMessages.splice(0, 1)
+            openPrompt(promptMessages);
+        });
+    }
+
+    $("#prompt").fadeIn('slow');
 }
 
 function closePrompt(){
-    $("#prompt").fadeOut('slow');
+    moveToNext(function(){
+        $("#prompt").fadeOut('slow');    
+    });
+    
 }

@@ -363,9 +363,9 @@ def stringifyProblem(problem):
     json += '"text":"'
     json += problem.text
     json += '",'
-    json += '"prompt":"'
-    json += problem.prompt if problem.prompt else ''
-    json += '",'
+    json += '"prompts":['
+    json += ",".join('"' + p + '"' for p in problem.prompts) if problem.prompts != None else ""
+    json += '],'
     json += '"points":['
     json += ",".join(problem.points)
     json += '],'

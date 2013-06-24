@@ -83,12 +83,12 @@ use_janrain(auth, filename='private/janrain.key')
 # auth.enable_record_versioning(db)
 
 db.define_table('problemBank',
-    Field('name',   type='string'),
-    Field('type',   type='string'),
-    Field('text',   type='string'),
-    Field('prompt',   type='string'),
-    Field('points', type='list:string'),
-    Field('lines',  type='list:string'))
+    Field('name',    type='string'),
+    Field('type',    type='string'),
+    Field('text',    type='string'),
+    Field('prompts', type='list:string'),
+    Field('points',  type='list:string'),
+    Field('lines',   type='list:string'))
     
 ## procedures database
 ## stores all procedures saved by the user or created by the developer

@@ -7,7 +7,8 @@ var STEPS = {};
 var dragRestrictions = {
     movePoint : true,
     movePointDistance : true,
-    plotPoint : true
+    plotPoint : true,
+    stopMovingPoint : true
 }
 
 /*

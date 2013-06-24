@@ -77,8 +77,7 @@ function openPrompt(promptMessages){
     } else {
         button.text("Next");
         button.click(function(){
-            promptMessages.splice(0, 1)
-            openPrompt(promptMessages);
+            openPrompt(promptMessages.slice(1, promptMessages.length));
         });
     }
 

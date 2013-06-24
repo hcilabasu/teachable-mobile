@@ -75,3 +75,5 @@ CREATE TABLE procedures(
     origin CHAR(512)
 );
 success!
+timestamp: 2013-06-21T11:18:21.677411
+ALTER TABLE problemBank ADD prompt CHAR(512);

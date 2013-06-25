@@ -46,7 +46,7 @@ function setCurrentProblem(){
 function nextProblem(){
     if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
         if(APP.currentProblem.prompts.length > 0){
-            openPrompt(APP.currentProblem.prompts);
+            openPrompt(APP.currentProblem.prompts, true);
         } else {
             moveToNext();
         }
@@ -65,28 +65,40 @@ function moveToNext(callback){
     }
 }
 
-function openPrompt(promptMessages){
+function openPrompt(promptMessages, isFirst){
 
     var button = $("#prompt a");
-
+    // Updating text
     $("#prompt span").html($("<div/>").html(promptMessages[0]).text());
-
+    // removing previous handlers
+    button.off('click');
     if(promptMessages.length == 1){
+        // There is only one prompt
+        // Change button to "close"
         button.text("Close");
+        // Associate button to close action
         button.click(closePrompt);
     } else {
+        // There are more prompts
+        // Change button to "next"
         button.text("Next");
+        // Associate button to next prompt action
         button.click(function(){
-            openPrompt(promptMessages.slice(1, promptMessages.length));
+            openPrompt(promptMessages.slice(1, promptMessages.length, false));
         });
-    }
 
-    $("#prompt").fadeIn('slow');
+    }
+    // If this is the first time the prompt is opened, fade window in.
+    if(isFirst){
+        $("#prompt").fadeIn('slow');
+    }
 }
 
 function closePrompt(){
+    // Calling moveToNext function
     moveToNext(function(){
-        $("#prompt").fadeOut('slow');    
+        // Fading prompt after moving to next problem
+        $("#prompt").fadeOut('slow');  
     });
     
 }

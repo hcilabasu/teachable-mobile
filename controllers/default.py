@@ -311,7 +311,7 @@ def mobile():
     else:
         session.problemNum = current_problem
     problemsJSON = "["
-    problemsJSON += ",".join([stringifyProblem(p) for p in problems])
+    problemsJSON += ",".join([stringifyProblem(p, "Default") for p in problems])
     problemsJSON += "]"
     # Returning values
     return dict(user_procedures=user_procedures, basic_procedures=basic_proceduresJSON, problems=problemsJSON, current_problem=current_problem, 
@@ -319,6 +319,15 @@ def mobile():
 
 def update_current_problem():
     session.problemNum = request.vars.index
+    data = request.vars.data
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data,'mykey', "applet")
+
+def check_solution():
+    #current_problem = db(db.problemBank.id == session.problemNum).select()[0]
+    #currentProblemJSON = stringifyProblem(current_problem, "check")
+    #return dict(problems=currentProblemJSON)
+    session.problemNum = request.vars.index
+    #data = currentProblemJSON
     data = request.vars.data
     websocket_send('http://' + __current_ip + ':' + __socket_port, data,'mykey', "applet")
 
@@ -350,7 +359,7 @@ def stringifyProcedure(procedure):
     json += '}'
     return json
 
-def stringifyProblem(problem):
+def stringifyProblem(problem, message_type):
     json = '{"id":'
     json += str(problem.id)
     json += ','
@@ -371,9 +380,17 @@ def stringifyProblem(problem):
     json += '],'
     json += '"lines":['
     json += ",".join(problem.lines)
-    json += "]}"
-    return json
+    json += '],'
+    
+    # Need to be careful of operator precedence, we had some problems when the ternary expression was NOT placed in brackets. I guess the "+" operator
+    # has higher precedence than the ternary.
+    json += '"solution":' + (problem.solution if problem.solution != None else "{}")
 
+    json += ', "type":' + '"' + (message_type if message_type != None else '"Default"') + '"' + "}"
+    #json += "}"
+
+    return json
+    
 def get_procedure_steps():
     procedure_name = request.vars.name
     procedure = db(db.procedures.name == procedure_name).select()
@@ -419,3 +436,9 @@ def process_procedure(form):
 def test_message():
     websocket_send('http://' + __current_ip + ':' + __socket_port,'Hello from Web Sockets! Bye-bye polling!','mykey', __socket_group_name)
     return sys.version_info.__str__()
+
+def test():
+    return dict(helloworld="helloworld")
+
+def adrin():
+    return "adrin"

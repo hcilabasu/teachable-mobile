@@ -32,6 +32,7 @@
         	APP.UPDATE_CURRENT_PROBLEM = "{{=URL('update_current_problem')}}";
         	APP.LOG = "{{=URL('log','log')}}";
         	APP.SEND = "{{=URL('communication','send')}}";
+        	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
 
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
@@ -43,7 +44,6 @@
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
         	APP.currentProblemIndex = {{=current_problem}};
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-        	
         </script>
         <script>
         	// Logging page load
@@ -54,10 +54,10 @@
         	var socket = false;
         	var counter = 0;
 
-        	$(document).ready(function(){
+        	$(document).ready(function() {
 
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
-		    		try{
+		    		try {
 		    			// Playing attention sound
     					AUDIO.play("audio-attention");
 		    			var temp = JSON.parse(e.data)
@@ -119,6 +119,9 @@
 					<li class="draggable"><span></span>Move Right</li>
 					<li class="droppable">&nbsp;</li>-->
 				</ol>
+				<div id="check-solution">
+					<a id="check-solution-button" href="#" class="action-button"><span>Check Solution</span></a>
+				</div>
 			</div>
 		</div>
 		<!-- Dialog forms -->

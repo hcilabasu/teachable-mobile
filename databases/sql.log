@@ -79,3 +79,5 @@ timestamp: 2013-06-21T11:18:21.677411
 ALTER TABLE problemBank ADD prompt CHAR(512);
 timestamp: 2013-06-24T13:31:06.232959
 ALTER TABLE problemBank ADD prompts TEXT;
+timestamp: 2013-07-03T19:07:05.165057
+ALTER TABLE problemBank ADD solution CHAR(512);

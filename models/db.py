@@ -88,7 +88,8 @@ db.define_table('problemBank',
     Field('text',    type='string'),
     Field('prompts', type='list:string'),
     Field('points',  type='list:string'),
-    Field('lines',   type='list:string'))
+    Field('lines',   type='list:string'),
+    Field('solution', type='string'))
     
 ## procedures database
 ## stores all procedures saved by the user or created by the developer

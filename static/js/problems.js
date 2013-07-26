@@ -1,17 +1,19 @@
 var PROBLEMS = {};
 
-PROBLEMS.init = function(){
+PROBLEMS.init = function() {
 	// Setting problem info in the interface and in the applet
     setCurrentProblem();
     // Setting action listeners
     $("#next-problem-button").click(nextProblem);
+    $("#check-solution-button").click(checkSolution);
     $("#current-problem-wrapper h3").click(function(){
         refreshProblem(" Restart current problem?");
     });
 }
 
 
-function refreshProblem(message){
+function refreshProblem(message) {
+    log("Calling refreshProblem");
     var refresh = true;
     if(message !== undefined){
         refresh = confirm(message);
@@ -27,7 +29,8 @@ function refreshProblem(message){
     // Do nothing...
 }
 
-function setCurrentProblem(){
+function setCurrentProblem() {
+    log("Calling setCurrentProblem");
     if(APP.currentProblem === undefined){
         // Logging
         log("FINISHED ALL PROBLEMS");
@@ -37,13 +40,13 @@ function setCurrentProblem(){
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     }
     $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
+    
     // send message to applet to update its problem
     //COMM.sendToApplet()
-    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "")
-
+    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
 }
 
-function nextProblem(){
+function nextProblem() {
     if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
         if(APP.currentProblem.prompts.length > 0){
             openPrompt(APP.currentProblem.prompts, true);
@@ -53,7 +56,7 @@ function nextProblem(){
     }
 }
 
-function moveToNext(callback){
+function moveToNext(callback) {
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem();
@@ -65,7 +68,7 @@ function moveToNext(callback){
     }
 }
 
-function openPrompt(promptMessages, isFirst){
+function openPrompt(promptMessages, isFirst) {
 
     var button = $("#prompt a");
     // Updating text
@@ -94,11 +97,28 @@ function openPrompt(promptMessages, isFirst){
     }
 }
 
-function closePrompt(){
+function closePrompt() {
     // Calling moveToNext function
     moveToNext(function(){
         // Fading prompt after moving to next problem
         $("#prompt").fadeOut('slow');  
     });
     
+}
+
+// Checking the solution entered by the user.
+function checkSolution() {
+    // TO DO: need to add some validations
+    log("Calling checkSolution");
+    log(JSON.stringify(APP.currentProblem));
+
+    // Need to confirm if this validation is necessary and sufficient
+    if(APP.currentProblem){
+        if(confirm("Are you you sure you want to submit this solution?")) {
+            //ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+            APP.currentProblem.type = "check";
+            ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+            //ajax(APP.CHECK_SOLUTION, [], "");
+        }
+    }
 }

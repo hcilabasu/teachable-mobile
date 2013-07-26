@@ -1,0 +1,56 @@
+body, html {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	background: url(../images/robotui/APP_FUNDO.png);
+}
+
+#eyes,
+#mouth {
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	width: 100%;
+}
+
+@-webkit-keyframes blink {
+	0% {
+		background-position: 0px 0px;		
+	}
+
+	50% {
+		background-position: -320px 0px;
+	}
+
+	52% {
+		background-position: 0px 0px;		
+	}
+
+	93% {
+		background-position: -320px 0px;
+	}
+
+	95% {
+		background-position: 0px 0px;		
+	}
+
+	97% {
+		background-position: -320px 0px;
+	}
+
+	99% {
+		background-position: 0px 0px;
+	}
+}
+
+#eyes {
+	background: url(../images/robotui/APP_OLHOS.png);
+	-webkit-animation: blink 7s infinite steps(1,end);
+}
+
+#mouth {
+	background: url(../images/robotui/APP_BOCA.png);	
+}

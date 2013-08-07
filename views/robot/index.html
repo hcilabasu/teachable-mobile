@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width = device-width">
+
+	<title></title>
+
+	<script src="{{=URL('static','js/jquery.js')}}"></script>
+
+	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
+
+	<script>
+		var direction = undefined;
+		window.addEventListener('deviceorientation', function(e) {
+			if(direction === undefined || Math.abs(e.alpha - direction) > 0.3){
+			    // document.getElementById("output").innerText = e.alpha;
+			    direction = e.alpha;
+			    // Sending direction to controller
+			    $.ajax({
+				  url: "{{=URL('update_direction')}}",
+				  data: {d: direction}
+				});
+				// $.ajax({
+				// 	url: "{{=URL('current_status')}}"
+				// }).done(function(data){
+				// 	$("#output").text = data;
+				// })
+			}
+		}, false);
+	</script>
+
+</head>
+<body>
+<div id="output"></div>
+<div id="eyes"></div>
+<div id="mouth"></div>
+</body>
+</html>

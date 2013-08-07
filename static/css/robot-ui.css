@@ -8,6 +8,10 @@ body {
 	background: url(../images/robotui/APP_FUNDO.png);
 }
 
+#output {
+	font-size: 2em;
+}
+
 #eyes,
 #mouth {
 	position: absolute;

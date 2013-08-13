@@ -11,7 +11,8 @@ gateway = JavaGateway()
 
 angle_threshold = 13
 small_angle_threshold = 5
-distance_threshold = 0.5
+distance_threshold = 0.35
+small_distance_threshold = 0.1
 
 lap_time = 4.4
 
@@ -58,18 +59,11 @@ def move_to():
 	# final angle
 	if 'angle' in request.vars:
 		angle = int(request.vars['angle'])
-	# calculating deltas
-	d_x = t_x - c_x
-	d_y = t_y - c_y
-	new_angle = math.atan2(d_y,d_x) * 180 / math.pi
-	if new_angle < 0:
-		new_angle += 360
-	# turning robot
-	__turn_to(new_angle, backwards, 0)
 	# # moving robot
 	__move_to(t_x, t_y, backwards, 0)
 	# if robot needs to face a final orientation, turn.
 	if 'angle' in request.vars:
+		time.sleep(1)
 		__turn_to(angle, False, 0)
 
 
@@ -96,25 +90,27 @@ def __turn_to(angle, backwards, recursion):
 	if backwards: 
 		angle = (angle + 180) % 360
 	print('%s' % str(angle))
-	direction = get_direction()
-	d = angle - direction
-	if d > 180: 
-		d -= 360
-	elif d < -180: 
-		d += 360
-	if d > 0:
-		turn_left()
-	elif d < 0:
-		turn_right()
-	while True:
-		time.sleep(0.01)
-		if __within_threshold(angle, angle_threshold):
-			stop()
-			break
-	time.sleep(1)
-	if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
-		backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
-		__turn_to(angle, backwards, recursion + 1)
+	if not __within_threshold(angle, small_angle_threshold):
+		direction = get_direction()
+		d = angle - direction
+		if d > 180: 
+			d -= 360
+		elif d < -180: 
+			d += 360
+	
+		if d > 0:
+			turn_left()
+		elif d < 0:
+			turn_right()
+		while True:
+			# time.sleep(0.01)
+			if __within_threshold(angle, angle_threshold):
+				stop()
+				break
+		time.sleep(1)
+		if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
+			backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
+			__turn_to(angle, backwards, recursion + 1)
 	
 
 def __within_threshold(desired, th):
@@ -126,7 +122,7 @@ def __within_threshold(desired, th):
 	# print('Current: ' + str(current))
 	# print('Desired: ' + str(desired))
 	diff = math.fabs(current - desired)
-	# print('Within : ' + str(diff) + ' - ' + str(diff < th))
+	print('Within : ' + str(diff) + ' - ' + str(diff < th))
 	return diff < th
 
 def __move_to(x, y, backwards, recursion):
@@ -142,19 +138,20 @@ def __move_to(x, y, backwards, recursion):
 		# calculating deltas
 		d_x, d_y = t_x - c_x, t_y - c_y
 		# calculatin angle
-		new_angle = math.atan2(d_y,d_x) * 180 / math.pi
+		new_angle = int(math.atan2(d_y,d_x) * 180 / math.pi)
 		if new_angle < 0:
 			new_angle += 360
 
 		# turning robot
-		__turn_to(new_angle, backwards, 0)	
+		if new_angle > 5:
+			__turn_to(new_angle, backwards, 0)	
 
 		# determining if it'll be moving in x, y or both
 		position = __get_position()
-		c_x = position[0]# + distance_threshold
-		c_y = position[1]# + distance_threshold
-		move_x = math.fabs(c_x - x) > 0.15
-		move_y = math.fabs(c_y - y) > 0.15
+		c_x = position[0]
+		c_y = position[1]
+		move_x = math.fabs(c_x - x) > distance_threshold
+		move_y = math.fabs(c_y - y) > distance_threshold
 
 		print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
 
@@ -162,10 +159,10 @@ def __move_to(x, y, backwards, recursion):
 			m() # either move_forward or move_backward
 			while True:
 				position = __get_position()
-				c_x = position[0]# + distance_threshold
-				c_y = position[1]# + distance_threshold
+				c_x = position[0]
+				c_y = position[1]
 
-				if (move_x and math.fabs(x - c_x) < distance_threshold)  or (move_y and math.fabs(c_y - y) < distance_threshold): # TODO cases where x is + and c_x is -. Same for y
+				if (move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold): # TODO cases where x is + and c_x is -. Same for y
 					print('T' + str(x) + ',' + str(y))
 					print('C' + str(c_x) + ',' + str(c_y))
 					stop()
@@ -173,7 +170,6 @@ def __move_to(x, y, backwards, recursion):
 
 		if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
 			__move_to(x, y, backwards, recursion + 1)
-
 
 
 

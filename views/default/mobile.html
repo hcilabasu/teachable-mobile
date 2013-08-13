@@ -56,7 +56,7 @@
 
         	$(document).ready(function() {
 
-        		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+        		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
 		    		try {
 		    			// Playing attention sound
     					AUDIO.play("audio-attention");
@@ -72,11 +72,12 @@
 				      		updateCurrentStep();
 				      		counter = 1;
 				      	}
-		      		} catch(err){
+		      		} catch(err) {
 		      			console.dir(e.data);
 		      		}
 		      	});
-		    	if(socket === false){
+
+		    	if(socket === false) {
 		        	alert("html5 websocket not supported by your browser, try Google Chrome");
 		        } else {
 		        	console.dir(socket);
@@ -90,6 +91,13 @@
 			<h3>
 				<!-- Current problem text, set in script.js's function setCurrentProblem -->
 			</h3>
+			
+			<div id="check-solution" align = "right">
+				<a id="check-solution-button" href="#" class="action-button">
+					<img src="{{=URL('static','images/Check-32.png')}}"/>
+				</a>
+			</div>
+
 			<a href="#" class="action-button" id="next-problem-button"><span>&gt;</span></a>
 		</div>
 		<div id="procedure-steps-wrapper" class="wrapper">
@@ -119,9 +127,6 @@
 					<li class="draggable"><span></span>Move Right</li>
 					<li class="droppable">&nbsp;</li>-->
 				</ol>
-				<div id="check-solution">
-					<a id="check-solution-button" href="#" class="action-button"><span>Check Solution</span></a>
-				</div>
 			</div>
 		</div>
 		<!-- Dialog forms -->

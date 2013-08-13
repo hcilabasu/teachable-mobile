@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<script src="{{=URL('static','js/jquery.js')}}"></script>
+	<script type="text/javascript">
+		
+		//$( document ).ready(function() {})
+		//Alternate form of abobe
+		$(function(){
+			// . == class
+			// # == id
+			$("#user").text("What's your name?");
+
+			$(".menu").click(function(e){
+
+				$.ajax({
+					url: "http://localhost:8000/mobile/default/adrin"
+					//url: "adrin"
+				}).done(function(data) {
+					$("#user").text(data);
+				});
+
+			})
+
+		});
+
+	</script>
+</head>
+<body>
+
+	<p id="user">
+
+	</p>
+
+	<a class="menu" href="#">
+		Click me
+	</a>
+
+</body>
+</html>

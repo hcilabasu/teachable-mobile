@@ -81,6 +81,25 @@ select{
 	position: relative;
 }
 
+/*Adrin added this class for the check solution button*/
+/*
+a.check-solution-button {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	background: url(../images/Check-32.png);
+	min-width: 30px;
+	border-radius: 5px;
+	text-decoration: none;
+	color: black;
+	text-shadow: 0 1px 0 #DDD;
+	border: solid 1px #666;
+	padding-bottom: 1px;
+	height: 33px;
+	line-height: 15px;
+}
+*/
+
 a.action-button {
 	position: relative;
 	display: inline-block;
@@ -97,17 +116,17 @@ a.action-button {
 	line-height: 15px;
 }
 
-	a.action-button > span {
-		display: inline-block;
-		border-bottom: solid 1px #CCC;
-		width: 100%;
-		height: 100%;
-		padding: 8px 13px;
-		border-radius: 5px;
-		background: -webkit-gradient(linear, left bottom, left top, from(#AAA), to(#CCC));
-		box-shadow: 0 0 0 1px #666;
-		font-weight: bolder;
-	}
+a.action-button > span {
+	display: inline-block;
+	border-bottom: solid 1px #CCC;
+	width: 100%;
+	height: 100%;
+	padding: 8px 13px;
+	border-radius: 5px;
+	background: -webkit-gradient(linear, left bottom, left top, from(#AAA), to(#CCC));
+	box-shadow: 0 0 0 1px #666;
+	font-weight: bolder;
+}
 
 .draggable {
 	position: relative;

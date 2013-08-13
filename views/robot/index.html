@@ -14,19 +14,15 @@
 	<script>
 		var direction = undefined;
 		window.addEventListener('deviceorientation', function(e) {
-			if(direction === undefined || Math.abs(e.alpha - direction) > 0.3){
-			    // document.getElementById("output").innerText = e.alpha;
-			    direction = e.alpha;
+			var prop = e.alpha;
+			if(direction === undefined || Math.abs(prop - direction) > 0.3){
+			    // document.getElementById("output").innerText = prop;
+			    direction = prop;
 			    // Sending direction to controller
 			    $.ajax({
 				  url: "{{=URL('update_direction')}}",
 				  data: {d: direction}
 				});
-				// $.ajax({
-				// 	url: "{{=URL('current_status')}}"
-				// }).done(function(data){
-				// 	$("#output").text = data;
-				// })
 			}
 		}, false);
 	</script>

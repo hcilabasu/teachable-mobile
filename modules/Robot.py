@@ -22,7 +22,7 @@ class Robot:
 			self.rightc = False
 			self.speed = 60
 			self.turnSpeed = 31
-			self.backTurnSpeed = 70
+			self.backTurnSpeed = 65
 			print ("Connected to Robot")
 			# self.get_orientation();
 		except Exception as ex:

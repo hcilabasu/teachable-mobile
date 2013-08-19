@@ -25,7 +25,9 @@ $(function(){
     // Initializing Steps List
     STEPS_LIST.init();
     // Initializing Audio
-    AUDIO.loadSound("audio-attention");    
+    AUDIO.loadSound("audio-attention");
+    AUDIO.loadSound("wrong-solution");
+    AUDIO.loadSound("correct-solution");
 });
 
 /*
@@ -130,11 +132,11 @@ function mergeObjects(data, newdata){
  * Logging function. The parameter should be a string, which will be logged.
  * Events are logged to logs/log.txt
  */
- function log(title, data){
+ function log(title, data) {
     var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
                                                               APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
                                                               APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());
-    if(data !== undefined){
+    if(data !== undefined) {
         logString += "    {0}%5Cn".format(data);
     }
     // Logging in server

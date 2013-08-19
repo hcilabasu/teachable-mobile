@@ -68,42 +68,109 @@ function moveToNext(callback) {
     }
 }
 
-function openPrompt(promptMessages, isFirst) {
-
+function openFeedbackScreen(solutionStatus) {
     var button = $("#prompt a");
+    
+    // Updating text
+    $("#feedback span").html($("<div/>").html(solutionStatus.toString()).text());
+    
+    $("#feedback-ok").off('click');
+    // button.text("OK");
+    $("#feedback-ok").click(function () {
+        // window.location.reload(true);
+        $("#feedback").fadeOut('slow');
+        openEmoticonScreen();
+        // log("!! Button Click !!");
+        // alert("You clicked OK!!!!");
+    });
+
+    $("#feedback").fadeIn('slow');
+}
+
+function openEmoticonScreen() {
+    // alert("I'm emoting!!!");
+
+    $("#emoticon").fadeIn('slow');
+
+    var container = $('#emoticon');
+    var inputs = container.find('input');
+    // var id = inputs.length + 1;
+
+    var id = 0;
+    var emotionArray = ["Happy", "Elated", "Melancholy", "Sad", "Morose", "Apathetic", "Depressed", "Angry", "Hungry"];
+    
+    for(var i = 0 ; i < emotionArray.length ; i++, id++) {
+        var currentEmotion = emotionArray[i];
+        
+        $('<div />', {id : currentEmotion}).appendTo(container);
+        var currentEmotionContainer = $('#' + currentEmotion);
+
+        $('<input />', { type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+
+        // var currentEmotionCB = $('#cb' + id);
+
+        $('<label />', { 'for': 'cb' + id, text: currentEmotion, align : 'right' }).appendTo(currentEmotionContainer);
+    }
+
+    $('<a/>', {id : "emoticon-ok", href : "#", text : "OK", click : function() {
+        $("#emoticon").fadeOut('slow');
+
+        var length = 9;
+        var checkedEmotions = [];
+        //alert(length);
+        for(var i = 0 ; i < length ; i++) {
+            var isChecked = $("#cb" + i).prop('checked');
+            var emotion = $("#cb" + i).prop('value');
+            // alert(emotion);
+            if(isChecked) {
+                checkedEmotions.push(emotion);
+            }
+        }
+
+        //alert("Checked emotions are " + checkedEmotions.toString() + ".");
+        log("Checked emotions are " + checkedEmotions.toString() + ".");
+
+        $('#emoticon').empty();
+    }}).appendTo(container);
+    // $("emoticon-ok").appendTo(container);
+}
+
+function openPrompt(promptMessages, isFirst) {
+    var button = $("#prompt a");
+    
     // Updating text
     $("#prompt span").html($("<div/>").html(promptMessages[0]).text());
     // removing previous handlers
     button.off('click');
-    if(promptMessages.length == 1){
+    if(promptMessages.length == 1) {
         // There is only one prompt
         // Change button to "close"
         button.text("Close");
         // Associate button to close action
         button.click(closePrompt);
-    } else {
+    }
+    else {
         // There are more prompts
         // Change button to "next"
         button.text("Next");
         // Associate button to next prompt action
-        button.click(function(){
+        button.click(function() {
             openPrompt(promptMessages.slice(1, promptMessages.length, false));
         });
 
     }
     // If this is the first time the prompt is opened, fade window in.
-    if(isFirst){
+    if(isFirst) {
         $("#prompt").fadeIn('slow');
     }
 }
 
 function closePrompt() {
     // Calling moveToNext function
-    moveToNext(function(){
+    moveToNext(function() {
         // Fading prompt after moving to next problem
         $("#prompt").fadeOut('slow');  
     });
-    
 }
 
 // Checking the solution entered by the user.

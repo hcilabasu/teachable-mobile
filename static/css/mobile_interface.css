@@ -427,6 +427,38 @@ a.action-button > span {
 	display: none;
 }
 
+#feedback {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #844569;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	z-index: 999999;
+	font-weight: bolder;
+	color: white;
+	text-shadow: 0 1px 0 #b05b8c;
+	font-size: 1.4em;
+	display: none;
+}
+
+#emoticon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #844569;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	z-index: 999999;
+	font-weight: bolder;
+	color: white;
+	text-shadow: 0 1px 0 #b05b8c;
+	font-size: 1.4em;
+	display: none;
+}
+
 @-webkit-keyframes glow {
    0% {
    		color: #c62031;
@@ -472,6 +504,11 @@ a.action-button > span {
 		color: #562c44;
 	}
 
+	#feedback > a {
+		display: inline-block;
+		text-decoration: none;
+		color: #562c44;
+	}
 
 /* UI Dialog Theming */
 .ui-widget {

@@ -55,31 +55,52 @@
         	var counter = 0;
 
         	$(document).ready(function() {
+        		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
+		    		var incoming = JSON.parse(unescape(e.data));
+					log("#### After Solution Check ####" + JSON.stringify(incoming));
+		      		
+		      		if(incoming && incoming.type != "check") {
+			    		try {
+			    			// Playing attention sound
+	    					AUDIO.play("audio-attention");
+			    			var temp = JSON.parse(e.data)
+			    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
+			    				// Same trigger. Update params.
+			    				mergeObjects(olddata, temp);
+			    				updateStepParamsList();
+			    				counter++;
+			    			}
+			    			else {
+			    				// Different trigger. Start over.
+					      		olddata = temp;
+					      		updateCurrentStep();
+					      		counter = 1;
+					      	}
+			      		}
+			      		catch(err) {
+			      			console.dir(e.data);
+			      		}
+			      	}
+			      	else if(incoming.type == "check") {
+		      		 	if(incoming.status) {
+		      		 		AUDIO.play("correct-solution");
+		      		 		log("## TRUE!!! ##");
+		      		 		// AUDIO.play("audio-attention");
+		      		 	}
+		      		 	else {
+		      		 		AUDIO.play("wrong-solution");
+		      		 		log("## FALSE!!! ##");
+		      		 		// AUDIO.play("audio-attention");
+		      		 	}
 
-        		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
-		    		try {
-		    			// Playing attention sound
-    					AUDIO.play("audio-attention");
-		    			var temp = JSON.parse(e.data)
-		    			if(counter < 2 && isTriggerEqual(olddata, temp)){
-		    				// Same trigger. Update params.
-		    				mergeObjects(olddata, temp);
-		    				updateStepParamsList();
-		    				counter++;
-		    			} else {
-		    				// Different trigger. Start over.
-				      		olddata = temp;
-				      		updateCurrentStep();
-				      		counter = 1;
-				      	}
-		      		} catch(err) {
-		      			console.dir(e.data);
+		      		 	openFeedbackScreen(incoming.status);
 		      		}
 		      	});
 
 		    	if(socket === false) {
 		        	alert("html5 websocket not supported by your browser, try Google Chrome");
-		        } else {
+		        }
+		        else {
 		        	console.dir(socket);
 		        }
 		    });
@@ -186,6 +207,19 @@
 			<a href="#">Next</a>
 		</div>
 
+		<div id="feedback">
+			<div id="tmp"></div>
+			<span>
+				
+			</span>
+			<a href="#" id="feedback-ok">OK</a>
+		</div>
+
+		<div id="emoticon">
+		</div>
+
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" preload="auto" />
+		<audio src="{{=URL('static','audio/54047__guitarguy1985__buzzer.wav')}}" id="wrong-solution" type = "audio/wav" preload="auto" />
+		<audio src="{{=URL('static','audio/37215__simon-lacelle__ba-da-dum.wav')}}" id="correct-solution" type = "audio/wav" preload="auto" />
 	</body>
 </html>

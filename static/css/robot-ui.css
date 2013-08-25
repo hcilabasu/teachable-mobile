@@ -1,3 +1,27 @@
+/*
+
+SPRITES MAP
+
+EYES
+
+closed { background-position: -320px 0px; }
+neutral{ background-position: 0 0; width: 640px; height: 480px; } 
+angry{ background-position: -641px 0; width: 320px; height: 480px; } 
+sad{ background-position: -962px 0; width: 320px; height: 480px; } 
+
+MOUTH
+
+happy{ background-position: 0 0; width: 320px; height: 480px; } 
+happy-open{ background-position: -321px 0; width: 320px; height: 480px; } 
+happy-teeth{ background-position: -642px 0; width: 320px; height: 480px; } 
+neutral-open{ background-position: -963px 0; width: 320px; height: 480px; } 
+neutral{ background-position: -1284px 0; width: 320px; height: 480px; } 
+round-open{ background-position: -1605px 0; width: 320px; height: 480px; } 
+mouth-sad{ background-position: -1926px 0; width: 320px; height: 480px; } 
+angry-teeth{ background-position: -2247px 0; width: 320px; height: 480px; } 
+
+*/
+
 body, html {
 	height: 100%;
 	padding: 0;
@@ -5,7 +29,7 @@ body, html {
 }
 
 body {
-	background: url(../images/robotui/APP_FUNDO.png);
+	background: url(../images/robotui/bg.png);
 }
 
 #output {
@@ -20,7 +44,49 @@ body {
 	width: 100%;
 }
 
-@-webkit-keyframes blink {
+#eyes {
+	background: url(../images/robotui/eyes.png);
+}
+
+#mouth {
+	background: url(../images/robotui/mouth.png);	
+}
+
+.neutral #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
+.neutral #mouth {background-position: -1284px 0; width: 320px; height: 480px;}
+
+.angry1 #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);}
+.angry1 #mouth {background-position: -1284px 0; width: 320px; height: 480px;}
+
+.angry2 #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);} /* frustration */
+.angry2 #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
+
+.angry3 #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);}
+.angry3 #mouth {background-position: -2247px 0; width: 320px; height: 480px;}
+
+.sad #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
+.sad #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
+
+.happy1 #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
+.happy1 #mouth {background-position: 0 0; width: 320px; height: 480px;}
+
+.happy2 #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
+.happy2 #mouth {background-position: -642px 0; width: 320px; height: 480px;}
+
+.happy3 #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
+.happy3 #mouth {background-position: -321px 0; width: 320px; height: 480px;}
+
+.sarcastic #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);}
+.sarcastic #mouth {background-position: -642px 0; width: 320px; height: 480px;}
+
+.talking #mouth {-webkit-animation: talking 0.4s infinite steps(1,end);}
+
+
+/**************
+ * ANIMATIONS *
+ **************/
+
+@-webkit-keyframes neutral-blink {
 	0% {
 		background-position: 0px 0px;		
 	}
@@ -48,13 +114,82 @@ body {
 	99% {
 		background-position: 0px 0px;
 	}
-}
+} 
 
-#eyes {
-	background: url(../images/robotui/APP_OLHOS.png);
-	-webkit-animation: blink 7s infinite steps(1,end);
-}
+@-webkit-keyframes angry-blink {
+	0% {
+		background-position: -641px 0; width: 320px; height: 480px;
+	}
 
-#mouth {
-	background: url(../images/robotui/APP_BOCA.png);	
-}
+	50% {
+		background-position: -320px 0px;
+	}
+
+	52% {
+		background-position: -641px 0; width: 320px; height: 480px;
+	}
+
+	93% {
+		background-position: -320px 0px;
+	}
+
+	95% {
+		background-position: -641px 0; width: 320px; height: 480px;
+	}
+
+	97% {
+		background-position: -320px 0px;
+	}
+
+	99% {
+		background-position: -641px 0; width: 320px; height: 480px;
+	}
+} 
+
+@-webkit-keyframes sad-blink {
+	0% {
+		background-position: -962px 0; width: 320px; height: 480px;
+	}
+
+	50% {
+		background-position: -320px 0px;
+	}
+
+	52% {
+		background-position: -962px 0; width: 320px; height: 480px;
+	}
+
+	93% {
+		background-position: -320px 0px;
+	}
+
+	95% {
+		background-position: -962px 0; width: 320px; height: 480px;
+	}
+
+	97% {
+		background-position: -320px 0px;
+	}
+
+	99% {
+		background-position: -962px 0; width: 320px; height: 480px;
+	}
+} 
+
+@-webkit-keyframes talking {
+	0% {
+		background-position: -1284px 0; width: 320px; height: 480px;
+	}
+
+	25% {
+		background-position: -1605px 0; width: 320px; height: 480px;
+	}
+
+	50% {
+		background-position: -963px 0; width: 320px; height: 480px;
+	}
+
+	75% {
+		background-position: -1284px 0; width: 320px; height: 480px;
+	}
+} 

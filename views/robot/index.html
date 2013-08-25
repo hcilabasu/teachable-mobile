@@ -8,23 +8,50 @@
 	<title></title>
 
 	<script src="{{=URL('static','js/jquery.js')}}"></script>
+	<script src="{{=URL('static','js/web2py.js')}}"></script>
+	<script src="{{=URL('static','js/audio.js')}}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
 	<script>
 		var direction = undefined;
+
 		window.addEventListener('deviceorientation', function(e) {
 			var prop = e.alpha;
-			if(direction === undefined || Math.abs(prop - direction) > 0.3){
-			    // document.getElementById("output").innerText = prop;
-			    direction = prop;
-			    // Sending direction to controller
-			    $.ajax({
-				  url: "{{=URL('update_direction')}}",
-				  data: {d: direction}
-				});
-			}
+		    //document.getElementById("output").innerText = prop;
+		    direction = prop;
+		    // Sending direction to controller
+		    $.ajax({
+			  url: "{{=URL('update_direction')}}",
+			  data: {d: direction}
+			});
 		}, false);
+		
+		// $(function(){
+
+		// 	var audio = document.getElementById("welcome");
+		// 	//audio.src = "";//"/mobileinterface/static/audio/welcome.wav";//url;
+			
+
+		// 	socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+		// 		alert(1);
+		// 		console.dir(e.data);
+		// 		var url = e.data;
+		// 		// audio.src = url;//"{{=URL('static','audio/welcome.wav')}}";
+		// 		AUDIO.loadSound('welcome');
+		// 		AUDIO.play('welcome');
+		// 	});
+
+		// 	AUDIO.loadSound('welcome');
+		// 	AUDIO.play('welcome');
+
+		// });
+		
+
+
+		
+
+
 	</script>
 
 </head>
@@ -32,5 +59,7 @@
 <div id="output"></div>
 <div id="eyes"></div>
 <div id="mouth"></div>
+<!-- <audio controls id="welcome" src="http://169.254.67.33:59125/process.wav?INPUT_TEXT=Hello%20world&INPUT_TYPE=TEXT&OUTPUT_TYPE=AUDIO&AUDIO=WAVE_FILE&LOCALE=en_US"/> -->
+
 </body>
 </html>

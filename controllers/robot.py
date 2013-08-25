@@ -71,6 +71,12 @@ def move_to():
 		time.sleep(1)
 		__turn_to(angle, False, 0)
 
+def plot_point():
+	move_forward()
+	time.sleep(0.4)
+	move_backward()
+	time.sleep(0.5)
+	stop()
 
 def __turn_to(angle, backwards, recursion):
 	# direction = get_direction()

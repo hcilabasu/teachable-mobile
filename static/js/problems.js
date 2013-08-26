@@ -105,11 +105,11 @@ function openEmoticonScreen() {
         $('<div />', {id : currentEmotion}).appendTo(container);
         var currentEmotionContainer = $('#' + currentEmotion);
 
-        $('<input />', { type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+        $('<input />', { type: 'checkbox', id: 'cb' + id, value: currentEmotion}).appendTo(currentEmotionContainer);
 
         // var currentEmotionCB = $('#cb' + id);
 
-        $('<label />', { 'for': 'cb' + id, text: currentEmotion, align : 'right' }).appendTo(currentEmotionContainer);
+        $('<label />', { 'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
     }
 
     $('<a/>', {id : "emoticon-ok", href : "#", text : "OK", click : function() {

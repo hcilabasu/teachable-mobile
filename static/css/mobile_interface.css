@@ -152,7 +152,7 @@ a.action-button > span {
 	box-shadow: 0 0 0 1px #333;
 	text-shadow: 0 -1px 0 #522b42;
 	padding: 15px;
-	padding-right: 60px;
+	padding-right: 120px;
 }
 
 	#current-problem-wrapper h3 {
@@ -448,7 +448,7 @@ a.action-button > span {
 }
 
 #feedback {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	background: #844569;
@@ -464,7 +464,7 @@ a.action-button > span {
 }
 
 #emoticon {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	background: #844569;
@@ -478,6 +478,22 @@ a.action-button > span {
 	font-size: 1.4em;
 	display: none;
 }
+
+	#emoticon label {
+		width: 50px;
+		display: inline-block;
+	}
+
+	#emoticon h2 {
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+
+	#emoticon-ok {
+		display: block;
+		margin-top: 15px;
+		text-decoration: none;
+	}
 
 @-webkit-keyframes glow {
    0% {
@@ -525,9 +541,10 @@ a.action-button > span {
 	}
 
 	#feedback > a {
-		display: inline-block;
+		display: block;
 		text-decoration: none;
 		color: #562c44;
+		margin-top: 15px;
 	}
 
 /* UI Dialog Theming */

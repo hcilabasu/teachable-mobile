@@ -160,17 +160,23 @@ a.action-button > span {
 	}
 
 	#check-solution-button {
+		position: absolute;
+		right: 60px;
+		top: 50%;
+		margin-top: -15px;
 		box-shadow: 0 1px 0 #b05b8c, -1px 1px 0 #b05b8c, 1px 1px 0px #b05b8c;
 		border-color: #333;
 		background: #7a4061;
 		height: 30px;
 		width: 40px;
+		padding-bottom: 0px;
 	}
 
 		#check-solution-button span {
 			border-bottom: solid 1px #c2659b;
 			box-shadow: 0 0 0 1px #333;
-			background: url(../images/Check-32.png);, -webkit-gradient(linear, left bottom, left top, from(#693754), to(#964e77));
+			background: url(../images/Check-128.png) center center, -webkit-gradient(linear, left bottom, left top, from(#693754), to(#964e77));
+			background-size: 32px 32px;
 		}
 
 	#next-problem-button {

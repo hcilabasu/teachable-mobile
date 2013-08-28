@@ -19,13 +19,15 @@
 
 		window.addEventListener('deviceorientation', function(e) {
 			var prop = e.alpha;
-		    //document.getElementById("output").innerText = prop;
-		    direction = prop;
-		    // Sending direction to controller
-		    $.ajax({
-			  url: "{{=URL('update_direction')}}",
-			  data: {d: direction}
-			});
+			if(direction === undefined || Math.abs(prop - direction) > 0.1){
+			    // document.getElementById("output").innerText = prop;
+			    direction = prop;
+			    // Sending direction to controller
+			    $.ajax({
+				  url: "{{=URL('update_direction')}}",
+				  data: {d: direction}
+				});
+			}
 		}, false);
 
 		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){

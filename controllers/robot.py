@@ -124,6 +124,7 @@ def __turn_to(angle, backwards, recursion):
 		if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
 			backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
 			__turn_to(angle, backwards, recursion + 1)
+		print('Finished turn step')
 	
 
 def __within_threshold(desired, th):

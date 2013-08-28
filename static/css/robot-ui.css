@@ -79,7 +79,7 @@ body {
 .sarcastic #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);}
 .sarcastic #mouth {background-position: -642px 0; width: 320px; height: 480px;}
 
-.talking #mouth {-webkit-animation: talking 0.4s infinite steps(1,end);}
+.talking #mouth {-webkit-animation: talking 0.3s infinite steps(1,end);}
 
 
 /**************
@@ -181,15 +181,11 @@ body {
 		background-position: -1284px 0; width: 320px; height: 480px;
 	}
 
-	25% {
+	33% {
 		background-position: -1605px 0; width: 320px; height: 480px;
 	}
 
-	50% {
+	66% {
 		background-position: -963px 0; width: 320px; height: 480px;
-	}
-
-	75% {
-		background-position: -1284px 0; width: 320px; height: 480px;
 	}
 } 

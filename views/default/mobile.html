@@ -62,6 +62,7 @@
 		      		if(incoming && incoming.type != "check") {
 			    		try {
 			    			// Playing attention sound
+			    			AUDIO.loadSound("audio-attention");
 	    					AUDIO.play("audio-attention");
 			    			var temp = JSON.parse(e.data)
 			    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
@@ -83,11 +84,13 @@
 			      	}
 			      	else if(incoming.type == "check") {
 		      		 	if(incoming.status) {
+		      		 		AUDIO.loadSound("correct-solution");
 		      		 		AUDIO.play("correct-solution");
 		      		 		log("## TRUE!!! ##");
 		      		 		// AUDIO.play("audio-attention");
 		      		 	}
 		      		 	else {
+		      		 		AUDIO.loadSound("wrong-solution");
 		      		 		AUDIO.play("wrong-solution");
 		      		 		log("## FALSE!!! ##");
 		      		 		// AUDIO.play("audio-attention");
@@ -218,7 +221,7 @@
 			<h2>How are you feeling right now?</h2>
 		</div>
 
-		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" preload="auto" />
+		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" />
 		<audio src="{{=URL('static','audio/54047__guitarguy1985__buzzer.wav')}}" id="wrong-solution" type = "audio/wav" preload="auto" />
 		<audio src="{{=URL('static','audio/37215__simon-lacelle__ba-da-dum.wav')}}" id="correct-solution" type = "audio/wav" preload="auto" />
 	</body>

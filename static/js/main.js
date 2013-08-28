@@ -24,10 +24,6 @@ $(function(){
     PROBLEMS.init();
     // Initializing Steps List
     STEPS_LIST.init();
-    // Initializing Audio
-    AUDIO.loadSound("audio-attention");
-    AUDIO.loadSound("wrong-solution");
-    AUDIO.loadSound("correct-solution");
 });
 
 /*

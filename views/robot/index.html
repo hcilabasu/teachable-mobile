@@ -10,6 +10,7 @@
 	<script src="{{=URL('static','js/jquery.js')}}"></script>
 	<script src="{{=URL('static','js/web2py.js')}}"></script>
 	<script src="{{=URL('static','js/audio.js')}}"></script>
+	<script src="{{=URL('static','js/attributions.js')}}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
@@ -26,30 +27,15 @@
 			  data: {d: direction}
 			});
 		}, false);
-		
-		// $(function(){
 
-		// 	var audio = document.getElementById("welcome");
-		// 	//audio.src = "";//"/mobileinterface/static/audio/welcome.wav";//url;
-			
-
-			// socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
-			// 	var data = JSON.parse(e);
-			// 	switch(data.type){
-					
-			// 	}
-			// });
-
-		// 	AUDIO.loadSound('welcome');
-		// 	AUDIO.play('welcome');
-
+		// socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+		// 	var data = JSON.parse(e.data);
+		// 	switch(data.type){
+		// 		case 'attribution':
+		// 			attributions.makeAttribution(data.value);
+		// 	}
 		// });
 		
-
-
-		
-
-
 	</script>
 
 </head>
@@ -57,7 +43,10 @@
 <div id="output"></div>
 <div id="eyes"></div>
 <div id="mouth"></div>
-<!-- <audio controls id="welcome" src="http://169.254.67.33:59125/process.wav?INPUT_TEXT=Hello%20world&INPUT_TYPE=TEXT&OUTPUT_TYPE=AUDIO&AUDIO=WAVE_FILE&LOCALE=en_US"/> -->
+
+<audio id="desirable_failure_i" src="{{=URL('static','audio/desirable_failure_i.wav')}}"/>
+<audio id="desirable_failure_you" src="{{=URL('static','audio/desirable_failure_you.wav')}}"/>
+<audio id="desirable_failure_we" src="{{=URL('static','audio/desirable_failure_we.wav')}}"/>
 
 </body>
 </html>

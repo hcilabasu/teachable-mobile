@@ -31,7 +31,7 @@ function refreshProblem(message) {
 
 function setCurrentProblem() {
     log("Calling setCurrentProblem");
-    if(APP.currentProblem === undefined){
+    if(APP.currentProblem === undefined) {
         // Logging
         log("FINISHED ALL PROBLEMS");
 
@@ -43,7 +43,38 @@ function setCurrentProblem() {
     
     // send message to applet to update its problem
     //COMM.sendToApplet()
+    // log("<><> index " + APP.currentProblemIndex);
+    // log("<><> data " + JSON.stringify(APP.currentProblem));
     ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+    // log("<><> After AJAX call <><>");
+}
+
+function moveToProblemNumber(probNum) {
+    log("Calling moveToProblemNumber");
+
+    if(probNum >= APP.PROBLEMS.length) {
+        log("<><>probNum " + probNum + "is out of bounds. Resetting to last problem.");
+        probNum = APP.PROBLEMS.length - 1;
+    }
+
+    alert("Moving to problem number " + (probNum + 1) + ".");
+
+    APP.currentProblemIndex = probNum;
+    APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+
+    log("<><>probNum : " + probNum);
+    log("<><>currentProblem : " + JSON.stringify(APP.currentProblem));
+    // log("<><>PROBLEMS : " + JSON.stringify(APP.PROBLEMS));
+
+    // $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
+    // log("Before AJAX");
+    // ajax(APP.MOVE_TO_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+    // log("After AJAX");
+
+    setCurrentProblem();
+    refreshProblem();
+    // Logging
+    log("Moving to Problem " + APP.currentProblem.id);
 }
 
 function nextProblem() {
@@ -68,11 +99,33 @@ function moveToNext(callback) {
     }
 }
 
+// !!! Read this and see the changes Victor made and learn from them.
 function openFeedbackScreen(solutionStatus) {
     var button = $("#prompt a");
     
+    var correctImage = "Check-256.png";
+    var wrongImage = "Close-256.png";
+
+    // Some mock messages.
+    var correctResponseArray = ["Correctamundo", "O frabjous day! Callooh! Callay! \nYou're answer is right! Hurrah! Hurray!", "You're answer is right!! \nHere have some metophorical milk and cookies."];
+    var wrongResponseArray = ["So sorry, you're wrong. \nBy the way did you hear that buzzer, I think someone is at the door.", "Epic failure is a stepping stone to epic success. \nTry again, you owe it to yourself.", "Sorry, your answer is wrong. \nFeeling sad and depressed, congratulations and welcome to adulthood."];
+    var responseArray = wrongResponseArray, responseImage = wrongImage;
+    
+    if(String(solutionStatus).toLowerCase() == "true")  {
+        responseArray = correctResponseArray;
+        responseImage = correctImage;
+    }
+    
+    var rndIndx = Math.floor(10 * Math.random()) % (correctResponseArray.length);
+
+    // $('<div />', {id : 'responseImageHolder'}).appendTo('#feedback span');
+    // $('#responseImageHolder').prepend('<img id="theImg" src="../static/images/Close-256.png" />');
+    // $('<img />', {id : 'responseImageHolder', src : '../static/images/Close-256.png'});
+
+    $("#responseImageHolder").attr("src","../static/images/" + responseImage);
+
     // Updating text
-    $("#feedback span").html($("<div/>").html(solutionStatus.toString()).text());
+    $("#feedback span").html($("<div/>").html("R2 says : " + responseArray[rndIndx]).text());
     
     $("#feedback-ok").off('click');
     // button.text("OK");
@@ -87,6 +140,7 @@ function openFeedbackScreen(solutionStatus) {
     $("#feedback").fadeIn('slow');
 }
 
+// !!! Read this and see the changes Victor made and learn from them.
 function openEmoticonScreen() {
     // alert("I'm emoting!!!");
 
@@ -95,7 +149,6 @@ function openEmoticonScreen() {
     var container = $('#emoticon');
     var inputs = container.find('input');
     // var id = inputs.length + 1;
-
     var id = 0;
     var emotionArray = ["Happy", "Elated", "Melancholy", "Sad", "Morose", "Apathetic", "Depressed", "Angry", "Hungry"];
     
@@ -115,6 +168,7 @@ function openEmoticonScreen() {
     $('<a/>', {id : "emoticon-ok", href : "#", text : "OK", click : function() {
         $("#emoticon").fadeOut('slow');
 
+        // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
         var length = 9;
         var checkedEmotions = [];
         //alert(length);
@@ -183,8 +237,13 @@ function checkSolution() {
     if(APP.currentProblem){
         if(confirm("Are you you sure you want to submit this solution?")) {
             //ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
-            APP.currentProblem.type = "check";
-            ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+            // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
+            // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.
+            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+            // APP.currentProblem.type = "check";
+            problemObject.type = "check";
+            // ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+            ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
             //ajax(APP.CHECK_SOLUTION, [], "");
         }
     }

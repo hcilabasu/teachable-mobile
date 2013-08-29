@@ -320,7 +320,7 @@ def mobile():
 def update_current_problem():
     session.problemNum = request.vars.index
     data = request.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data,'mykey', "applet")
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
 
 def check_solution():
     #current_problem = db(db.problemBank.id == session.problemNum).select()[0]
@@ -329,7 +329,12 @@ def check_solution():
     session.problemNum = request.vars.index
     #data = currentProblemJSON
     data = request.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data,'mykey', "applet")
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+
+def move_to_problem():
+    session.problemNum = request.vars.index
+    data = reques.vars.data
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
 
 def move_to_next_problem():
     if session.problemNum:

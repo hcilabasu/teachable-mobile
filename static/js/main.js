@@ -135,6 +135,7 @@ function mergeObjects(data, newdata){
     if(data !== undefined) {
         logString += "    {0}%5Cn".format(data);
     }
+
     // Logging in server
     $.ajax({
         url: APP.LOG + "?data=" + logString,

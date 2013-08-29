@@ -30,6 +30,7 @@
         	APP.GET_PROCEDURE_STEPS = "{{=URL('get_procedure_steps')}}";
         	APP.UPDATE_PROCEDURE_STEPS = "{{=URL('update_procedure_steps')}}";
         	APP.UPDATE_CURRENT_PROBLEM = "{{=URL('update_current_problem')}}";
+        	APP.MOVE_TO_PROBLEM = "{{=URL('move_to_problem')}}";
         	APP.LOG = "{{=URL('log','log')}}";
         	APP.SEND = "{{=URL('communication','send')}}";
         	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
@@ -57,47 +58,53 @@
         	$(document).ready(function() {
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 		    		var incoming = JSON.parse(unescape(e.data));
-					log("#### After Solution Check ####" + JSON.stringify(incoming));
+					log("#### incoming packet ####" + JSON.stringify(incoming));
 		      		
-		      		if(incoming && incoming.type != "check") {
-			    		try {
-			    			// Playing attention sound
-			    			AUDIO.loadSound("audio-attention");
-	    					AUDIO.play("audio-attention");
-			    			var temp = JSON.parse(e.data)
-			    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
-			    				// Same trigger. Update params.
-			    				mergeObjects(olddata, temp);
-			    				updateStepParamsList();
-			    				counter++;
-			    			}
-			    			else {
-			    				// Different trigger. Start over.
-					      		olddata = temp;
-					      		updateCurrentStep();
-					      		counter = 1;
-					      	}
+		      		if(incoming) {
+		      			// Reset to a particular problem number.
+			      		if(incoming.type == "reset") {
+				    		moveToProblemNumber(incoming.number);
+				      	}
+				      	else if(incoming.type == "check") {
+			      		 	if(incoming.status) {
+			      		 		AUDIO.loadSound("correct-solution");
+			      		 		AUDIO.play("correct-solution");
+			      		 		log("## TRUE!!! ##");
+			      		 		// AUDIO.play("audio-attention");
+			      		 	}
+			      		 	else {
+			      		 		AUDIO.loadSound("wrong-solution");
+			      		 		AUDIO.play("wrong-solution");
+			      		 		log("## FALSE!!! ##");
+			      		 		// AUDIO.play("audio-attention");
+			      		 	}
+
+			      		 	openFeedbackScreen(incoming.status);
 			      		}
-			      		catch(err) {
-			      			console.dir(e.data);
+			      		else {
+			      			try {
+				    			// Playing attention sound
+				    			AUDIO.loadSound("audio-attention");
+		    					AUDIO.play("audio-attention");
+				    			var temp = JSON.parse(e.data)
+				    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
+				    				// Same trigger. Update params.
+				    				mergeObjects(olddata, temp);
+				    				updateStepParamsList();
+				    				counter++;
+				    			}
+				    			else {
+				    				// Different trigger. Start over.
+						      		olddata = temp;
+						      		updateCurrentStep();
+						      		counter = 1;
+						      	}
+				      		}
+				      		catch(err) {
+				      			console.dir(e.data);
+				      		}
 			      		}
 			      	}
-			      	else if(incoming.type == "check") {
-		      		 	if(incoming.status) {
-		      		 		AUDIO.loadSound("correct-solution");
-		      		 		AUDIO.play("correct-solution");
-		      		 		log("## TRUE!!! ##");
-		      		 		// AUDIO.play("audio-attention");
-		      		 	}
-		      		 	else {
-		      		 		AUDIO.loadSound("wrong-solution");
-		      		 		AUDIO.play("wrong-solution");
-		      		 		log("## FALSE!!! ##");
-		      		 		// AUDIO.play("audio-attention");
-		      		 	}
-
-		      		 	openFeedbackScreen(incoming.status);
-		      		}
 		      	});
 
 		    	if(socket === false) {
@@ -211,9 +218,16 @@
 
 		<div id="feedback">
 			<div id="tmp"></div>
+			
+			<img id="responseImageHolder" src="" />
+
+			<br>
+			<br>
+			
 			<span>
 				
 			</span>
+
 			<a href="#" id="feedback-ok">OK</a>
 		</div>
 

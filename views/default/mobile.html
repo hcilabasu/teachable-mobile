@@ -58,24 +58,27 @@
         	$(document).ready(function() {
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 		    		var incoming = JSON.parse(unescape(e.data));
-					log("#### incoming packet ####" + JSON.stringify(incoming));
+
+		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.txt.
+					log("incoming packet : " + JSON.stringify(incoming));
 		      		
 		      		if(incoming) {
 		      			// Reset to a particular problem number.
 			      		if(incoming.type == "reset") {
+			      			log("Applet has initiated a problem change. Moving to problem number " + (incoming.number + 1));
 				    		moveToProblemNumber(incoming.number);
 				      	}
 				      	else if(incoming.type == "check") {
 			      		 	if(incoming.status) {
 			      		 		AUDIO.loadSound("correct-solution");
 			      		 		AUDIO.play("correct-solution");
-			      		 		log("## TRUE!!! ##");
+			      		 		log("SOLUTION IS CORRECT!!!");
 			      		 		// AUDIO.play("audio-attention");
 			      		 	}
 			      		 	else {
 			      		 		AUDIO.loadSound("wrong-solution");
 			      		 		AUDIO.play("wrong-solution");
-			      		 		log("## FALSE!!! ##");
+			      		 		log("SOLUTION IS WRONG!!!");
 			      		 		// AUDIO.play("audio-attention");
 			      		 	}
 

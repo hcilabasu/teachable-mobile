@@ -143,7 +143,6 @@ function mergeObjects(data, newdata){
             console.dir("Event '" + title + "' LOGGED!");
         }
     });
-
  }
 
 

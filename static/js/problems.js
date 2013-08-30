@@ -13,7 +13,6 @@ PROBLEMS.init = function() {
     setCurrentProblem();
 }
 
-
 function refreshProblem(message) {
     log("Calling refreshProblem");
     var refresh = true;
@@ -36,14 +35,6 @@ function setCurrentProblem() {
 
     $("#next-problem-button").fadeTo(1, 0.5);
     $("#next-problem-button").unbind();
-/*
-    $("#next-problem-button").click(function() {
-        alert("blach")
-    });*/
-
-    // $("#next-problem-button").off();
-
-    // $("body").off("click", "#next-problem-button", nextProblem);
 
     if(APP.currentProblem === undefined) {
         // Logging
@@ -53,21 +44,23 @@ function setCurrentProblem() {
         APP.currentProblemIndex = 0;
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     }
+
     $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
     
     // send message to applet to update its problem
     //COMM.sendToApplet()
-    // log("<><> index " + APP.currentProblemIndex);
-    // log("<><> data " + JSON.stringify(APP.currentProblem));
+    
+    log("Current problem index : " + APP.currentProblemIndex);
+    log("data : " + JSON.stringify(APP.currentProblem));
+    
     ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
-    // log("<><> After AJAX call <><>");
 }
 
 function moveToProblemNumber(probNum) {
     log("Calling moveToProblemNumber");
 
     if(probNum >= APP.PROBLEMS.length) {
-        log("<><>probNum " + probNum + "is out of bounds. Resetting to last problem.");
+        log("Problem number " + probNum + "is out of bounds. Resetting to last problem.");
         probNum = APP.PROBLEMS.length - 1;
     }
 
@@ -76,14 +69,9 @@ function moveToProblemNumber(probNum) {
     APP.currentProblemIndex = probNum;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
-    log("<><>probNum : " + probNum);
-    log("<><>currentProblem : " + JSON.stringify(APP.currentProblem));
-    // log("<><>PROBLEMS : " + JSON.stringify(APP.PROBLEMS));
-
-    // $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
-    // log("Before AJAX");
-    // ajax(APP.MOVE_TO_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
-    // log("After AJAX");
+    log("Problem number : " + probNum);
+    log("Currnt problem : " + JSON.stringify(APP.currentProblem));
+    // log("ALL PROBLEMS : " + JSON.stringify(APP.PROBLEMS));
 
     setCurrentProblem();
     refreshProblem();
@@ -102,6 +90,7 @@ function nextProblem() {
 }
 
 function moveToNext(callback) {
+    log("Calling moveToNext");
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem();
@@ -151,7 +140,7 @@ function openFeedbackScreen(solutionStatus) {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
         openEmoticonScreen();
-        // log("!! Button Click !!");
+        log("!! Button Click !!");
         // alert("You clicked OK!!!!");
     });
 
@@ -249,20 +238,16 @@ function closePrompt() {
 function checkSolution() {
     // TO DO: need to add some validations
     log("Calling checkSolution");
-    log(JSON.stringify(APP.currentProblem));
+    log("Current problem : " + JSON.stringify(APP.currentProblem));
 
     // Need to confirm if this validation is necessary and sufficient
     if(APP.currentProblem){
         if(confirm("Are you you sure you want to submit this solution?")) {
-            //ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
             // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
             // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.
             var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
-            // APP.currentProblem.type = "check";
             problemObject.type = "check";
-            // ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
             ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
-            //ajax(APP.CHECK_SOLUTION, [], "");
         }
     }
 }

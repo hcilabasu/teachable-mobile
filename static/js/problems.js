@@ -1,14 +1,16 @@
 var PROBLEMS = {};
 
 PROBLEMS.init = function() {
-	// Setting problem info in the interface and in the applet
-    setCurrentProblem();
     // Setting action listeners
     $("#next-problem-button").click(nextProblem);
     $("#check-solution-button").click(checkSolution);
     $("#current-problem-wrapper h3").click(function(){
         refreshProblem(" Restart current problem?");
     });
+
+    // setCurrentProbelm should be called after adding all the listeners!!! Since we unbind certain listeners in it.
+	// Setting problem info in the interface and in the applet
+    setCurrentProblem();
 }
 
 
@@ -31,6 +33,18 @@ function refreshProblem(message) {
 
 function setCurrentProblem() {
     log("Calling setCurrentProblem");
+
+    $("#next-problem-button").fadeTo(1, 0.5);
+    $("#next-problem-button").unbind();
+/*
+    $("#next-problem-button").click(function() {
+        alert("blach")
+    });*/
+
+    // $("#next-problem-button").off();
+
+    // $("body").off("click", "#next-problem-button", nextProblem);
+
     if(APP.currentProblem === undefined) {
         // Logging
         log("FINISHED ALL PROBLEMS");
@@ -114,6 +128,10 @@ function openFeedbackScreen(solutionStatus) {
     if(String(solutionStatus).toLowerCase() == "true")  {
         responseArray = correctResponseArray;
         responseImage = correctImage;
+
+        //!!! Very important, make the next-problem-button clickable again.
+        $("#next-problem-button").fadeTo(1, 1);
+        $("#next-problem-button").click(nextProblem);
     }
     
     var rndIndx = Math.floor(10 * Math.random()) % (correctResponseArray.length);

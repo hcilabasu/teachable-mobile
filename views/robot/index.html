@@ -16,12 +16,16 @@
 
 	<script>
 		var direction = undefined;
+		var raw_direction = undefined;
+		var offset = 0;
 
 		window.addEventListener('deviceorientation', function(e) {
 			var prop = e.alpha;
-			if(direction === undefined || Math.abs(prop - direction) > 0.1){
-			    // document.getElementById("output").innerText = prop;
-			    direction = prop;
+			raw_direction = prop;
+
+			if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 0.1){
+			    direction = (prop + offset) % 360;
+			    document.getElementById("output").innerText = direction;
 			    // Sending direction to controller
 			    $.ajax({
 				  url: "{{=URL('update_direction')}}",
@@ -35,6 +39,10 @@
 			switch(data.type){
 				case 'attribution':
 					attributions.makeAttribution(data.value);
+					break;
+				case 'reset':
+					offset = 360 - raw_direction;
+					// alert(offset);
 			}
 		});
 		

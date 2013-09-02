@@ -29,7 +29,7 @@ class Robot:
         except Exception as ex:
             print ("Could not Connect to Robot. Make sure the robot and the computer's bluetooth are on.")
             print(ex)
-            sys.exit()
+            raise
 
     def setStraightSpeed(self, newSpeed):
         self.speed = newSpeed

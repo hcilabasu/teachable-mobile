@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robot's remote control</title>
+
+	<script src="{{=URL('static','js/jquery.js')}}"></script>
+
+	<script type="text/javascript">
+
+		var keys = {
+			38:{name:'top',fn:'move_forward'},
+			39:{name:'right',fn:'turn_right'},
+			40:{name:'bottom',fn:'move_backward'},
+			37:{name:'left',fn:'turn_left'},
+			32:{name:'space',fn:'stop'}
+		}
+
+
+
+		var currentKey = undefined;
+
+		$(function(){
+			$(document).keydown(function(event){
+
+				var key = keys[event.which];
+				if(key !== undefined){
+					setCurrentKey(key);
+					keyPress(key);
+					sendKeyPress(key);
+				}
+			});
+
+			function keyPress(key){
+				$('.pressed:not(#'+key.name+')').removeClass('pressed');
+				$('#'+key.name).toggleClass('pressed');
+				if(key.name === 'space'){
+					window.setTimeout(function(){
+						$('#'+key.name).removeClass('pressed');
+					},100);
+				}
+			}
+
+			function setCurrentKey(key){
+				if(key.name === 'space'){
+					currentKey = undefined;
+				} else {
+					if(currentKey === undefined){
+						currentKey = key;
+					} else if(currentKey.name !== key.name){
+						currentKey = key;
+					} else {
+						currentKey = undefined;
+					}
+				}
+				if(currentKey === undefined){
+					console.dir('Current key: none');
+				} else {
+					console.dir('Current key: ' + currentKey.name);	
+				}
+			}
+
+			function sendKeyPress(key){
+				$.ajax({
+					url:'/mobileinterface/robot/' + key.fn
+				}).done(function(d){
+					console.dir('Done!');
+				});
+			}
+
+			$("#connect").click(function(){
+				$.ajax({
+					url:'/mobileinterface/robot/connect'
+				}).done(function(d){
+					$("#connection span").removeClass().addClass(d);
+					$("#connection span").text(d);
+				});
+			});
+
+			$("#resetZero").click(function(){
+				$.ajax({
+					url:'/mobileinterface/robot/reset_zero'
+				}).done(function(d){
+					alert('Zero orientation set!');
+				})
+			});
+
+			$("#newSession").click(function(){
+				$.ajax({
+					url:'/mobileinterface/robot/new_session'
+				}).done(function(d){
+					alert('New session set!');
+				})
+			});
+		});
+	</script>
+
+	<style>
+		body {
+			font-family: verdana;
+			background: #333;
+			color: white;
+		}
+
+		p {
+			width: 298px;
+			margin: 40px auto;
+			text-align: center;
+		}
+
+		#keys {
+			width: 298px;
+			height: 200px;
+			margin: 40px auto;
+			position: relative;
+		}
+
+		#keys > div {
+			border: solid 1px #2E2E2E;
+			background: #333;
+			width: 100px;
+			height: 100px;
+			position: absolute;
+			color: white;
+			font-size: 40px;
+			line-height: 100px;
+			text-align: center;
+		}
+
+		#top {top:0; left: 101px;}
+		#right {top:101px; right: 0;}
+		#bottom {top:101px; left: 101px;}
+		#left {top:101px; left: 0px;}
+		#space {top:240px; left: 0px; width: 100% !important;}
+
+		.pressed {background: #666 !important;}
+
+		#connection {
+			position: absolute;
+			top: 0;
+			left: 20px;
+			text-align: left;
+		}
+
+		#connection span.no {color: red;}
+		#connection span.yes {color: green;}
+		#connection span.unknown {color: #999;}
+
+		a {
+			color: #00e5ee;
+		}
+	</style>
+</head>
+<body>
+	<p id="connection">
+
+		Connection status: <span class="unknown">unknown</span><br/>
+		<a href="#" id="connect">Connect</a>
+		
+		<br/><br/>
+		
+		<a href="#" id="resetZero">Set ZERO rotation</a>
+
+		<br/><br/>
+
+		<a id="newSession" href="#">New session (for attribution selection)</a>
+	</p>
+	<p>Use the arrow keys to move the robot</p>
+	<div id="keys">
+		<div id="top">^</div>
+		<div id="right">&gt;</div>
+		<div id="bottom">v</div>
+		<div id="left">&lt;</div>
+		<div id="space">_</div>
+	</div>
+
+</body>
+</html>

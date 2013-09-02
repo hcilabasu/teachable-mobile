@@ -14,6 +14,7 @@ class RobotController:
 
 	r = None
 	d = None
+	auto = True
 
 	def get_robot(self):
 		if RobotController.r != None:
@@ -21,10 +22,14 @@ class RobotController:
 		else:
 
 			
-			thread.start_new_thread(self.control_window, tuple())
+			# thread.start_new_thread(self.control_window, tuple())
 
 			RobotController.r = Robot()
 			return RobotController.r
+
+	def set_auto(self, auto):
+		RobotController.auto = auto
+		return RobotController.auto
 
 	def control_window(self):
 		root = Tk()

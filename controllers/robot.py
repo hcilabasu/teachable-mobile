@@ -52,11 +52,10 @@ def current_status():
 def turn_to():
 	angle = int(request.vars['angle'])
 	backwards = 'backwards' in request.vars
-	# t = Thread(target=turn_degrees, args=(angle,))
-	# t.start()
-	__turn_to(angle, backwards, 0)
-	__set_auto(True)
-	print("Finished turn to!")
+
+	Thread(target=__call_turn_to, args=(angle, backwards)).start()
+	# __turn_to(angle, backwards, 0)
+	
 
 def move_to():
 
@@ -70,17 +69,11 @@ def move_to():
 	# should the robot move backwards?
 	backwards = 'backwards' in request.vars
 	# final angle
+	angle = None
 	if 'angle' in request.vars:
 		angle = int(request.vars['angle'])
 	# # moving robot
-	__move_to(t_x, t_y, backwards, 0)
-	# if robot needs to face a final orientation, turn.
-	if 'angle' in request.vars:
-		time.sleep(1)
-		__turn_to(angle, False, 0)
-	__set_auto(True)
-	print("Finished move to!")
-
+	Thread(target=__call_move_to, args=(t_x, t_y, angle, backwards)).start()
 
 def plot_point():
 	__move_forward()
@@ -88,6 +81,21 @@ def plot_point():
 	__move_backward()
 	time.sleep(0.5)
 	__stop()
+
+def __call_turn_to(angle, backwards):
+	__turn_to(angle, backwards, 0)
+	__set_auto(True)
+	__stop()
+	print("Finished turn to!")
+
+def __call_move_to(x, y, angle, backwards):
+	__move_to(x,y,backwards,0)
+	if angle:
+		time.sleep(1)
+		__turn_to(angle, False, 0)
+	__set_auto(True)
+	__stop()
+	print("Finished move to!")
 
 def __turn_to(angle, backwards, recursion):
 	if __auto():

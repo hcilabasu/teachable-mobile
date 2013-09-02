@@ -110,8 +110,8 @@ function openFeedbackScreen(solutionStatus) {
     var wrongImage = "Close-256.png";
 
     // Some mock messages.
-    var correctResponseArray = ["Correctamundo", "O frabjous day! Callooh! Callay! \nYou're answer is right! Hurrah! Hurray!", "You're answer is right!! \nHere have some metophorical milk and cookies."];
-    var wrongResponseArray = ["So sorry, you're wrong. \nBy the way did you hear that buzzer, I think someone is at the door.", "Epic failure is a stepping stone to epic success. \nTry again, you owe it to yourself.", "Sorry, your answer is wrong. \nFeeling sad and depressed, congratulations and welcome to adulthood."];
+    var correctResponseArray = ["Correct-amundo", "O frabjous day!\nThat answer is right!", "The answer is correct.\nHave some metaphorical milk and cookies."];
+    var wrongResponseArray = ["That solution is wrong.\nBy the way did you hear that buzzer, I think someone is at the door.", "Negative, that is wrong.\nEpic failure is a stepping stone to epic success. ", "Incorrect-amundo."];
     var responseArray = wrongResponseArray, responseImage = wrongImage;
     
     if(String(solutionStatus).toLowerCase() == "true")  {
@@ -132,7 +132,7 @@ function openFeedbackScreen(solutionStatus) {
     $("#responseImageHolder").attr("src","../static/images/" + responseImage);
 
     // Updating text
-    $("#feedback span").html($("<div/>").html("R2 says : " + responseArray[rndIndx]).text());
+    $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text());
     
     $("#feedback-ok").off('click');
     // button.text("OK");
@@ -157,7 +157,7 @@ function openEmoticonScreen() {
     var inputs = container.find('input');
     // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Happy", "Elated", "Melancholy", "Sad", "Morose", "Apathetic", "Depressed", "Angry", "Hungry"];
+    var emotionArray = ["Happy", "Sad", "Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
     
     for(var i = 0 ; i < emotionArray.length ; i++, id++) {
         var currentEmotion = emotionArray[i];

@@ -102,3 +102,13 @@ db.define_table('procedures',
     Field('steps', type='list:string'),
     Field('trigger', type='string'),
     Field('origin', type='string'))
+
+## attributions table
+db.define_table('attributions',
+    Field('emotion', type='string'),
+    Field('success', type='boolean'),
+    Field('dimension', type='string'),
+    Field('attribution', type='string'),
+    Field('file_name', type='string'),
+    Field('used', type='boolean'),
+    Field('session', type='boolean'))

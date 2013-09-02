@@ -81,3 +81,15 @@ timestamp: 2013-06-24T13:31:06.232959
 ALTER TABLE problemBank ADD prompts TEXT;
 timestamp: 2013-07-03T19:07:05.165057
 ALTER TABLE problemBank ADD solution CHAR(512);
+timestamp: 2013-09-01T16:20:15.463619
+CREATE TABLE attributions(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    emotion CHAR(512),
+    success CHAR(1),
+    dimension CHAR(512),
+    attribution CHAR(512),
+    file_name CHAR(512),
+    used CHAR(1),
+    session CHAR(1)
+);
+success!

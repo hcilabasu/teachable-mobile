@@ -187,12 +187,45 @@ def __move_to(x, y, backwards, recursion):
 
 
 def make_attribution():
-	outcome = request.vars['out'] # either success or failure
-	des_attribution = request.vars['desattr'] # either desirable or undesirable
-	partial_attribution = '{"des_attribution":"%s","outcome":"%s"}' % (des_attribution, outcome)
-	message_wrapper = '{"type":"attribution", "value":%s}' % (partial_attribution,)
+	outcome = True if request.vars['out'] == 'success' else False # either success or failure
+	attribution = __search_attribution(outcome)
+	if not attribution:
+		__reset(outcome)
+		attribution = __search_attribution(outcome)
+	# updating db
+	attribution.used = True
+	attribution.session = True
+	attribution.update_record()
+	# wrapping info in package
+	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff"}}' % (attribution.emotion,attribution.file_name)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
+	
+
+def __reset(outcome):
+	for r in db(db.attributions.success == outcome).select():
+		r.update_record(used=False)
+
+def new_session():
+	for r in db(db.attributions).select():
+		r.update_record(session=False)
+
+queries = {
+	'both':(db.attributions.used == False) & (db.attributions.session == False),
+	'session':(db.attributions.session == False),
+	'used':(db.attributions.used == False)
+}
+
+def __search_attribution(outcome):
+	success_query = db.attributions.success == outcome
+	if not db(success_query & queries['both']).isempty():
+		return db(success_query & queries['both']).select(orderby='<random>').first()
+	else:
+		if not db(success_query & queries['session']).isempty():
+			return db(success_query & queries['session']).select(orderby='<random>').first()
+		else:
+			return db(success_query & queries['used']).select(orderby='<random>').first()
+
 
 def move_forward():
 	rc.get_robot().forwardArrow()

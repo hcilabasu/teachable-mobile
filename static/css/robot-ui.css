@@ -81,23 +81,21 @@ body {
 
 
 
-.frustration #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);} /* frustration */
-.frustration #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
 
-.guilt #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
-.guilt #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
+.happy #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
+.happy #mouth {background-position: -642px 0; width: 320px; height: 480px;}
 
-.pride #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
-.pride #mouth {background-position: -642px 0; width: 320px; height: 480px;}
+.happier #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
+.happier #mouth {background-position: -321px 0; width: 320px; height: 480px;}
 
-.gratitude #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
-.gratitude #mouth {background-position: -321px 0; width: 320px; height: 480px;}
+.frustrated #eyes {-webkit-animation: angry-blink 7s infinite steps(1,end);} /* frustration */
+.frustrated #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
 
-.shame #eyes {-webkit-animation: none; background-position: -320px 0px;}
-.shame #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
+.sad #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
+.sad #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
 
-.pity #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
-.pity #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
+.sadder #eyes {-webkit-animation: sad-blink 7s infinite steps(1,end);}
+.sadder #mouth {background-position: -1926px 0; width: 320px; height: 480px;}
 
 
 

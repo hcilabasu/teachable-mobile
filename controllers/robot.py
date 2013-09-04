@@ -156,7 +156,8 @@ def __move_to(x, y, backwards, recursion):
 				new_angle += 360
 
 			# turning robot
-			if new_angle > 5:
+			angle_delta = math.fabs(get_direction() - new_angle)
+			if angle_delta > 5:
 				__turn_to(new_angle, backwards, 0)	
 
 			# determining if it'll be moving in x, y or both

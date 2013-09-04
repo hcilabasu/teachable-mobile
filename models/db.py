@@ -110,5 +110,6 @@ db.define_table('attributions',
     Field('dimension', type='string'),
     Field('attribution', type='string'),
     Field('file_name', type='string'),
+    Field('message', type='string'),
     Field('used', type='boolean'),
     Field('session', type='boolean'))

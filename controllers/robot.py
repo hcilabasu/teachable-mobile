@@ -197,7 +197,7 @@ def make_attribution():
 	attribution.session = True
 	attribution.update_record()
 	# wrapping info in package
-	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff"}}' % (attribution.emotion,attribution.file_name)	
+	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 	

@@ -52,6 +52,20 @@ body {
 	background: url(../images/robotui/mouth.png);	
 }
 
+#speech {
+	display: none;
+	position: absolute;
+	bottom: 10px;
+	width: 280px;
+	left: 10px;
+	height: 110px;
+	background: rgba(255,255,255,0.5);
+	border-radius: 10px;
+	padding: 10px;
+	font-family: verdana;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
 .neutral #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
 .neutral #mouth {background-position: -1284px 0; width: 320px; height: 480px;}
 

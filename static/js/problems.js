@@ -4,7 +4,7 @@ PROBLEMS.init = function() {
     // Setting action listeners
     $("#next-problem-button").click(nextProblem);
     $("#check-solution-button").click(checkSolution);
-    $("#current-problem-wrapper h3").click(function(){
+    $("#current-problem-wrapper h3").click(function() {
         refreshProblem(" Restart current problem?");
     });
 
@@ -16,10 +16,12 @@ PROBLEMS.init = function() {
 function refreshProblem(message) {
     log("Calling refreshProblem");
     var refresh = true;
-    if(message !== undefined){
+    
+    if(message !== undefined) {
         refresh = confirm(message);
     }
-    if(refresh){
+
+    if(refresh) {
         // refreshing problem
         APP.currentStepsList = [];
         updateStepsListInDB();
@@ -103,7 +105,12 @@ function moveToNext(callback) {
 }
 
 // !!! Read this and see the changes Victor made and learn from them.
-function openFeedbackScreen(solutionStatus) {
+function openFeedbackScreen(solutionStatus, appletMessage) {
+    //Telling the applet to lock itself until further notice.
+    var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+    problemObject.type = "lockapplet";
+    ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
     var button = $("#prompt a");
     
     var correctImage = "Check-256.png";
@@ -132,8 +139,13 @@ function openFeedbackScreen(solutionStatus) {
     $("#responseImageHolder").attr("src","../static/images/" + responseImage);
 
     // Updating text
-    $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text());
-    
+    if(String(solutionStatus).toLowerCase() == "true")  {
+        $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text());
+    }
+    else {
+        $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + "Hint : " + appletMessage);
+    }
+
     $("#feedback-ok").off('click');
     // button.text("OK");
     $("#feedback-ok").click(function () {
@@ -165,11 +177,11 @@ function openEmoticonScreen() {
         $('<div />', {id : currentEmotion}).appendTo(container);
         var currentEmotionContainer = $('#' + currentEmotion);
 
-        $('<input />', { type: 'checkbox', id: 'cb' + id, value: currentEmotion}).appendTo(currentEmotionContainer);
+        $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion}).appendTo(currentEmotionContainer);
 
         // var currentEmotionCB = $('#cb' + id);
 
-        $('<label />', { 'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+        $('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
     }
 
     $('<a/>', {id : "emoticon-ok", href : "#", text : "OK", click : function() {
@@ -192,6 +204,11 @@ function openEmoticonScreen() {
         log("Checked emotions are " + checkedEmotions.toString() + ".");
 
         $('#emoticon').empty();
+
+        //Telling the applet to unlock itself until further notice.
+        var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+        problemObject.type = "unlockapplet";
+        ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
     }}).appendTo(container);
     // $("emoticon-ok").appendTo(container);
 }
@@ -240,14 +257,21 @@ function checkSolution() {
     log("Calling checkSolution");
     log("Current problem : " + JSON.stringify(APP.currentProblem));
 
+    //!!! Not sending the entire problem object, just the message that the applet needs to lock down
+    ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify({"type" : "lockapplet"})), [], "");
+
     // Need to confirm if this validation is necessary and sufficient
-    if(APP.currentProblem){
+    if(APP.currentProblem) {
         if(confirm("Are you you sure you want to submit this solution?")) {
             // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
             // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.
             var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
             problemObject.type = "check";
             ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+        }
+        else {
+            //!!! Not sending the entire problem object, just the message that the applet needs to unlock itself
+            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify({"type" : "unlockapplet"})), [], "");
         }
     }
 }

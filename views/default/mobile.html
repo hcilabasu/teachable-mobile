@@ -21,6 +21,10 @@
         <script src="{{=URL('static','js/stepsList.js')}}"></script>
         <script src="{{=URL('static','js/main.js')}}"></script>
         <script>
+        	// $(function() {
+        	// 	$("#check-solution-button").click(checkSolution);
+        	// });
+
         	// Adding URL names to global variable
         	APP.ADD_PROCEDURE = "{{=URL('addProc')}}";
         	APP.DELETE_PROCEDURE = "{{=URL('removeProc')}}";
@@ -34,6 +38,7 @@
         	APP.LOG = "{{=URL('log','log')}}";
         	APP.SEND = "{{=URL('communication','send')}}";
         	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
+        	APP.LOCK_APPLET = "{{=URL('lock_applet')}}";
 
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
@@ -82,7 +87,7 @@
 			      		 		// AUDIO.play("audio-attention");
 			      		 	}
 
-			      		 	openFeedbackScreen(incoming.status);
+			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
 			      		else {
 			      			try {

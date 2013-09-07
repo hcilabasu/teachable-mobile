@@ -15,7 +15,7 @@ APP.MAXIMUM_PARAMS = 9
 APP.paramsCounter = 0;
 APP.currentDate = new Date();
 
-$(function(){
+$(function() {
     // Initializing Step-related functions
     STEPS.init();
     // Initializing Procedure-related functions

@@ -331,6 +331,11 @@ def check_solution():
     data = request.vars.data
     websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
 
+def lock_applet():
+    session.problemNum = request.vars.index
+    data = request.vars.data
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+
 def move_to_problem():
     session.problemNum = request.vars.index
     data = reques.vars.data

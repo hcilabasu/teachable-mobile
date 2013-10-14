@@ -35,7 +35,7 @@ STEPS.init = function(){
     updateCurrentProcedureStepsList();
 }
 
-STEPS.startDragMode = function(){
+STEPS.startDragMode = function() {
     $("body").addClass('dragMode');
 }
 
@@ -43,7 +43,7 @@ STEPS.stopDragMode = function() {
     $("body").removeClass('dragMode');
 }
 
-STEPS.isInDragMode = function(){
+STEPS.isInDragMode = function() {
     return $("body").hasClass("dragMode");
 }
 

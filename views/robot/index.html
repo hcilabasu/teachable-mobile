@@ -58,8 +58,17 @@
 			$("body > div").on("touchend", function(){
 				console.dir("end touch");
 				$("body").attr('class', currClass);
+				notifyClick();
 				return false;
 			});
+
+			var notifyClick = function(){
+				$.ajax({url:"robot/load_options", 
+			      	success: function(data) {
+			          console.dir(data);
+			    	}
+			    });
+			};
 
 		});
 		

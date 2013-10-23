@@ -50,6 +50,10 @@ def current_status():
 	y = position[1]
 	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(RobotController.d) + ')'
 
+def load_options():
+	# Notifying interface of click on robot
+	websocket_send('http://127.0.0.1:8888', '{"trigger": "all"}', 'mykey', 'interface')
+
 def turn_to():
 	angle = int(request.vars['angle'])
 	backwards = 'backwards' in request.vars

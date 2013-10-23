@@ -6,6 +6,7 @@ import math
 import config
 import urllib
 import collections
+import sys
 from copy import copy
 from gluon.contrib.websocket_messaging import websocket_send
 
@@ -90,9 +91,10 @@ def __call_turn_to(angle, backwards):
 
 def __call_move_to(x, y, angle, backwards):
 	__move_to(x,y,backwards,0)
-	if angle:
+	if angle != None:
 		time.sleep(1)
 		__turn_to(angle, False, 0)
+	print('angle! ' + str(angle))
 	__set_auto(True)
 	__stop()
 	print("Finished move to!")
@@ -171,14 +173,26 @@ def __move_to(x, y, backwards, recursion):
 
 			if move_x or move_y:
 				m() # either __move_forward or __move_backward
+				prev = sys.maxint
+				progress = 0
 				while __auto():
 					position = __get_position()
 					c_x = position[0]
 					c_y = position[1]
-
-					if (move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold): # TODO cases where x is + and c_x is -. Same for y
-						print('T' + str(x) + ',' + str(y))
-						print('C' + str(c_x) + ',' + str(c_y))
+					# determine progress metric
+					curr = math.sqrt(math.pow(c_x - t_x, 2) + math.pow(c_y - t_y, 2))
+					print('Curr: ' + str(curr))
+					print('Prev: ' + str(prev))
+					if curr < prev:
+						progress = 0
+					else:
+						progress = progress + 1
+					prev = curr
+					print(progress)
+					# determine if it's time to stop
+					if progress > 100 or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
+						if progress > 100:
+							print("###############>>>>>>>>>>>>>>>>>>>>>#################<<<<<<<<<<<<<<<<<#############")
 						__stop()
 						break
 

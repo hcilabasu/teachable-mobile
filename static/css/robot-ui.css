@@ -66,6 +66,9 @@ body {
 	box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
+.frown #eyes { background-position: -320px 0px; }
+.frown #mouth { background-position: -1284px 0; width: 320px; height: 480px; }
+
 .neutral #eyes {-webkit-animation: neutral-blink 7s infinite steps(1,end);}
 .neutral #mouth {background-position: -1284px 0; width: 320px; height: 480px;}
 

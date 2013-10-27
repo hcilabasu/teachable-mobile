@@ -395,7 +395,9 @@ def stringifyProblem(problem, message_type):
     # Need to be careful of operator precedence, we had some problems when the ternary expression was NOT placed in brackets. I guess the "+" operator
     # has higher precedence than the ternary.
     json += '"solution":' + (problem.solution if problem.solution != None else "{}")
-
+    
+    json += ', "problemType":' + '"' + (problem.problemType if problem.problemType != None else "Default") + '"'
+    
     json += ', "type":' + '"' + (message_type if message_type != None else '"Default"') + '"' + "}"
     #json += "}"
 

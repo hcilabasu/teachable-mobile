@@ -129,7 +129,12 @@ def updateCurrentStep():
     #curr_trigger = json.loads(step_json)['trigger']
     curr_trigger = request.vars.trigger;
     callback = request.vars.callback;
-    procedures = db((db.procedures.trigger == curr_trigger) & (db.procedures.origin == 'basic')).select() #remove second condition when adding user generated procedures
+    query = None
+    if curr_trigger == 'all':
+        query = db(db.procedures.origin == 'basic')
+    else:
+        query = db((db.procedures.trigger == curr_trigger) & (db.procedures.origin == 'basic')) #remove second condition when adding user generated procedures
+    procedures = query.select() 
     procedures_names = create_javascript_procedure_array(procedures)
     return "%s(%s);" % (callback, procedures_names)
 

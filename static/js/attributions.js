@@ -15,6 +15,7 @@ var Attributions = function(){
 		AUDIO.addStartListener("attributionSound", function(){
 			// When robot starts to speak
 			$("body").addClass("talking");
+			$("#speech").text(attr.message).fadeIn('slow');
 		});
 		AUDIO.addFinishListener("attributionSound", function(){
 			// When robot finishes speaking
@@ -22,6 +23,7 @@ var Attributions = function(){
 			var time = Math.floor((Math.random()*5)+5)*1000;
 			window.setTimeout(function(){
 				$("body").removeClass().addClass("neutral");
+				$("#speech").fadeOut('slow');
 			}, time);
 		});
 		// play sound

@@ -93,5 +93,10 @@ CREATE TABLE attributions(
     session CHAR(1)
 );
 success!
+<<<<<<< HEAD
 timestamp: 2013-10-22T14:51:35.746524
 ALTER TABLE problemBank ADD problemtype CHAR(512);
+=======
+timestamp: 2013-09-03T21:37:11.947564
+ALTER TABLE attributions ADD message CHAR(512);
+>>>>>>> 7084ef380991922b721d0438c599196e3f97550e

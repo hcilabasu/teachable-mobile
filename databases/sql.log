@@ -93,5 +93,7 @@ CREATE TABLE attributions(
     session CHAR(1)
 );
 success!
+
 timestamp: 2013-09-03T21:37:11.947564
 ALTER TABLE attributions ADD message CHAR(512);
+

@@ -38,7 +38,7 @@ $(function() {
 /*
  * Function to set a step as draggable
  */
-function setDraggable(element){
+function setDraggable(element) {
     if(!element.data("draggable")){
         element.draggable({
             revert: true,         // Element reverts to original position after being dropped

@@ -12,6 +12,7 @@ from gluon.contrib.websocket_messaging import websocket_send
 
 __current_user_name = config.TORNADO_USER
 __current_ip = config.TORNADO_IP
+__current_ip_local = config.TORNADO_IP_LOCAL
 __socket_port = config.TORNADO_PORT
 __key = config.TORNADO_KEY
 __socket_group_name = config.TORNADO_GROUP_ROBOT
@@ -32,6 +33,9 @@ rc = RobotController()
 recursion_cutoff = 5
 
 def index():
+	ip = __current_ip
+	if 'local' in request.vars.keys():
+		ip = __current_ip_local
 	return dict(ip=__current_ip, port=__socket_port, group_name=__socket_group_name)
 
 def control():

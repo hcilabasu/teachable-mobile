@@ -121,6 +121,14 @@
 		        else {
 		        	console.dir(socket);
 		        }
+
+		        $('#manual-click-btn').click(function(e){
+		        	e.preventDefault();
+		        	// {trigger: "robot"}
+		        	olddata = {trigger:"all"};
+		        	updateCurrentStep();
+		        	counter = 1;
+		        });
 		    });
         </script>
 	</head>
@@ -166,6 +174,7 @@
 					<li class="droppable">&nbsp;</li>-->
 				</ol>
 			</div>
+
 		</div>
 		<!-- Dialog forms -->
 		<!--<div id="create-procedure-dialog" title="Create a new procedure">
@@ -242,6 +251,11 @@
 		<div id="emoticon">
 			<h2>How are you feeling right now?</h2>
 		</div>
+		{{if local:}}
+		<div id="manual-click">
+			<a href="#" id="manual-click-btn">Click</a>
+		</div>
+		{{pass}}
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>

@@ -13,6 +13,7 @@ filename = os.path.join(request.folder, 'static', 'geointerface.html')
 
 __current_user_name = config.TORNADO_USER
 __current_ip = config.TORNADO_IP
+__current_ip_local = config.TORNADO_IP_LOCAL
 __socket_port = config.TORNADO_PORT
 __key = config.TORNADO_KEY
 __socket_group_name = config.TORNADO_GROUP
@@ -78,7 +79,7 @@ def index():
         currStep = "Current Step: " + session.currentStep
     else:
         currStep = "Current Step: None"
-        
+    
     return dict(problem=B(currProblem), interface=chooseProcedure, steps=OL(stepsLoaded), currentStep=currStep)
     #return dict(problem=currProblem, interface=XML(open(filename).read()))
 
@@ -140,14 +141,14 @@ def updateCurrentStep():
 
 def executeEvent():
     request_object = request.vars.procedure_parameters
-    websocket_send('http://' + __current_ip + ':' + __socket_port, request_object, 'mykey', 'applet')
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, request_object, 'mykey', 'applet')
     
     # return_val = server.executeEvent(request_object)
     # return "console.dir('server returned ' + '" + return_val + "');"
 
 def executeSteps():
     steps = request.vars.steps
-    websocket_send('http://' + __current_ip + ':' + __socket_port, steps, 'mykey', 'applet')
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, steps, 'mykey', 'applet')
 
     # return_val = server.executeSteps(steps)
     # return "console.dir('server returned ' + '" + return_val + "');"
@@ -179,7 +180,7 @@ def loadOptions(data):
     s2 = db(db.currState.name=='menuOptions')
     val = s2.select()[0].value
     # notifying interface
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', __socket_group_name)
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', __socket_group_name)
     return val
 
 
@@ -320,12 +321,12 @@ def mobile():
     problemsJSON += "]"
     # Returning values
     return dict(user_procedures=user_procedures, basic_procedures=basic_proceduresJSON, problems=problemsJSON, current_problem=current_problem, 
-                ip=__current_ip, port=__socket_port, group_name=__socket_group_name)
+                ip=get_ip(request.vars), port=__socket_port, group_name=__socket_group_name, local=('local' in request.vars.keys()))
 
 def update_current_problem():
     session.problemNum = request.vars.index
     data = request.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def check_solution():
     #current_problem = db(db.problemBank.id == session.problemNum).select()[0]
@@ -334,17 +335,17 @@ def check_solution():
     session.problemNum = request.vars.index
     #data = currentProblemJSON
     data = request.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def lock_applet():
     session.problemNum = request.vars.index
     data = request.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def move_to_problem():
     session.problemNum = request.vars.index
     data = reques.vars.data
-    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', "applet")
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def move_to_next_problem():
     if session.problemNum:
@@ -400,7 +401,9 @@ def stringifyProblem(problem, message_type):
     # Need to be careful of operator precedence, we had some problems when the ternary expression was NOT placed in brackets. I guess the "+" operator
     # has higher precedence than the ternary.
     json += '"solution":' + (problem.solution if problem.solution != None else "{}")
-
+    
+    json += ', "problemType":' + '"' + (problem.problemType if problem.problemType != None else "Default") + '"'
+    
     json += ', "type":' + '"' + (message_type if message_type != None else '"Default"') + '"' + "}"
     #json += "}"
 
@@ -425,6 +428,12 @@ def update_procedure_steps():
 '''
 AUX FUNCTIONS
 '''
+def get_ip(vars):
+    if 'local' in vars.keys():
+        return __current_ip_local
+    else:
+        return __current_ip
+
 def create_json_representation(form_errors):
     '''
     Creates a JSON representation of a dictionary of form
@@ -449,7 +458,7 @@ def process_procedure(form):
     form.vars.origin = __current_user_name # TEMP setting current username
 
 def test_message():
-    websocket_send('http://' + __current_ip + ':' + __socket_port,'Hello from Web Sockets! Bye-bye polling!','mykey', __socket_group_name)
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port,'Hello from Web Sockets! Bye-bye polling!','mykey', __socket_group_name)
     return sys.version_info.__str__()
 
 def test():

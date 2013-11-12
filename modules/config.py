@@ -1,8 +1,9 @@
-TORNADO_USER  = 'user'
+
+TORNADO_USER        = 'user'
 # TORNADO_IP    = '192.168.0.35' # iPod
-TORNADO_IP    = '169.254.67.33' # iPod
-# TORNADO_IP	  = '127.0.0.1' # local
-TORNADO_PORT  = '8888'
-TORNADO_GROUP = 'interface'
+TORNADO_IP          = '169.254.67.33' # iPod
+TORNADO_IP_LOCAL    = '127.0.0.1' # local
+TORNADO_PORT        = '8888'
+TORNADO_GROUP       = 'interface'
 TORNADO_GROUP_ROBOT = 'robot'
-TORNADO_KEY   = 'mykey'
+TORNADO_KEY         = 'mykey'

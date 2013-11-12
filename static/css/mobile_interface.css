@@ -587,3 +587,27 @@ a.action-button > span {
 	background: black;
 }
 
+#manual-click {
+	position: absolute;
+	bottom: 0;
+	background: #844569;
+	width: 100%;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	border-top: solid 1px #333;
+	box-shadow: inset 0 -10px 20px -10px black;
+	padding: 0;
+}
+
+	#manual-click > #manual-click-btn {
+		border-top: solid 1px rgba(255,255,255,0.2);
+		display: block;
+		width: 100%;
+		height: 100%;
+		color: white;
+		text-decoration: none;
+		font-size: 1.5em;
+		text-shadow: 0 -1px black;
+		font-weight: bolder;
+	}

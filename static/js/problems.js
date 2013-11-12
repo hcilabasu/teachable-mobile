@@ -143,7 +143,8 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text());
     }
     else {
-        $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + "Hint : " + appletMessage);
+        //$("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + "Hint : " + appletMessage);
+        $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + (appletMessage ? "Hint : " + appletMessage : ""));
     }
 
     $("#feedback-ok").off('click');

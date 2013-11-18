@@ -19,20 +19,20 @@
 		var raw_direction = undefined;
 		var offset = 0;
 
-		// window.addEventListener('deviceorientation', function(e) {
-		// 	var prop = e.alpha;
-		// 	raw_direction = prop;
+		window.addEventListener('deviceorientation', function(e) {
+			var prop = e.alpha;
+			raw_direction = prop;
 
-		// 	if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 0.1){
-		// 	    direction = (prop + offset) % 360;
-		// 	    // document.getElementById("output").innerText = direction;
-		// 	    // Sending direction to controller
-		// 	    $.ajax({
-		// 		  url: "{{=URL('update_direction')}}",
-		// 		  data: {d: direction}
-		// 		});
-		// 	}
-		// }, false);
+			if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 0.1){
+			    direction = (prop + offset) % 360;
+			    // document.getElementById("output").innerText = direction;
+			    // Sending direction to controller
+			    $.ajax({
+				  url: "{{=URL('update_direction')}}",
+				  data: {d: direction}
+				});
+			}
+		}, false);
 
 		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
 			var data = JSON.parse(e.data);

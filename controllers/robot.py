@@ -52,7 +52,7 @@ def current_status():
 	position = __get_position()
 	x = position[0]
 	y = position[1]
-	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(RobotController.d) + ')'
+	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(get_direction()) + ')'
 
 def load_options():
 	# Notifying interface of click on robot
@@ -277,7 +277,22 @@ def toggle_auto_control():
 	return rc.set_auto(not rc.auto)
 
 def get_direction():
-	return int(float(RobotController.d))
+	h = float(RobotController.d) # Info from secondary orientation source
+	o1 = gateway.getCurrentOrientation() # Info from primary orientation source (may be flipped 180º)
+	o2 = (o1 + 180) % 360 # flipped o1
+	
+	# Calculating orientation based on two sources.
+	# The primary source is precise, but it may be flipped 180 degrees. So we check the secondary source for the closes point.
+	d1 = math.fabs(o1 - h)
+	d2 = math.fabs(o2 - h)
+	# Calculating the distance
+	h1 = d1 if d1 <= 180 else 360 - d1
+	h2 = d2 if d2 <= 180 else 360 - d2
+
+	if h1 < h2:
+		return o1
+	else:
+		return o2
 
 
 ## private functions

@@ -21,8 +21,8 @@ direction = 0
 position = (0,0)
 gateway = JavaGateway()
 
-angle_threshold = 13
-small_angle_threshold = 5
+angle_threshold = 8
+small_angle_threshold = 3
 distance_threshold = 0.35
 small_distance_threshold = 0.1
 

@@ -6,6 +6,7 @@ var Attributions = function(){
 	}
 
 	var makeAttribution = function(attr){
+
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
 		// load sound

@@ -21,8 +21,8 @@ direction = 0
 position = (0,0)
 gateway = JavaGateway()
 
-angle_threshold = 13
-small_angle_threshold = 5
+angle_threshold = 8
+small_angle_threshold = 3
 distance_threshold = 0.35
 small_distance_threshold = 0.1
 
@@ -50,6 +50,7 @@ def see_position():
 
 def current_status():
 	position = __get_position()
+	orientation = get_direction()
 	x = position[0]
 	y = position[1]
 	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(RobotController.d) + ')'
@@ -222,7 +223,14 @@ def make_attribution():
 	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
-	
+
+def make_cognitive_prompt():
+	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
+	state = request.vars['state']
+	# wrapping info in package
+	message_wrapper = '{"type":"cognitive", "value":{"emotion":"%s","file":"%s.aiff","state":"%s"}}' % ("","2",state )	
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	return message_wrapper
 
 def __reset(outcome):
 	for r in db(db.attributions.success == outcome).select():
@@ -277,7 +285,8 @@ def toggle_auto_control():
 	return rc.set_auto(not rc.auto)
 
 def get_direction():
-	return int(float(RobotController.d))
+	# return int(float(RobotController.d))
+	return int(gateway.getCurrentOrientation())
 
 
 ## private functions

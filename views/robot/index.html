@@ -11,6 +11,8 @@
 	<script src="{{=URL('static','js/web2py.js')}}"></script>
 	<script src="{{=URL('static','js/audio.js')}}"></script>
 	<script src="{{=URL('static','js/attributions.js')}}"></script>
+	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
@@ -18,6 +20,7 @@
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
+		var currentPromptIndex = 0;
 
 		// window.addEventListener('deviceorientation', function(e) {
 		// 	var prop = e.alpha;
@@ -39,6 +42,9 @@
 			switch(data.type){
 				case 'attribution':
 					attributions.makeAttribution(data.value);
+					break;
+				case 'cognitive':
+					cognitive_prompts.makePrompt(data.value);
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;

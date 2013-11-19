@@ -1,12 +1,15 @@
-var Attributions = function(){
+var Attributions = function() {
 
 
 	var rotate = function(array, positions){
 		return array.concat(array.splice(0,positions+1));
 	}
 
-	var makeAttribution = function(attr){
-
+	var makeAttribution = function(attr) {
+		//Adrin added the 2 log lines
+		log("In makeAttribution.....");
+		log(JSON.stringify(attr));
+		
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
 		// load sound

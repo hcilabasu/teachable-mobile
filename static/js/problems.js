@@ -97,6 +97,8 @@ function moveToNext(callback) {
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem();
     refreshProblem();
+    //check to see if prompts should be called
+    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
     // Logging
     log("Moving to Problem " + APP.currentProblem.id);
     if(callback){
@@ -152,7 +154,8 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback-ok").click(function () {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
-        openEmoticonScreen();
+        //Not collecting attribution feedback for now...
+        //openEmoticonScreen();
         log("!! Button Click !!");
         // alert("You clicked OK!!!!");
     });

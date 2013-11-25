@@ -13,6 +13,7 @@ var Attributions = function() {
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
 		// load sound
+		console.log("attributionSound", "/mobileinterface/static/audio/" + attr.file);
 		AUDIO.setFile("attributionSound", "/mobileinterface/static/audio/" + attr.file);
 		AUDIO.loadSound("attributionSound");
 		// Attach handlers

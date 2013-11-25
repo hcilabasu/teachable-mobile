@@ -21,6 +21,8 @@
 		var raw_direction = undefined;
 		var offset = 0;
 		var currentPromptIndex = 0;
+		var localProblemIndex = 540;
+		var begLast = false;
 
 		window.addEventListener('deviceorientation', function(e) {
 			var prop = e.alpha;
@@ -86,7 +88,7 @@
 <div id="eyes"></div>
 <div id="mouth"></div>
 <div id="speech"></div>
-<audio id="attributionSound"/>
+<audio id="promptSound"/>
 
 </body>
 </html>

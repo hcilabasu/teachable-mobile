@@ -21,16 +21,16 @@ direction = 0
 position = (0,0)
 gateway = JavaGateway()
 
-angle_threshold = 8
-small_angle_threshold = 3
-distance_threshold = 0.35
-small_distance_threshold = 0.1
+angle_threshold = 10
+small_angle_threshold = 6
+distance_threshold = 0.25
+small_distance_threshold = 0.25
 
 lap_time = 4.4
 
 rc = RobotController()
 
-recursion_cutoff = 5
+recursion_cutoff = 7
 
 def index():
 	ip = __current_ip
@@ -101,7 +101,6 @@ def __call_turn_to(angle, backwards):
 def __call_move_to(x, y, angle, backwards):
 	__move_to(x,y,backwards,0)
 	if angle != None:
-		time.sleep(1)
 		__turn_to(angle, False, 0)
 	print('angle! ' + str(angle))
 	__set_auto(True)
@@ -115,6 +114,7 @@ def __turn_to(angle, backwards, recursion):
 		print('%s' % str(angle))
 		if not __within_threshold(angle, small_angle_threshold):
 			direction = get_direction()
+			print('Curr %s New %s' % (str(direction), str(angle)))
 			d = angle - direction
 			if d > 180: 
 				d -= 360
@@ -130,29 +130,43 @@ def __turn_to(angle, backwards, recursion):
 				if __within_threshold(angle, angle_threshold):
 					__stop()
 					break
-			time.sleep(1)
 			if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
 				backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
 				__turn_to(angle, backwards, recursion + 1)
 			print('Finished turn step')
-	
+
+def test():
+	position = __get_position()
+	c_x = position[0]
+	c_y = position[1]
+	print("Final threshold")
+	print('X:' + str(math.fabs(c_x - 0)))
+	print('Y:' + str(math.fabs(c_y - 0)))
+	return small_distance_threshold
+
+def test_th():
+	return __within_threshold(float(request.vars['angle']), small_angle_threshold)	
 
 def __within_threshold(desired, th):
-	current = get_direction()
-	if desired >= 360 - th and current < 180:
-		current += 360
-	elif desired <= 0 + th and current > 180:
-		current -= 360
+	# if desired >= 360 - th and current < 180:
+	# 	current += 360
+	# elif desired <= 0 + th and current > 180:
+	# 	current -= 360
 	# print('Current: ' + str(current))
 	# print('Desired: ' + str(desired))
+	current = get_direction()
 	diff = math.fabs(current - desired)
-	print('Within : ' + str(diff) + ' - ' + str(diff < th))
+	diff = diff if diff < 180 else 360 - diff
+	# print('Within : ' + str(diff) + ' - ' + str(diff < th))
 	return diff < th
 
 def __move_to(x, y, backwards, recursion):
+	print('Rec: ' + str(recursion))
 	if __auto():
 		print('Move to #' + str(recursion))
+		
 		m = __move_forward if not backwards else __move_backward # based on the backwards variable, determine function for robot movement
+		
 		if recursion < recursion_cutoff:
 			# retrieving current position
 			curr_position = __get_position()
@@ -166,11 +180,6 @@ def __move_to(x, y, backwards, recursion):
 			if new_angle < 0:
 				new_angle += 360
 
-			# turning robot
-			angle_delta = math.fabs(get_direction() - new_angle)
-			if angle_delta > 5:
-				__turn_to(new_angle, backwards, 0)	
-
 			# determining if it'll be moving in x, y or both
 			position = __get_position()
 			c_x = position[0]
@@ -181,6 +190,12 @@ def __move_to(x, y, backwards, recursion):
 			print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
 
 			if move_x or move_y:
+				# turning robot
+				# angle_delta = math.fabs(get_direction() - new_angle)
+				if not __within_threshold(new_angle, small_angle_threshold):
+					print("change angle")
+					__turn_to(new_angle, backwards, 0)	
+				# moving robot
 				m() # either __move_forward or __move_backward
 				prev = sys.maxint
 				progress = 0
@@ -190,23 +205,31 @@ def __move_to(x, y, backwards, recursion):
 					c_y = position[1]
 					# determine progress metric
 					curr = math.sqrt(math.pow(c_x - t_x, 2) + math.pow(c_y - t_y, 2))
-					print('Curr: ' + str(curr))
-					print('Prev: ' + str(prev))
+					# print('Curr: ' + str(curr))
+					# print('Prev: ' + str(prev))
 					if curr < prev:
 						progress = 0
 					else:
 						progress = progress + 1
 					prev = curr
-					print(progress)
+					# print(progress)
 					# determine if it's time to stop
-					if progress > 100 or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
-						if progress > 100:
-							print("###############>>>>>>>>>>>>>>>>>>>>>#################<<<<<<<<<<<<<<<<<#############")
+					if (False and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
 						__stop()
 						break
-
+			# Obtaining position again
+			position = __get_position()
+			c_x = position[0]
+			c_y = position[1]
 			if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
 				__move_to(x, y, backwards, recursion + 1)
+			else:
+				print("Final threshold")
+				print('X:' + str(math.fabs(c_x - x)))
+				print('Y:' + str(math.fabs(c_y - y)))
+
+		else:
+			print("Recursion DONE")
 
 
 def make_attribution():
@@ -227,8 +250,9 @@ def make_attribution():
 def make_cognitive_prompt():
 	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
 	state = request.vars['state']
+	prob_num = int(request.vars['number'])
 	# wrapping info in package
-	message_wrapper = '{"type":"cognitive", "value":{"emotion":"%s","file":"%s.aiff","state":"%s"}}' % ("","2",state )	
+	message_wrapper = '{"type":"cognitive", "value":{"emotion":"%s","file":"%s.aiff","state":"%s","number":"%s"}}' % ("","2",state,prob_num)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 

@@ -39,6 +39,7 @@
         	APP.SEND = "{{=URL('communication','send')}}";
         	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
         	APP.LOCK_APPLET = "{{=URL('lock_applet')}}";
+        	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
 
         	// Adding problems variable to global variable
         	//var problems = "{{=problems}}";
@@ -109,6 +110,7 @@
 				    			AUDIO.loadSound("audio-attention");
 		    					AUDIO.play("audio-attention");
 				    			var temp = JSON.parse(e.data)
+				    			console.log(temp);
 				    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
 				    				// Same trigger. Update params.
 				    				mergeObjects(olddata, temp);

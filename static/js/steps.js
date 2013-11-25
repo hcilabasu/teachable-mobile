@@ -191,7 +191,10 @@ function validateInput(form, labels, procName, parameters){
             return false;
         }
     } else if(procName === 'turnAngle'){
-        if(!isNumber(parameters['angle']) || parameters['angle'] > 360){
+        if(!isNumber(parameters['angle']) || parameters['angle'] > 360 || (parameters['angle'] % 90) !== 0){
+            if(parameters['angle'] % 90 !== 0) {
+                alert("Angle has to be a multiple of 90");
+            }
             toggleError(labels, "color", "red", "black");
             return false;
         }

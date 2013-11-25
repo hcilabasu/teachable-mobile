@@ -68,6 +68,13 @@
         	var counter = 0;
 
         	$(document).ready(function() {
+
+        		if(confirm('Do you want a click button on the interface?')){
+        			$("#manual-click").css('display', 'block');
+        		} else {
+        			$("#manual-click").css('display', 'none');
+        		}
+
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 		    		var incoming = JSON.parse(unescape(e.data));
 
@@ -258,11 +265,10 @@
 		<div id="emoticon">
 			<h2>How are you feeling right now?</h2>
 		</div>
-		{{if local:}}
-		<div id="manual-click">
+		
+		<div id="manual-click" style="{{= 'display: block;' if 'click' in request.vars.keys() else 'display: none;'}}">
 			<a href="#" id="manual-click-btn">Click</a>
 		</div>
-		{{pass}}
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>

@@ -429,7 +429,8 @@ def update_procedure_steps():
 AUX FUNCTIONS
 '''
 def get_ip(vars):
-    if 'local' in vars.keys():
+    if 'local' in vars.keys() or ('local' in session):
+        session.local = True
         return __current_ip_local
     else:
         return __current_ip

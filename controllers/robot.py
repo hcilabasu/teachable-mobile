@@ -251,8 +251,10 @@ def make_cognitive_prompt():
 	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
 	state = request.vars['state']
 	prob_num = int(request.vars['number'])
+	trig = request.vars['trigger']
+	ang = request.vars['angle']
 	# wrapping info in package
-	message_wrapper = '{"type":"cognitive", "value":{"emotion":"%s","file":"%s.aiff","state":"%s","number":"%s"}}' % ("","2",state,prob_num)	
+	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 

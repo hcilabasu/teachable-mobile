@@ -91,14 +91,24 @@ function nextProblem() {
     }
 }
 
+function callCheckForSecondPrompt(trigger, state, number) {
+    console.log("weeeeeeeeee");
+    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + trigger + "&state=" + state + "&number=" + number);
+}
+
 function moveToNext(callback) {
     log("Calling moveToNext");
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem();
     refreshProblem();
+    
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
+    window.setTimeout(function(){
+          callCheckForSecondPrompt("hit", "beg", 1);
+        }, 13000);
+
     // Logging
     log("Moving to Problem " + APP.currentProblem.id);
     if(callback){

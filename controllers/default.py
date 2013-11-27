@@ -13,7 +13,7 @@ filename = os.path.join(request.folder, 'static', 'geointerface.html')
 
 __current_user_name = config.TORNADO_USER
 __current_ip = config.TORNADO_IP
-__current_ip_local = config.TORNADO_IP_LOCAL
+#__current_ip_local = config.TORNADO_IP_LOCAL
 __socket_port = config.TORNADO_PORT
 __key = config.TORNADO_KEY
 __socket_group_name = config.TORNADO_GROUP

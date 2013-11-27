@@ -44,17 +44,20 @@
         	var problems = "{{=problems}}";
         	problems = problems.replace(/&quot;/g, "\"");
         	problems = problems.replace(/&#x27;/g, "'");
+
+        	// APP.init();
+        	
         	APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
 
         	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
-        	APP.currentProblemIndex = {{=current_problem}};
+        	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
         </script>
         <script>
         	// Logging page load
         	// Events are logged to logs/log.txt
-        	log("Page Load");
+        	log("Page Load or refresh",{"source":__SOURCE__});
 
         	var olddata = undefined;
         	var socket = false;

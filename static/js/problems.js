@@ -1,23 +1,29 @@
 var PROBLEMS = {};
 
+var GBL_BOOL_NEXT_BUTTON_ENABLED = true; //Adrin, did this out of frustration when ._data() to the next-button-element to get event handlers was not working.
+
 PROBLEMS.init = function() {
     // Setting action listeners
     $("#next-problem-button").click(nextProblem);
     $("#check-solution-button").click(checkSolution);
+
+    //The clickable problem heading banner that allows you to restart the current problem.
     $("#current-problem-wrapper h3").click(function() {
-        refreshProblem(" Restart current problem?");
+        refreshProblem("Restart current problem?");
     });
 
-    // setCurrentProbelm should be called after adding all the listeners!!! Since we unbind certain listeners in it.
+    // setCurrentProblem should be called after adding all the listeners!!! Since we unbind certain listeners in it, specifically the next-problem-button.
 	// Setting problem info in the interface and in the applet
     setCurrentProblem();
 }
 
+//A simple method that refreshes the problem, also handles triggered refreshes.
 function refreshProblem(message) {
     log("Calling refreshProblem");
     var refresh = true;
     
     if(message !== undefined) {
+        //Getting confirmation for the user-triggered problem restart.
         refresh = confirm(message);
     }
 
@@ -34,9 +40,14 @@ function refreshProblem(message) {
 
 function setCurrentProblem() {
     log("Calling setCurrentProblem");
+    
+    // var tmp = jQuery._data("#next-problem-button", "events");
+    // alert(jQuery._data("#next-problem-button","events"));
 
+    //Here we're as disallowing the user from going to the next problem, once a new problem has been presented.
     $("#next-problem-button").fadeTo(1, 0.5);
-    $("#next-problem-button").unbind();
+    $("#next-problem-button").unbind();//removing the listener
+    GBL_BOOL_NEXT_BUTTON_ENABLED = false;
 
     if(APP.currentProblem === undefined) {
         // Logging
@@ -128,6 +139,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         //!!! Very important, make the next-problem-button clickable again.
         $("#next-problem-button").fadeTo(1, 1);
         $("#next-problem-button").click(nextProblem);
+        GBL_BOOL_NEXT_BUTTON_ENABLED = true;
     }
     
     var rndIndx = Math.floor(10 * Math.random()) % (correctResponseArray.length);

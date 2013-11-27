@@ -8,12 +8,32 @@
  */
 // Defining global vars
 APP = {};
+
+// Adrin added this init function to initialize certain problem tracking variables.
+// if(!(APP.hasOwnProperty("init"))) {
+//     APP.init = function() {
+//         APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
+//         APP.NUM_PROBLEMS = APP.PROBLEMS.length;
+//         APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
+//         APP.currentProblemIndex = "{{=current_problem}}";//we get it from mobile(), which returns a dict, defined in default.py.
+//         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+//     }
+// }
+// else {
+//     alert("APP already has init defined.....");
+// }
+
+
+
 // Setting constants
 APP.DELETE_IMAGE_CLASS = "delete-button";
 APP.MAXIMUM_PARAMS = 9
 // Seting variables
 APP.paramsCounter = 0;
 APP.currentDate = new Date();
+
+//Adrin added this global variable
+var __SOURCE__ = "system";
 
 $(function() {
     // Initializing Step-related functions
@@ -127,14 +147,43 @@ function mergeObjects(data, newdata){
 /*
  * Logging function. The parameter should be a string, which will be logged.
  * Events are logged to logs/log.txt
+ * Adrin made changes to this function
+ * title - main log message
+ * data - an object containing source and other info if needed
+ * bool_verbose - true => geogebra + robot status info is included in each log call
  */
- function log(title, data) {
-    var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
-                                                              APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
-                                                              APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());
-    if(data !== undefined) {
-        logString += "    {0}%5Cn".format(data);
+ function log(title, data, bool_verbose) {
+    if(!bool_verbose) {
+        bool_verbose = true;//default
     }
+
+    /*var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
+                                                              APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
+                                                              APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());*/
+    
+    var logString = "%5Cn{0}/{1}/{2} - {3}:{4}:{5},{6}".format(APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear(),
+                                                        APP.currentDate.getHours(), APP.currentDate.getMinutes(), APP.currentDate.getSeconds(),
+                                                        title);
+
+    if(data !== undefined) {
+        // logString += "    {0}%5Cn".format(data);
+        logString += ",{0}".format(data.source);
+    }
+    else {
+        // logString += "%5Cn";
+        logString += ",{0}".format(__SOURCE__);
+    }
+
+    var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
+    var listOfSteps = APP.currentStepsList;
+    
+    // (title ‘problem 1 plot P2’; next button disabled; no steps;)
+    // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
+    
+    logString += ",problem " + (APP.currentProblemIndex + 1) + ":" +
+                "(title '" + APP.PROBLEMS[APP.currentProblemIndex].text + "':" + 
+                nextButtonStatusString + ":" +
+                (listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) + ":)";
 
     // Logging in server
     $.ajax({

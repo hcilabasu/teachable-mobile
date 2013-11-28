@@ -27,8 +27,7 @@
 		window.addEventListener('deviceorientation', function(e) {
 			var prop = e.alpha;
 			raw_direction = prop;
-
-			if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 0.1){
+			if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 1){
 			    direction = (prop + offset) % 360;
 			    // document.getElementById("output").innerText = direction;
 			    // Sending direction to controller
@@ -39,19 +38,26 @@
 			}
 		}, false);
 
-		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
-			var data = JSON.parse(e.data);
-			switch(data.type){
-				case 'attribution':
-					attributions.makeAttribution(data.value);
-					break;
-				case 'cognitive':
-					cognitive_prompts.makePrompt(data.value);
-					break;
-				case 'reset':
-					offset = 360 - raw_direction;
-			}
-		});
+		function openWebSocket(){
+			socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+				var data = JSON.parse(e.data);
+				switch(data.type){
+					case 'attribution':
+						attributions.makeAttribution(data.value);
+						break;
+					case 'cognitive':
+						cognitive_prompts.makePrompt(data.value);
+						break;
+					case 'reset':
+						offset = 360 - raw_direction;
+				}
+			}, function(e){
+				alert("open")
+			}, function(e){
+				alert("close")
+				openWebSocket();
+			});
+		}
 
 		$(function(){
 			var currClass;

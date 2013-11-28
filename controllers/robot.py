@@ -21,8 +21,8 @@ direction = 0
 position = (0,0)
 gateway = JavaGateway()
 
-angle_threshold = 10
-small_angle_threshold = 6
+angle_threshold = 13
+small_angle_threshold = 4
 distance_threshold = 0.25
 small_distance_threshold = 0.25
 
@@ -108,32 +108,39 @@ def __call_move_to(x, y, angle, backwards):
 	print("Finished move to!")
 
 def __turn_to(angle, backwards, recursion):
+	print("Turn (recursion #%d)" % (recursion))
 	if __auto():
 		if backwards: 
 			angle = (angle + 180) % 360
-		print('%s' % str(angle))
+		# print('%s' % str(angle))
 		if not __within_threshold(angle, small_angle_threshold):
 			direction = get_direction()
-			print('Curr %s New %s' % (str(direction), str(angle)))
+			print("- %f: Current " % (direction))
+			# print('Curr %s New %s' % (str(direction), str(angle)))
 			d = angle - direction
 			if d > 180: 
 				d -= 360
 			elif d < -180: 
 				d += 360
-		
+			small_turn = __within_threshold(angle, angle_threshold)		
 			if d > 0:
-				__turn_left(__within_threshold(angle, angle_threshold))
+				print("- %d: Turning left" % (recursion))
+				__turn_left(small_turn)
 			elif d < 0:
-				__turn_right(__within_threshold(angle, angle_threshold))
+				print("- %d: Turning right" % (recursion))
+				__turn_right(small_turn)
 			while __auto():
-				# time.sleep(0.01)
-				if __within_threshold(angle, angle_threshold):
+				if __within_threshold(angle, small_angle_threshold if small_turn else angle_threshold):
+					print("- %d: Within big threshold" % (recursion))
 					__stop()
 					break
-			if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
+			if (not __within_threshold(angle, small_angle_threshold)) and (recursion < recursion_cutoff):
+				print("- %d: Out of small threshold" % (recursion))
 				backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
 				__turn_to(angle, backwards, recursion + 1)
-			print('Finished turn step')
+			else:
+				print("- %d: Within small threshold" % (recursion))
+			print('- %d: Finished turn recursion' % (recursion))
 
 def test():
 	position = __get_position()
@@ -163,7 +170,7 @@ def __within_threshold(desired, th):
 def __move_to(x, y, backwards, recursion):
 	print('Rec: ' + str(recursion))
 	if __auto():
-		print('Move to #' + str(recursion))
+		# print('Move to #' + str(recursion))
 		
 		m = __move_forward if not backwards else __move_backward # based on the backwards variable, determine function for robot movement
 		
@@ -187,13 +194,13 @@ def __move_to(x, y, backwards, recursion):
 			move_x = math.fabs(c_x - x) > distance_threshold
 			move_y = math.fabs(c_y - y) > distance_threshold
 
-			print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
+			# print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
 
 			if move_x or move_y:
 				# turning robot
 				# angle_delta = math.fabs(get_direction() - new_angle)
 				if not __within_threshold(new_angle, small_angle_threshold):
-					print("change angle")
+					# print("change angle")
 					__turn_to(new_angle, backwards, 0)	
 				# moving robot
 				m() # either __move_forward or __move_backward
@@ -212,9 +219,11 @@ def __move_to(x, y, backwards, recursion):
 					else:
 						progress = progress + 1
 					prev = curr
-					# print(progress)
+					print(progress)
 					# determine if it's time to stop
 					if (False and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
+						if progress > 100:
+							print('Progress: ' + str(progress))
 						__stop()
 						break
 			# Obtaining position again

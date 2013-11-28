@@ -92,7 +92,6 @@ function nextProblem() {
 }
 
 function callCheckForSecondPrompt(trigger, state, number) {
-    console.log("weeeeeeeeee");
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + trigger + "&state=" + state + "&number=" + number);
 }
 

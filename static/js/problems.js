@@ -13,7 +13,7 @@ PROBLEMS.init = function() {
     setCurrentProblem();
 }
 
-function refreshProblem(message) {
+function refreshProblem(message, executeSteps) {
     log("Calling refreshProblem");
     var refresh = true;
     
@@ -26,7 +26,9 @@ function refreshProblem(message) {
         APP.currentStepsList = [];
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
-        executeStep();
+        if(executeSteps === undefined || executeSteps){ // TODO The first condition should be removed as soon as all calls to this function are updated accordingly
+            executeStep(); 
+        }
         STEPS.stopDragMode();
     }
     // Do nothing...
@@ -55,7 +57,7 @@ function setCurrentProblem() {
     log("Current problem index : " + APP.currentProblemIndex);
     log("data : " + JSON.stringify(APP.currentProblem));
     
-    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], ""); // Call #1
 }
 
 function moveToProblemNumber(probNum) {
@@ -99,8 +101,8 @@ function moveToNext(callback) {
     log("Calling moveToNext");
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-    setCurrentProblem();
-    refreshProblem();
+    setCurrentProblem(); // Call #1
+    refreshProblem(undefined, false); // Call #2
     
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);

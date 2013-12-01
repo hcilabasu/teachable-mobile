@@ -93,15 +93,19 @@ def plot_point():
 	__stop()
 
 def __call_turn_to(angle, backwards):
+	print("Starting turn to!")
 	__turn_to(angle, backwards, 0)
 	__set_auto(True)
 	__stop()
 	print("Finished turn to!")
 
 def __call_move_to(x, y, angle, backwards):
+	print("Starting move to!")
 	__move_to(x,y,backwards,0)
 	if angle != None:
+		print(">>> STARTING TURN")
 		__turn_to(angle, False, 0)
+		print("FINISHING TURN <<<")
 	print('angle! ' + str(angle))
 	__set_auto(True)
 	__stop()
@@ -169,7 +173,7 @@ def __within_threshold(desired, th):
 	return diff < th
 
 def __move_to(x, y, backwards, recursion):
-	print('Rec: ' + str(recursion))
+	print("Move (recursion #%d)" % (recursion))
 	if __auto():
 		# print('Move to #' + str(recursion))
 		
@@ -202,7 +206,9 @@ def __move_to(x, y, backwards, recursion):
 				# angle_delta = math.fabs(get_direction() - new_angle)
 				if not __within_threshold(new_angle, small_angle_threshold):
 					# print("change angle")
+					print(">>> STARTING TURN")
 					__turn_to(new_angle, backwards, 0)	
+					print("FINISHING TURN <<<")
 				# moving robot
 				m() # either __move_forward or __move_backward
 				prev = sys.maxint
@@ -220,7 +226,6 @@ def __move_to(x, y, backwards, recursion):
 					else:
 						progress = progress + 1
 					prev = curr
-					print(progress)
 					# determine if it's time to stop
 					if (False and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
 						if progress > 100:

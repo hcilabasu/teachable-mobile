@@ -36,7 +36,7 @@ def index():
 	ip = __current_ip
 	if 'local' in request.vars.keys():
 		ip = __current_ip_local
-	return dict(ip=__current_ip, port=__socket_port, group_name=__socket_group_name)
+	return dict(ip=ip, port=__socket_port, group_name=__socket_group_name)
 
 def control():
 	return dict()
@@ -116,17 +116,11 @@ def __turn_to(angle, backwards, recursion):
 		if not __within_threshold(angle, small_angle_threshold):
 			direction = get_direction()
 			print("- %f: Current " % (direction))
-			# print('Curr %s New %s' % (str(direction), str(angle)))
-			d = angle - direction
-			if d > 180: 
-				d -= 360
-			elif d < -180: 
-				d += 360
 			small_turn = __within_threshold(angle, angle_threshold)		
-			if d > 0:
+			if __should_turn_left(direction, angle):
 				print("- %d: Turning left" % (recursion))
 				__turn_left(small_turn)
-			elif d < 0:
+			else:
 				print("- %d: Turning right" % (recursion))
 				__turn_right(small_turn)
 			while __auto():
@@ -139,8 +133,21 @@ def __turn_to(angle, backwards, recursion):
 				backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
 				__turn_to(angle, backwards, recursion + 1)
 			else:
-				print("- %d: Within small threshold" % (recursion))
+				print("- %d: Within small threshold, angle: %f" % (recursion, get_direction()))
 			print('- %d: Finished turn recursion' % (recursion))
+
+def __should_turn_left(current, target):
+	'''Determines if the shortest turn is through the left (true) or through the right (false)'''
+	dist = __get_angle_distance(current, target) 
+	if (current + dist) % 360 == target:
+		return True
+	else:
+		return False
+
+def __get_angle_distance(current, target):
+	dist = math.fabs(target - current)
+	dist = dist if dist <= 180 else 360 - dist
+	return dist
 
 def test():
 	position = __get_position()
@@ -155,12 +162,6 @@ def test_th():
 	return __within_threshold(float(request.vars['angle']), small_angle_threshold)	
 
 def __within_threshold(desired, th):
-	# if desired >= 360 - th and current < 180:
-	# 	current += 360
-	# elif desired <= 0 + th and current > 180:
-	# 	current -= 360
-	# print('Current: ' + str(current))
-	# print('Desired: ' + str(desired))
 	current = get_direction()
 	diff = math.fabs(current - desired)
 	diff = diff if diff < 180 else 360 - diff
@@ -319,14 +320,22 @@ def reset_zero():
 def toggle_auto_control():
 	return rc.set_auto(not rc.auto)
 
+def test_d():
+	return RobotController.d
+
 def get_direction():
 
+	if not RobotController.d:
+		# info from iPod not available
+		return gateway.getCurrentOrientation()
+	
+	#info from iPod available. Using it.
 	h = float(RobotController.d) # Info from secondary orientation source
 	o1 = gateway.getCurrentOrientation() # Info from primary orientation source (may be flipped 180º)
 	o2 = (o1 + 180) % 360 # flipped o1
 	
 	# Calculating orientation based on two sources.
-	# The primary source is precise, but it may be flipped 180 degrees. So we check the secondary source for the closes point.
+	# The primary source is precise(ish), but it may be flipped 180 degrees. So we check the secondary source for the closest point.
 	d1 = math.fabs(o1 - h)
 	d2 = math.fabs(o2 - h)
 	# Calculating the distance

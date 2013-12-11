@@ -52,6 +52,15 @@ body {
 	background: url(../images/robotui/mouth.png);	
 }
 
+#overlay {
+	position: absolute;
+	background: rgba(0,255,0,0.5);
+	bottom: 0;
+	top: 0;
+	width: 100%;
+	display: none;
+}
+
 #speech {
 	display: none;
 	position: absolute;

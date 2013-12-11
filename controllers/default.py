@@ -369,6 +369,9 @@ def stringifyProcedure(procedure):
     json += '"trigger":"'
     json += procedure.trigger
     json += '",'
+    json += '"displayLabel":"'
+    json += procedure.displayLabel
+    json += '",'
     json += '"origin":"'
     json += procedure.origin
     json += '"'

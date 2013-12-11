@@ -56,14 +56,14 @@
 		$(function(){
 			var currClass;
 			
-			$("body > div").on("touchstart", function(){
+			$("body > div:not(#overlay)").on("touchstart", function(){
 				console.dir("start touch");
 				currClass = $("body").attr('class');
 				$("body").attr('class', 'frown');
 				return false;
 			});
 
-			$("body > div").on("touchend", function(){
+			$("body > div:not(#overlay)").on("touchend", function(){
 				console.dir("end touch");
 				$("body").attr('class', currClass);
 				notifyClick();
@@ -71,11 +71,22 @@
 			});
 
 			var notifyClick = function(){
+				// Notifying mobile application
 				$.ajax({url:"robot/load_options", 
 			      	success: function(data) {
 			          console.dir(data);
 			    	}
 			    });
+			    // Notifying user
+			    showClick();
+			};
+
+			var showClick = function(){
+				console.dir('clicked');
+				$('#overlay').fadeIn('slow');
+				window.setTimeout(function(){
+					$('#overlay').fadeOut('slow');
+				}, 3000);
 			};
 
 		});
@@ -84,11 +95,11 @@
 
 </head>
 <body class="neutral">
-<div id="output"></div>
-<div id="eyes"></div>
-<div id="mouth"></div>
-<div id="speech"></div>
-<audio id="promptSound"/>
-
+	<div id="output"></div>
+	<div id="eyes"></div>
+	<div id="mouth"></div>
+	<div id="speech"></div>
+	<div id="overlay"></div>
+	<audio id="promptSound"/>
 </body>
 </html>

@@ -56,7 +56,8 @@ STEPS.isInDragMode = function() {
  *      UPDATE: APP.basicProcedures is a list of basic (non user-created) procedures.
  */
 function updateCurrentStep(){
-    ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
+    // ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
+    updateCurrentStepDialog_CB(APP.basicProceduresArray);
 }
 
 /*

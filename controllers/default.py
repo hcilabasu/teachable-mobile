@@ -13,7 +13,7 @@ filename = os.path.join(request.folder, 'static', 'geointerface.html')
 
 __current_user_name = config.TORNADO_USER
 __current_ip = config.TORNADO_IP
-#__current_ip_local = config.TORNADO_IP_LOCAL
+__current_ip_local = config.TORNADO_IP_LOCAL
 __socket_port = config.TORNADO_PORT
 __key = config.TORNADO_KEY
 __socket_group_name = config.TORNADO_GROUP
@@ -344,7 +344,7 @@ def lock_applet():
 
 def move_to_problem():
     session.problemNum = request.vars.index
-    data = reques.vars.data
+    data = request.vars.data
     websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def move_to_next_problem():
@@ -368,6 +368,9 @@ def stringifyProcedure(procedure):
     json += '],'
     json += '"trigger":"'
     json += procedure.trigger
+    json += '",'
+    json += '"displayLabel":"'
+    json += procedure.displayLabel
     json += '",'
     json += '"origin":"'
     json += procedure.origin
@@ -425,11 +428,16 @@ def update_procedure_steps():
     procedure_steps = request.vars.steps
     db.procedures.update_or_insert(db.procedures.name == procedure_name, steps = procedure_steps)
 
+def geogebra_status():
+    data = request.vars.data
+    websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
+
 '''
 AUX FUNCTIONS
 '''
 def get_ip(vars):
-    if 'local' in vars.keys():
+    if 'local' in vars.keys() or ('local' in session):
+        session.local = True
         return __current_ip_local
     else:
         return __current_ip

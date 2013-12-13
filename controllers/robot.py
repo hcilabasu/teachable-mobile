@@ -22,9 +22,9 @@ position = (0,0)
 gateway = JavaGateway()
 
 angle_threshold = 13
-small_angle_threshold = 5
-distance_threshold = 0.35
-small_distance_threshold = 0.1
+small_angle_threshold = 4
+distance_threshold = 0.25
+small_distance_threshold = 0.25
 
 lap_time = 4.4
 
@@ -36,7 +36,7 @@ def index():
 	ip = __current_ip
 	if 'local' in request.vars.keys():
 		ip = __current_ip_local
-	return dict(ip=__current_ip, port=__socket_port, group_name=__socket_group_name)
+	return dict(ip=ip, port=__socket_port, group_name=__socket_group_name)
 
 def control():
 	return dict()
@@ -92,65 +92,89 @@ def plot_point():
 	__stop()
 
 def __call_turn_to(angle, backwards):
+	print("Starting turn to!")
 	__turn_to(angle, backwards, 0)
 	__set_auto(True)
 	__stop()
 	print("Finished turn to!")
 
 def __call_move_to(x, y, angle, backwards):
+	print("Starting move to!")
 	__move_to(x,y,backwards,0)
 	if angle != None:
-		time.sleep(1)
+		print(">>> STARTING TURN")
 		__turn_to(angle, False, 0)
+		print("FINISHING TURN <<<")
 	print('angle! ' + str(angle))
 	__set_auto(True)
 	__stop()
 	print("Finished move to!")
 
 def __turn_to(angle, backwards, recursion):
+	print("Turn (recursion #%d)" % (recursion))
 	if __auto():
 		if backwards: 
 			angle = (angle + 180) % 360
-		print('%s' % str(angle))
+		# print('%s' % str(angle))
 		if not __within_threshold(angle, small_angle_threshold):
 			direction = get_direction()
-			d = angle - direction
-			if d > 180: 
-				d -= 360
-			elif d < -180: 
-				d += 360
-		
-			if d > 0:
-				__turn_left(__within_threshold(angle, angle_threshold))
-			elif d < 0:
-				__turn_right(__within_threshold(angle, angle_threshold))
+			print("- %f: Current " % (direction))
+			small_turn = __within_threshold(angle, angle_threshold)		
+			if __should_turn_left(direction, angle):
+				print("- %d: Turning left" % (recursion))
+				__turn_left(small_turn)
+			else:
+				print("- %d: Turning right" % (recursion))
+				__turn_right(small_turn)
 			while __auto():
-				# time.sleep(0.01)
-				if __within_threshold(angle, angle_threshold):
+				if __within_threshold(angle, small_angle_threshold if small_turn else angle_threshold):
+					print("- %d: Within big threshold" % (recursion))
 					__stop()
 					break
-			time.sleep(1)
-			if not __within_threshold(angle, small_angle_threshold) and recursion < recursion_cutoff:
+			if (not __within_threshold(angle, small_angle_threshold)) and (recursion < recursion_cutoff):
+				print("- %d: Out of small threshold" % (recursion))
 				backwards = not backwards if backwards else backwards # read this expression outloud. Laugh. This sets backwards to False if it was True
 				__turn_to(angle, backwards, recursion + 1)
-			print('Finished turn step')
-	
+			else:
+				print("- %d: Within small threshold, angle: %f" % (recursion, get_direction()))
+			print('- %d: Finished turn recursion' % (recursion))
+
+def __should_turn_left(current, target):
+	'''Determines if the shortest turn is through the left (true) or through the right (false)'''
+	dist = __get_angle_distance(current, target) 
+	if (current + dist) % 360 == target:
+		return True
+	else:
+		return False
+
+def __get_angle_distance(current, target):
+	dist = math.fabs(target - current)
+	dist = dist if dist <= 180 else 360 - dist
+	return dist
+
+def test():
+	position = __get_position()
+	c_x = position[0]
+	c_y = position[1]
+	print("Final threshold")
+	print('X:' + str(math.fabs(c_x - 0)))
+	print('Y:' + str(math.fabs(c_y - 0)))
+	return small_distance_threshold
+
+def test_th():
+	return __within_threshold(float(request.vars['angle']), small_angle_threshold)	
 
 def __within_threshold(desired, th):
 	current = get_direction()
-	if desired >= 360 - th and current < 180:
-		current += 360
-	elif desired <= 0 + th and current > 180:
-		current -= 360
-	# print('Current: ' + str(current))
-	# print('Desired: ' + str(desired))
 	diff = math.fabs(current - desired)
 	print('Within : ' + str(diff) + ' - ' + str(diff < th))
 	return diff < th
 
 def __move_to(x, y, backwards, recursion):
+	print("Move (recursion #%d)" % (recursion))
 	if __auto():
-		print('Move to #' + str(recursion))
+		# print('Move to #' + str(recursion))
+		
 		m = __move_forward if not backwards else __move_backward # based on the backwards variable, determine function for robot movement
 		if recursion < recursion_cutoff:
 			# retrieving current position
@@ -177,9 +201,17 @@ def __move_to(x, y, backwards, recursion):
 			move_x = math.fabs(c_x - x) > distance_threshold
 			move_y = math.fabs(c_y - y) > distance_threshold
 
-			print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
+			# print('Move X: ' + str(move_x) + ', Move Y: ' + str(move_y))
 
 			if move_x or move_y:
+				# turning robot
+				# angle_delta = math.fabs(get_direction() - new_angle)
+				if not __within_threshold(new_angle, small_angle_threshold):
+					# print("change angle")
+					print(">>> STARTING TURN")
+					__turn_to(new_angle, backwards, 0)	
+					print("FINISHING TURN <<<")
+				# moving robot
 				m() # either __move_forward or __move_backward
 				prev = sys.maxint
 				progress = 0
@@ -196,16 +228,26 @@ def __move_to(x, y, backwards, recursion):
 					else:
 						progress = progress + 1
 					prev = curr
-					print(progress)
 					# determine if it's time to stop
-					if progress > 100 or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
+					if (False and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
 						if progress > 100:
-							print("###############>>>>>>>>>>>>>>>>>>>>>#################<<<<<<<<<<<<<<<<<#############")
+							print('Progress: ' + str(progress))
 						__stop()
 						break
 
-			if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
-				__move_to(x, y, backwards, recursion + 1)
+			#Obtaining position again
+            position = __get_position()
+            c_x = position[0]
+            c_y = position[1]
+            if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
+                __move_to(x, y, backwards, recursion + 1)
+            else:
+                print("Final threshold")
+                print('X:' + str(math.fabs(c_x - x)))
+                print('Y:' + str(math.fabs(c_y - y)))
+
+        else:
+            print("Recursion DONE")
 
 
 def make_attribution():
@@ -222,7 +264,17 @@ def make_attribution():
 	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
-	
+
+def make_cognitive_prompt():
+	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
+	state = request.vars['state']
+	prob_num = int(request.vars['number'])
+	trig = request.vars['trigger']
+	ang = request.vars['angle']
+	# wrapping info in package
+	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	return message_wrapper
 
 def __reset(outcome):
 	for r in db(db.attributions.success == outcome).select():
@@ -276,8 +328,31 @@ def reset_zero():
 def toggle_auto_control():
 	return rc.set_auto(not rc.auto)
 
+def test_d():
+	return RobotController.d
+
 def get_direction():
-	return int(float(RobotController.d))
+	if not RobotController.d:
+		# info from iPod not available
+		return gateway.getCurrentOrientation()
+	
+	#info from iPod available. Using it.
+	h = float(RobotController.d) # Info from secondary orientation source
+	o1 = gateway.getCurrentOrientation() # Info from primary orientation source (may be flipped 180º)
+	o2 = (o1 + 180) % 360 # flipped o1
+	
+	# Calculating orientation based on two sources.
+	# The primary source is precise(ish), but it may be flipped 180 degrees. So we check the secondary source for the closest point.
+	d1 = math.fabs(o1 - h)
+	d2 = math.fabs(o2 - h)
+	# Calculating the distance
+	h1 = d1 if d1 <= 180 else 360 - d1
+	h2 = d2 if d2 <= 180 else 360 - d2
+
+	if h1 < h2:
+		return o1
+	else:
+		return o2
 
 
 ## private functions

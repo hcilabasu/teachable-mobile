@@ -7,3 +7,5 @@ static/logs/log.txt
 .DS_Store
 languages/*
 /.project
+
+databases/sql.log

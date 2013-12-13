@@ -57,7 +57,6 @@ STEPS.isInDragMode = function() {
  */
 function updateCurrentStep() {
     log("Step selection window opened",{"source":__SOURCE__});
-
     // ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
     updateCurrentStepDialog_CB(APP.basicProceduresArray);
 }

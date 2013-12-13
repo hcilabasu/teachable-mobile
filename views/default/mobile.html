@@ -58,13 +58,13 @@
         	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
         	APP.basicProceduresArray = function() { // This is assigning the return value of the function, not the function!
-	 			var pArray = [];
-				for(p in APP.basicProcedures) {
-	 				APP.basicProcedures[p].name = p;
-	 				pArray.push(APP.basicProcedures[p]);
-				}
-				return pArray;
- 			}(); // Pay attention: I am actually calling the function
+        		var pArray = [];
+        		for(p in APP.basicProcedures){
+        			APP.basicProcedures[p].name = p;
+        			pArray.push(APP.basicProcedures[p]);
+        		}
+        		return pArray;
+        	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
@@ -90,6 +90,7 @@
         		// }
 
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
+
 		    		var incoming = JSON.parse(unescape(e.data));
 		    		
 		    		GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;

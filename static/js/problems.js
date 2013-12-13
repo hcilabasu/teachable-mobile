@@ -33,6 +33,7 @@ function refreshProblem(message, executeSteps) {
         APP.currentStepsList = [];
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
+
         if(executeSteps === undefined || executeSteps) { // TODO The first condition should be removed as soon as all calls to this function are updated accordingly
             executeStep(); 
         }
@@ -123,13 +124,15 @@ function moveToNext(callback) {
     log("Calling moveToNext");
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-    setCurrentProblem();
-    refreshProblem(undefined, false);
+    setCurrentProblem(); // Call #1
+    refreshProblem(undefined, false); // Call #2
+    
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
     window.setTimeout(function() {
-      callCheckForSecondPrompt("hit", "beg", 1);
+        callCheckForSecondPrompt("hit", "beg", 1);
     }, 13000);
+
     // Logging
     log("Moving to Problem " + APP.currentProblem.id);
     if(callback) {

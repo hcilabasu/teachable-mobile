@@ -100,6 +100,27 @@ a.check-solution-button {
 }
 */
 
+/*a.disabled {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	background: #999;
+	min-width: 30px;
+	border-radius: 5px;
+	text-decoration: none;
+	color: red;
+	text-shadow: 0 1px 0 #DDD;
+	border: solid 1px #666;
+	padding-bottom: 1px;
+	height: 33px;
+	line-height: 15px;
+}*/
+
+/*a.fade {
+  opacity:1;
+  transition: opacity .5s linear;
+}
+*/
 a.action-button {
 	position: relative;
 	display: inline-block;

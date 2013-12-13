@@ -130,7 +130,7 @@ function updateStepsListInDB(){
         }
     });*/
     // Logging
-    log("Updated steps list in DB", steps);
+    // log("Updated steps list in DB", steps);
 }
 
 function addDeleteButton(item){

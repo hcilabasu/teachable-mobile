@@ -39,11 +39,17 @@
         	APP.SEND = "{{=URL('communication','send')}}";
         	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
         	APP.LOCK_APPLET = "{{=URL('lock_applet')}}";
+        	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
+        	APP.GEOGEBRA_STATUS = "{{=URL('geogebra_status')}}";
 
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
         	problems = problems.replace(/&quot;/g, "\"");
         	problems = problems.replace(/&#x27;/g, "'");
+
+        	//Storing the cartesian plane status in a global variable
+        	var GEOGEBRA_STATUS_STRING = "GEOGEBRA_STATUS_STRING_SS";
+        	APP.GEOGEBRA_STATUS_STRING = "APP_GEOGEBRA_STATUS_STRING";
 
         	// APP.init();
         	
@@ -51,21 +57,46 @@
 
         	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
+        	APP.basicProceduresArray = function() { // This is assigning the return value of the function, not the function!
+	 			var pArray = [];
+				for(p in APP.basicProcedures) {
+	 				APP.basicProcedures[p].name = p;
+	 				pArray.push(APP.basicProcedures[p]);
+				}
+				return pArray;
+ 			}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+
         </script>
         <script>
+        	var olddata = undefined;
+        	var socket = false;
+        	var counter = 0;
+        	
+        	GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
+        	APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
+
         	// Logging page load
         	// Events are logged to logs/log.txt
         	log("Page Load or refresh",{"source":__SOURCE__});
 
-        	var olddata = undefined;
-        	var socket = false;
-        	var counter = 0;
-
         	$(document).ready(function() {
+
+        		// if(confirm('Do you want a click button on the interface?')){
+        		// 	$("#manual-click").css('display', 'block');
+        		// } else {
+        		// 	$("#manual-click").css('display', 'none');
+        		// }
+
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 		    		var incoming = JSON.parse(unescape(e.data));
+		    		
+		    		GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
+		    		APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
+
+		    		// alert("GEOGEBRA_STATUS_STRING : " + GEOGEBRA_STATUS_STRING);
+		    		// alert("APP.GEOGEBRA_STATUS_STRING : " + APP.GEOGEBRA_STATUS_STRING);
 
 		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.txt.
 					log("incoming packet : " + JSON.stringify(incoming));
@@ -80,17 +111,28 @@
 			      		 	if(incoming.status) {
 			      		 		AUDIO.loadSound("correct-solution");
 			      		 		AUDIO.play("correct-solution");
-			      		 		log("SOLUTION IS CORRECT!!!");
+			      		 		// log("SOLUTION IS CORRECT!!!");
 			      		 		// AUDIO.play("audio-attention");
 			      		 	}
 			      		 	else {
 			      		 		AUDIO.loadSound("wrong-solution");
 			      		 		AUDIO.play("wrong-solution");
-			      		 		log("SOLUTION IS WRONG!!!");
+			      		 		// log("SOLUTION IS WRONG!!!");
 			      		 		// AUDIO.play("audio-attention");
 			      		 	}
 
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
+			      		}
+			      		else if(incoming.type == "log") {
+			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status;
+			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status;
+			      			log(incoming.data.title, incoming.data.data, incoming.data.bool_verbose);
+			      		}
+			      		else if(incoming.type == "geogebrastatus") {
+			      			// alert("updating GEOGEBRA_STATUS_STRING");
+			      			console.dir("Assigning GEOGEBRA_STATUS_STRING.....");
+			      			GEOGEBRA_STATUS_STRING = incoming.data;
+			      			APP.GEOGEBRA_STATUS_STRING = incoming.data;
 			      		}
 			      		else {
 			      			try {
@@ -98,6 +140,7 @@
 				    			AUDIO.loadSound("audio-attention");
 		    					AUDIO.play("audio-attention");
 				    			var temp = JSON.parse(e.data)
+				    			console.log(temp);
 				    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
 				    				// Same trigger. Update params.
 				    				mergeObjects(olddata, temp);
@@ -241,8 +284,8 @@
 			
 			<img id="responseImageHolder" src="" />
 
-			<br>
-			<br>
+			<br/>
+			<br/>
 			
 			<span>
 				
@@ -254,11 +297,10 @@
 		<div id="emoticon">
 			<h2>How are you feeling right now?</h2>
 		</div>
-		{{if local:}}
-		<div id="manual-click">
+		
+		<div id="manual-click" style="{{= 'display: block;' if 'click' in request.vars.keys() else 'display: none;'}}">
 			<a href="#" id="manual-click-btn">Click</a>
 		</div>
-		{{pass}}
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>

@@ -9,6 +9,8 @@ PROBLEMS.init = function() {
 
     //The clickable problem heading banner that allows you to restart the current problem.
     $("#current-problem-wrapper h3").click(function() {
+        log("Student restarted current problem",{"source":"ipod"});
+        
         refreshProblem("Restart current problem?");
     });
 
@@ -18,12 +20,11 @@ PROBLEMS.init = function() {
 }
 
 //A simple method that refreshes the problem, also handles triggered refreshes.
-function refreshProblem(message) {
+function refreshProblem(message, executeSteps) {
     log("Calling refreshProblem");
     var refresh = true;
     
     if(message !== undefined) {
-        //Getting confirmation for the user-triggered problem restart.
         refresh = confirm(message);
     }
 
@@ -32,14 +33,17 @@ function refreshProblem(message) {
         APP.currentStepsList = [];
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
-        executeStep();
+        if(executeSteps === undefined || executeSteps) { // TODO The first condition should be removed as soon as all calls to this function are updated accordingly
+            executeStep(); 
+        }
         STEPS.stopDragMode();
     }
     // Do nothing...
 }
 
+// This function would set the current problem details into the UI, once the APP.currentProblemIndex has been changed to match the problem.
 function setCurrentProblem() {
-    log("Calling setCurrentProblem");
+    log("Calling setCurrentProblem", {"source":__SOURCE__});
     
     // var tmp = jQuery._data("#next-problem-button", "events");
     // alert(jQuery._data("#next-problem-button","events"));
@@ -47,7 +51,13 @@ function setCurrentProblem() {
     //Here we're as disallowing the user from going to the next problem, once a new problem has been presented.
     $("#next-problem-button").fadeTo(1, 0.5);
     $("#next-problem-button").unbind();//removing the listener
+    // $('#next-problem-button').removeClass();
+    // $('#next-problem-button').addClass('disabled');
+
+
     GBL_BOOL_NEXT_BUTTON_ENABLED = false;
+
+    // alert($("#next-problem-button").css("opacity"));
 
     if(APP.currentProblem === undefined) {
         // Logging
@@ -58,15 +68,16 @@ function setCurrentProblem() {
         APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     }
 
+    //This adds the problem heading in the top banner.
     $("#current-problem-wrapper h3").html($("<div/>").html(APP.currentProblem.text).text());
     
     // send message to applet to update its problem
     //COMM.sendToApplet()
     
-    log("Current problem index : " + APP.currentProblemIndex);
-    log("data : " + JSON.stringify(APP.currentProblem));
+    log("Current problem index : " + APP.currentProblemIndex, {"source":__SOURCE__});
+    log("data : " + JSON.stringify(APP.currentProblem), {"source":__SOURCE__}, false);
     
-    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], "");
+    ajax(APP.UPDATE_CURRENT_PROBLEM + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(APP.currentProblem)), [], ""); // Call #1
 }
 
 function moveToProblemNumber(probNum) {
@@ -86,20 +97,26 @@ function moveToProblemNumber(probNum) {
     log("Currnt problem : " + JSON.stringify(APP.currentProblem));
     // log("ALL PROBLEMS : " + JSON.stringify(APP.PROBLEMS));
 
-    setCurrentProblem();
-    refreshProblem();
+    setCurrentProblem(); // Call #1
+    refreshProblem(); // Call #2
     // Logging
     log("Moving to Problem " + APP.currentProblem.id);
 }
 
 function nextProblem() {
     if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
-        if(APP.currentProblem.prompts.length > 0){
+        if(APP.currentProblem.prompts.length > 0) {
             openPrompt(APP.currentProblem.prompts, true);
-        } else {
+        }
+        else {
+            log("Moving to next problem", {"source":"ipod"});
             moveToNext();
         }
     }
+}
+
+function callCheckForSecondPrompt(trigger, state, number) {
+    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + trigger + "&state=" + state + "&number=" + number);
 }
 
 function moveToNext(callback) {
@@ -107,10 +124,15 @@ function moveToNext(callback) {
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem();
-    refreshProblem();
+    refreshProblem(undefined, false);
+    //check to see if prompts should be called
+    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
+    window.setTimeout(function() {
+      callCheckForSecondPrompt("hit", "beg", 1);
+    }, 13000);
     // Logging
     log("Moving to Problem " + APP.currentProblem.id);
-    if(callback){
+    if(callback) {
         callback();
     }
 }
@@ -164,8 +186,10 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback-ok").click(function () {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
+        //Not collecting attribution feedback for now...
         openEmoticonScreen();
-        log("!! Button Click !!");
+        log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
+        log("System's response to solution '" + responseArray[rndIndx] + "'", {"source":__SOURCE__});
         // alert("You clicked OK!!!!");
     });
 
@@ -214,7 +238,7 @@ function openEmoticonScreen() {
         }
 
         //alert("Checked emotions are " + checkedEmotions.toString() + ".");
-        log("Checked emotions are " + checkedEmotions.toString() + ".");
+        log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
 
         $('#emoticon').empty();
 
@@ -267,8 +291,10 @@ function closePrompt() {
 // Checking the solution entered by the user.
 function checkSolution() {
     // TO DO: need to add some validations
-    log("Calling checkSolution");
-    log("Current problem : " + JSON.stringify(APP.currentProblem));
+    log("Calling checkSolution",undefined,false);
+    log("Current problem : " + JSON.stringify(APP.currentProblem),undefined,false);
+
+    // alert($("#next-problem-button").css("opacity"));
 
     //!!! Not sending the entire problem object, just the message that the applet needs to lock down
     ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify({"type" : "lockapplet"})), [], "");
@@ -278,6 +304,9 @@ function checkSolution() {
         if(confirm("Are you you sure you want to submit this solution?")) {
             // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
             // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.
+            
+            log("Student initiated solution check",{"source":__SOURCE__});
+
             var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
             problemObject.type = "check";
             ajax(APP.CHECK_SOLUTION + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");

@@ -17,7 +17,7 @@ var nonDragRestrictions = {
     stopMovingPoint : true
 }
 
-STEPS.init = function(){
+STEPS.init = function() {
     // Setting dialog
     APP.updateStepDialog = $("#update-step-dialog");
     setDialog(APP.updateStepDialog);
@@ -55,8 +55,11 @@ STEPS.isInDragMode = function() {
  *      function to the list. Duh.
  *      UPDATE: APP.basicProcedures is a list of basic (non user-created) procedures.
  */
-function updateCurrentStep(){
-    ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
+function updateCurrentStep() {
+    log("Step selection window opened",{"source":__SOURCE__});
+
+    // ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
+    updateCurrentStepDialog_CB(APP.basicProceduresArray);
 }
 
 /*
@@ -123,20 +126,20 @@ function updateStepParamsList(){
     list.focus();
 }
 
-function selectCurrentStep(event){
+function selectCurrentStep(event) {
     var form = $("#update-step-form");
     var labels = $("#current-step-select-params label");
     var procName = JSON.parse($("select option:selected", form).val()).name; // Getting procedure's name
     var parameters = {};
     var parametersArray = []
-    $.each(labels, function(index, value){
+    $.each(labels, function(index, value) {
         var paramName = value.innerText
         var paramValue = $("input#" + paramName, form).val();
         parameters[paramName] = paramValue;
         parametersArray.push(paramValue);
     });
     // Validating input
-    if(validateInput(form, labels, procName, parameters)){
+    if(validateInput(form, labels, procName, parameters)) {
         // Clearing olddata
         olddata = undefined;
         // Closing dialog
@@ -144,6 +147,7 @@ function selectCurrentStep(event){
         // creating label
         label = APP.basicProcedures[procName].label;
         label = String.prototype.format.apply(label, parametersArray);
+        
         // Updating hidden field
         returnObject = {name: procName, label: label, op: parameters};
         $("#procedure_parameters").val(JSON.stringify(returnObject));
@@ -162,11 +166,13 @@ function selectCurrentStep(event){
         /* I think that, ideally, this should be done in another way */
         insertNewStep($("#steps-list .droppable:last"), $("#current-step").html());
 
+        log("Student selected step " + label , {"source":"ipod"});
+        
         // Logging selected action
-        log("Select Current Step", JSON.stringify(APP.currentStep, null, 4));
+        log("Select Current Step " + JSON.stringify(APP.currentStep), {"source" : "ipod"});
     }
     // Check if user entered drag mode
-    switch(APP.currentStep.name){
+    switch(APP.currentStep.name) {
         case "movePoint":           // Fall through
         case "movePointDistance":
             STEPS.startDragMode();
@@ -191,7 +197,10 @@ function validateInput(form, labels, procName, parameters){
             return false;
         }
     } else if(procName === 'turnAngle'){
-        if(!isNumber(parameters['angle']) || parameters['angle'] > 360){
+        if(!isNumber(parameters['angle']) || parameters['angle'] > 360 || (parameters['angle'] % 90) !== 0){
+            if(parameters['angle'] % 90 !== 0) {
+                alert("Angle has to be a multiple of 90");
+            }
             toggleError(labels, "color", "red", "black");
             return false;
         }
@@ -233,8 +242,8 @@ function validateInput(form, labels, procName, parameters){
 /*
  * This function tells the applet to clear itself and run all the steps in the list
  */
-function executeStep(event){
-    log("Executing ALL steps");
+function executeStep(event) {
+    log("Student selected 'Execute All Steps'",{"source":"ipod"});
     if(event !== undefined){
         event.preventDefault();
     }

@@ -30,7 +30,7 @@ lap_time = 4.4
 
 rc = RobotController()
 
-recursion_cutoff = 5
+recursion_cutoff = 7
 
 def index():
 	ip = __current_ip
@@ -50,9 +50,10 @@ def see_position():
 
 def current_status():
 	position = __get_position()
+	orientation = get_direction()
 	x = position[0]
 	y = position[1]
-	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(RobotController.d) + ')'
+	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(get_direction()) + ')'
 
 def load_options():
 	# Notifying interface of click on robot
@@ -167,7 +168,8 @@ def test_th():
 def __within_threshold(desired, th):
 	current = get_direction()
 	diff = math.fabs(current - desired)
-	print('Within : ' + str(diff) + ' - ' + str(diff < th))
+	diff = diff if diff < 180 else 360 - diff
+	# print('Within : ' + str(diff) + ' - ' + str(diff < th))
 	return diff < th
 
 def __move_to(x, y, backwards, recursion):
@@ -176,6 +178,7 @@ def __move_to(x, y, backwards, recursion):
 		# print('Move to #' + str(recursion))
 		
 		m = __move_forward if not backwards else __move_backward # based on the backwards variable, determine function for robot movement
+		
 		if recursion < recursion_cutoff:
 			# retrieving current position
 			curr_position = __get_position()
@@ -188,11 +191,6 @@ def __move_to(x, y, backwards, recursion):
 			new_angle = int(math.atan2(d_y,d_x) * 180 / math.pi)
 			if new_angle < 0:
 				new_angle += 360
-
-			# turning robot
-			angle_delta = math.fabs(get_direction() - new_angle)
-			if angle_delta > 5:
-				__turn_to(new_angle, backwards, 0)	
 
 			# determining if it'll be moving in x, y or both
 			position = __get_position()
@@ -221,8 +219,8 @@ def __move_to(x, y, backwards, recursion):
 					c_y = position[1]
 					# determine progress metric
 					curr = math.sqrt(math.pow(c_x - t_x, 2) + math.pow(c_y - t_y, 2))
-					print('Curr: ' + str(curr))
-					print('Prev: ' + str(prev))
+					# print('Curr: ' + str(curr))
+					# print('Prev: ' + str(prev))
 					if curr < prev:
 						progress = 0
 					else:
@@ -234,20 +232,19 @@ def __move_to(x, y, backwards, recursion):
 							print('Progress: ' + str(progress))
 						__stop()
 						break
+			# Obtaining position again
+			position = __get_position()
+			c_x = position[0]
+			c_y = position[1]
+			if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
+				__move_to(x, y, backwards, recursion + 1)
+			else:
+				print("Final threshold")
+				print('X:' + str(math.fabs(c_x - x)))
+				print('Y:' + str(math.fabs(c_y - y)))
 
-			#Obtaining position again
-            position = __get_position()
-            c_x = position[0]
-            c_y = position[1]
-            if math.fabs(c_x - x) > distance_threshold or math.fabs(c_y - y) > distance_threshold:
-                __move_to(x, y, backwards, recursion + 1)
-            else:
-                print("Final threshold")
-                print('X:' + str(math.fabs(c_x - x)))
-                print('Y:' + str(math.fabs(c_y - y)))
-
-        else:
-            print("Recursion DONE")
+		else:
+			print("Recursion DONE")
 
 
 def make_attribution():
@@ -332,6 +329,7 @@ def test_d():
 	return RobotController.d
 
 def get_direction():
+
 	if not RobotController.d:
 		# info from iPod not available
 		return gateway.getCurrentOrientation()

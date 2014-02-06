@@ -7,8 +7,8 @@ var Attributions = function() {
 
 	var makeAttribution = function(attr) {
 		//Adrin added the 2 log lines
-		log("In makeAttribution.....");
-		log(JSON.stringify(attr));
+		// log("In makeAttribution.....");
+		// log(JSON.stringify(attr));
 		
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);

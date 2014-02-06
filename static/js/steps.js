@@ -56,7 +56,7 @@ STEPS.isInDragMode = function() {
  *      UPDATE: APP.basicProcedures is a list of basic (non user-created) procedures.
  */
 function updateCurrentStep() {
-    log("Step selection window opened",{"source":__SOURCE__});
+    // log("Step selection window opened",{"source":__SOURCE__});
     // ajax(APP.UPDATE_STEP + "?trigger=" + olddata.trigger + "&callback=updateCurrentStepDialog_CB", [], ":eval");
     updateCurrentStepDialog_CB(APP.basicProceduresArray);
 }
@@ -165,10 +165,10 @@ function selectCurrentStep(event) {
         /* I think that, ideally, this should be done in another way */
         insertNewStep($("#steps-list .droppable:last"), $("#current-step").html());
 
-        log("Student selected step " + label , {"source":"ipod"});
+        // log("Student selected step " + label , {"source":"ipod"});
         
         // Logging selected action
-        log("Select Current Step " + JSON.stringify(APP.currentStep), {"source" : "ipod"});
+        // log("Select Current Step " + JSON.stringify(APP.currentStep), {"source" : "ipod"});
     }
     // Check if user entered drag mode
     switch(APP.currentStep.name) {
@@ -242,7 +242,14 @@ function validateInput(form, labels, procName, parameters){
  * This function tells the applet to clear itself and run all the steps in the list
  */
 function executeStep(event) {
-    log("Student selected 'Execute All Steps'",{"source":"ipod"});
+    // log("Student selected 'Execute All Steps'",{"source":"ipod"});
+    
+    //Doing this since executeStep is also called when we reset via problem header. For that case, don't need to log this function.
+    if(event) {
+        // var initialStateOnLoadString  = calculateInitialStateOnLoad();
+        log("", {"type":"replay","parameter":"", "initial" : "", "final" : ""}, true);
+    }
+
     if(event !== undefined){
         event.preventDefault();
     }

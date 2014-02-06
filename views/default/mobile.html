@@ -77,12 +77,17 @@
         	GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
         	APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
 
+        	//Printing the headers
+        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id");
+
         	// Logging page load
         	// Events are logged to logs/log.txt
-        	log("Page Load or refresh",{"source":__SOURCE__});
+        	// log("Page Load or refresh",{"source":__SOURCE__});
+        	// getGeogebraStatus();
+        	var initialStateOnLoadString  = calculateInitialStateOnLoad();
+        	log("", {"type":"Refresh","parameter":"", "initial" : initialStateOnLoadString, "final" : initialStateOnLoadString}, true);
 
         	$(document).ready(function() {
-
         		// if(confirm('Do you want a click button on the interface?')){
         		// 	$("#manual-click").css('display', 'block');
         		// } else {
@@ -100,12 +105,13 @@
 		    		// alert("APP.GEOGEBRA_STATUS_STRING : " + APP.GEOGEBRA_STATUS_STRING);
 
 		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.txt.
-					log("incoming packet : " + JSON.stringify(incoming));
+					// log("incoming packet : " + JSON.stringify(incoming));
 		      		
 		      		if(incoming) {
 		      			// Reset to a particular problem number.
 			      		if(incoming.type == "reset") {
-			      			log("Applet has initiated a problem change. Moving to problem number " + (incoming.number + 1));
+			      			// log("Applet has initiated a problem change. Moving to problem number " + (incoming.number + 1));
+			      			// log("Admin Change Problem. Moving to problem number " + (incoming.number + 1));
 				    		moveToProblemNumber(incoming.number);
 				      	}
 				      	else if(incoming.type == "check") {
@@ -125,15 +131,16 @@
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
 			      		else if(incoming.type == "log") {
-			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status;
-			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status;
-			      			log(incoming.data.title, incoming.data.data, incoming.data.bool_verbose);
+			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
+			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
+			      			// log(incoming.data.title, incoming.data.data, incoming.data.bool_verbose);
+			      			log("", incoming.data.data);
 			      		}
 			      		else if(incoming.type == "geogebrastatus") {
 			      			// alert("updating GEOGEBRA_STATUS_STRING");
 			      			console.dir("Assigning GEOGEBRA_STATUS_STRING.....");
-			      			GEOGEBRA_STATUS_STRING = incoming.data;
-			      			APP.GEOGEBRA_STATUS_STRING = incoming.data;
+			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
+			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      		}
 			      		else {
 			      			try {

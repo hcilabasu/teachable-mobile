@@ -19,12 +19,20 @@
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
+// <<<<<<< HEAD
+// 		var currentPromptIndex = 0;
+// 		var localProblemIndex = 540;
+// 		var begLast = false;
+// 		var recordClickCount = 0;
+// 		var promptsFinished = false;
+// =======
 		var direction = undefined;
 	    var raw_direction = undefined;
 	    var offset = 0;
 	    var currentPromptIndex = 0;
 	    var localProblemIndex = 540;
 	    var begLast = false;
+// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
 
 	    window.addEventListener('deviceorientation', function(e) {
 	            var prop = e.alpha;
@@ -56,14 +64,14 @@
 		$(function(){
 			var currClass;
 			
-			$("body > div:not(#overlay)").on("touchstart", function(){
+			$("body > div:not(#overlay,#speech,#record)").on("touchstart", function(){
 				console.dir("start touch");
 				currClass = $("body").attr('class');
 				$("body").attr('class', 'frown');
 				return false;
 			});
 
-			$("body > div:not(#overlay)").on("touchend", function(){
+			$("body > div:not(#overlay,#speech,#record)").on("touchend", function(){
 				console.dir("end touch");
 				$("body").attr('class', currClass);
 				notifyClick();
@@ -77,6 +85,11 @@
 			          console.dir(data);
 			    	}
 			    });
+
+			    //dismiss any visible prompts
+			    recordClickCount = 5;
+			    $("#record").click();
+
 			    // Notifying user
 			    showClick();
 			};
@@ -95,11 +108,21 @@
 
 </head>
 <body class="neutral">
+<!-- <<<<<<< HEAD
+	<div id="output"></div>
+	<div id="eyes"></div>
+	<div id="mouth"></div>
+	<div id="speech"></div>
+	<div id="record"></div>
+	<div id="overlay"></div>
+	<audio id="promptSound"/>
+======= -->
     <div id="output"></div>
     <div id="eyes"></div>
     <div id="mouth"></div>
     <div id="speech"></div>
     <div id="overlay"></div>
     <audio id="promptSound"/>
+<!-- >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909 -->
 </body>
 </html>

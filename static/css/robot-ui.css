@@ -73,6 +73,33 @@ body {
 	padding: 10px;
 	font-family: verdana;
 	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	z-index: 2;
+}
+
+#record {
+	display: none;
+	position: absolute;
+	width:60px;
+	height:30px;
+	bottom: 20px;
+	left: 135px;
+	text-align:center;
+	font-family: verdana;
+	border: solid 1px #666;
+	border-radius: 5px;
+	z-index: 3;
+	padding: 5px 0px 0px 20px;
+	box-shadow: inset 0 5px 10px #CCC, 0 0 5px #999;
+	background: white url(../images/record.png) no-repeat 5px 5px;
+	background-size: 25px;
+}
+
+#record.stop {
+	background-image: url(../images/stop.png);
+}
+
+#record.dismiss {
+	background-image: url(../images/dismiss.png);	
 }
 
 .frown #eyes { background-position: -320px 0px; }
@@ -234,4 +261,4 @@ body {
 	66% {
 		background-position: -963px 0; width: 320px; height: 480px;
 	}
-} 
+}

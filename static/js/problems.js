@@ -126,7 +126,7 @@ function nextProblem() {
     }
 }
 
-function callCheckForSecondPrompt(trigger, state, number) {
+function callCheckForPrompt(trigger, state, number) {
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + trigger + "&state=" + state + "&number=" + number);
 }
 
@@ -137,11 +137,18 @@ function moveToNext(callback) {
     setCurrentProblem(); // Call #1
     refreshProblem(undefined, false); // Call #2
     
+// <<<<<<< HEAD
+//     //allow robot to resest, then check to see if prompts should be called
+//     window.setTimeout(function(){
+//           callCheckForPrompt("hit", "beg", 1);
+//         }, 15000);
+// =======
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
     window.setTimeout(function() {
         callCheckForSecondPrompt("hit", "beg", 1);
     }, 13000);
+// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
 
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);
@@ -315,7 +322,7 @@ function checkSolution() {
 
     // Need to confirm if this validation is necessary and sufficient
     if(APP.currentProblem) {
-        if(confirm("Are you you sure you want to submit this solution?")) {
+        if(true) {
             // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
             // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.
             

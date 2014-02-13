@@ -90,12 +90,9 @@ var CognitivePrompts = function(){
 			$("body").addClass("talking");
 			console.log(currentPromptIndex);
 			$("#speech").text(prompts[currentPromptIndex].text).fadeIn('slow');
-// <<<<<<< HEAD
-// =======
 
 			log("", {"type":"prompt","parameter":prompts[currentPromptIndex].text, "initial" : "", "final" : ""});
 
-// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
 			$("#record").text('REC');
 			$("#record").fadeIn('slow');
 			$("#record").off('click');
@@ -153,7 +150,7 @@ var CognitivePrompts = function(){
 				}
 			});
 		});
-//lol
+
 		AUDIO.addFinishListener("promptSound", function(){
 			// When robot finishes speaking
 			$("body").removeClass("talking");

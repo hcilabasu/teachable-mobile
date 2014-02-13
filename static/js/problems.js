@@ -137,18 +137,18 @@ function moveToNext(callback) {
     setCurrentProblem(); // Call #1
     refreshProblem(undefined, false); // Call #2
     
-// <<<<<<< HEAD
-//     //allow robot to resest, then check to see if prompts should be called
-//     window.setTimeout(function(){
-//           callCheckForPrompt("hit", "beg", 1);
-//         }, 15000);
-// =======
+
+     //allow robot to resest, then check to see if prompts should be called
+     window.setTimeout(function(){
+           callCheckForPrompt("hit", "beg", 1);
+         }, 15000);
+
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
     window.setTimeout(function() {
         callCheckForSecondPrompt("hit", "beg", 1);
     }, 13000);
-// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
+
 
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);

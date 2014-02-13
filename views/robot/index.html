@@ -8,10 +8,10 @@
 	<title></title>
 
 	<script src="{{=URL('static','js/jquery.js')}}"></script>
-    <script src="{{=URL('static','js/web2py.js')}}"></script>
-    <script src="{{=URL('static','js/audio.js')}}"></script>
-    <script src="{{=URL('static','js/attributions.js')}}"></script>
-    <script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+    	<script src="{{=URL('static','js/web2py.js')}}"></script>
+    	<script src="{{=URL('static','js/audio.js')}}"></script>
+    	<script src="{{=URL('static','js/attributions.js')}}"></script>
+    	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
@@ -19,20 +19,12 @@
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
-// <<<<<<< HEAD
-// 		var currentPromptIndex = 0;
-// 		var localProblemIndex = 540;
-// 		var begLast = false;
-// 		var recordClickCount = 0;
-// 		var promptsFinished = false;
-// =======
-		var direction = undefined;
-	    var raw_direction = undefined;
-	    var offset = 0;
-	    var currentPromptIndex = 0;
-	    var localProblemIndex = 540;
-	    var begLast = false;
-// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
+ 		var currentPromptIndex = 0;
+ 		var localProblemIndex = 540;
+ 		var begLast = false;
+ 		var recordClickCount = 0;
+ 		var promptsFinished = false
+
 
 	    window.addEventListener('deviceorientation', function(e) {
 	            var prop = e.alpha;
@@ -55,6 +47,9 @@
 			switch(data.type){
 				case 'attribution':
 					attributions.makeAttribution(data.value);
+					break;
+				case 'cognitive':
+					cognitive_prompts.makePrompt(data.value);
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;
@@ -108,7 +103,6 @@
 
 </head>
 <body class="neutral">
-<!-- <<<<<<< HEAD
 	<div id="output"></div>
 	<div id="eyes"></div>
 	<div id="mouth"></div>
@@ -116,13 +110,5 @@
 	<div id="record"></div>
 	<div id="overlay"></div>
 	<audio id="promptSound"/>
-======= -->
-    <div id="output"></div>
-    <div id="eyes"></div>
-    <div id="mouth"></div>
-    <div id="speech"></div>
-    <div id="overlay"></div>
-    <audio id="promptSound"/>
-<!-- >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909 -->
 </body>
 </html>

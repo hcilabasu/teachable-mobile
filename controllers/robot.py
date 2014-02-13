@@ -1,4 +1,4 @@
-from py4j.java_gateway import JavaGateway
+#from py4j.java_gateway import JavaGateway
 from RobotController import RobotController
 from threading import Thread
 import time
@@ -19,7 +19,7 @@ __socket_group_name = config.TORNADO_GROUP_ROBOT
 
 direction = 0
 position = (0,0)
-gateway = JavaGateway()
+#gateway = JavaGateway()
 
 angle_threshold = 13
 small_angle_threshold = 4

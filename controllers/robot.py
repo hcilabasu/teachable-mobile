@@ -7,6 +7,7 @@ import config
 import urllib
 import collections
 import sys
+import pdb
 from copy import copy
 from gluon.contrib.websocket_messaging import websocket_send
 
@@ -270,6 +271,18 @@ def make_cognitive_prompt():
 	ang = request.vars['angle']
 	# wrapping info in package
 	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	return message_wrapper
+
+def skip_prompts():
+	#pdb.set_trace()
+	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
+	state = request.vars['state']
+	prob_num = int(request.vars['number'])
+	trig = request.vars['trigger']
+	ang = request.vars['angle']
+	# wrapping info in package
+	message_wrapper = '{"type":"cognitive_skip", "value":{"number":"%s"}}' % (prob_num)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 

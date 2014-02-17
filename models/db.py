@@ -114,3 +114,20 @@ db.define_table('attributions',
     Field('message', type='string'),
     Field('used', type='boolean'),
     Field('session', type='boolean'))
+
+## testers
+db.define_table('testers',
+    Field('name', type='string'))
+
+## conditions
+db.define_table('conditions',
+    Field('name', type='string'))
+
+## study sessions
+db.define_table('sessions',
+    Field('subject_id', type='integer'),
+    Field('tester_name', type='string'),
+    Field('condition_name', type='string'),
+    Field('start_time', type='datetime'),
+    Field('end_time', type='datetime')
+)

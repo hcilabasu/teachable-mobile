@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<title>Session Control</title>
+	<style type="text/css">
+		fieldset {
+			margin-bottom: 30px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Session Control</h1>
+
+	<form method="post" action="{{=URL('end_session')}}">
+		<fieldset>
+			<legend>Current session</legend>
+			
+			{{if current_session:}}
+				<ul>
+					<li><strong>Subject ID:</strong> {{=current_session.subject_id}}</li>
+					<li><strong>Tester name:</strong> {{=current_session.tester_name}}</li>
+					<li><strong>Condition name:</strong> {{=current_session.condition_name}}</li>
+				</ul>
+
+				<input type="submit" value="End session"/>
+			{{else:}}
+				<p>No session is currently active. Use form below to start a new session.</p>
+			{{pass}}
+
+			
+		</fieldset>
+	</form>
+
+	<form method="post" action="{{=URL('new_session')}}">
+		<fieldset>
+			<legend>Start new session</legend>
+
+			{{if current_session:}}
+				<p>Creating a new session will automatically end the current session.</p>
+			{{pass}}
+
+			<ul>
+				<li>
+					<label>Subject ID</label>
+					<input type="text" name="subject_id">
+				</li>	
+				<li>
+					<label>Tester</label>
+					<select name="tester">
+						<option>-</option>
+						{{for t in testers:}}
+							<option value="{{=t.name}}">{{=t.name}}</option>
+						{{pass}}
+					</select>
+				</li>
+				<li>
+					<label>Condition</label>
+					<select name="condition">
+						<option>-</option>
+						{{for c in conditions:}}
+							<option value="{{=c.name}}">{{=c.name}}</option>
+						{{pass}}
+					</select>
+				</li>
+			</ul>
+
+			<input type="submit"/>
+		</fieldset>
+	</form>
+
+	<fieldset>
+		<legend>Previous sessions</legend>
+		{{=all_sessions}}
+	</fieldset>
+</body>
+</html>

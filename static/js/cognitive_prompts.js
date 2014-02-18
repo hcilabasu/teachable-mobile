@@ -7,11 +7,13 @@ var CognitivePrompts = function(){
 
 	var doPromptAction = function(name, info)
 	{
-		if(name == skipPrompts)
+		console.log("alsdkjflaksdjflk");
+
+		if(name == "skipPrompts")
 		{
 			skipPrompts(info)
 		}
-		else if(name == makePrompt)
+		else if(name == "makePrompt")
 		{
 			makePrompt(info)
 		}
@@ -23,11 +25,12 @@ var CognitivePrompts = function(){
         prompts = prompts.replace(/&#x27;/g, "'");
         prompts = JSON.parse(prompts);
 
+        localProblemIndex = problem.number + 540;
 		currentPromptIndex = 0;
-		console.log("weeeeeeeeee");
-		while(prompts[currentPromptIndex].problem < problem.number)
+		while(prompts[currentPromptIndex].problem_num < localProblemIndex)
 		{
 			currentPromptIndex = currentPromptIndex + 1;
+			console.log("@@@" + currentPromptIndex);
 		}
 	}
 
@@ -194,8 +197,8 @@ var CognitivePrompts = function(){
 	}
 
 	return {
-		makePrompt : makePrompt
-		//doPromptAction : doPromptAction
+		//makePrompt : makePrompt
+		doPromptAction : doPromptAction
 	}
 }
 

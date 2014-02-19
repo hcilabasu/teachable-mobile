@@ -39,6 +39,10 @@ function refreshProblem(message, executeSteps) {
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
 
+        //skip to appropriate prompt
+        var current = -1;
+        ajax(APP.SKIP_TO_PROMPT + "?number=" + current );
+
         if(executeSteps === undefined || executeSteps) { // TODO The first condition should be removed as soon as all calls to this function are updated accordingly
             executeStep(); 
         }
@@ -100,7 +104,6 @@ function moveToProblemNumber(probNum) {
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
     //skip to appropriate prompt
-    console.log("************" + probNum);
     ajax(APP.SKIP_TO_PROMPT + "?number=" + probNum );
 
     // log("Problem number : " + probNum);

@@ -7,8 +7,6 @@ var CognitivePrompts = function(){
 
 	var doPromptAction = function(name, info)
 	{
-		console.log("alsdkjflaksdjflk");
-
 		if(name == "skipPrompts")
 		{
 			skipPrompts(info)
@@ -25,12 +23,19 @@ var CognitivePrompts = function(){
         prompts = prompts.replace(/&#x27;/g, "'");
         prompts = JSON.parse(prompts);
 
-        localProblemIndex = problem.number + 540;
-		currentPromptIndex = 0;
-		while(prompts[currentPromptIndex].problem_num < localProblemIndex)
-		{
-			currentPromptIndex = currentPromptIndex + 1;
-			console.log("@@@" + currentPromptIndex);
+        if(problem.number == -1)
+        {
+        	//simply refreshing current problem, skip back beginning prompt?
+        }
+        else
+        {
+        	//changing problem number, update prompt index accordingly
+	        localProblemIndex = problem.number + 540;
+			currentPromptIndex = 0;
+			while(prompts[currentPromptIndex].problem_num < localProblemIndex)
+			{
+				currentPromptIndex = currentPromptIndex + 1;
+			}
 		}
 	}
 
@@ -44,7 +49,6 @@ var CognitivePrompts = function(){
 
         //if we just transitioned from problem state "end" to problem state "beg", increment  
         //mobile problem number index
-        console.log(prompt.state);
         if(prompt.state == "beg")
         {
         	//sometimes we will encounter consecutive prompts with problem state "beg"
@@ -64,22 +68,20 @@ var CognitivePrompts = function(){
         	begLast = false;
         }
 
-        console.log("checking stuff - " + currentPromptIndex);
         //check trigger criteria
         if(prompt.trigger == "hit")
         {
-			console.log(localProblemIndex);
+        	console.log("1");
 			if(prompts[currentPromptIndex].problem_num == localProblemIndex)//prompt.number)
 			{	
-			    console.log(prompt.state);
 			    //next prompt is associated with this problem
 			    if(prompts[currentPromptIndex].problem_state == prompt.state || (prompts[currentPromptIndex].problem_state == "mid" && prompt.state == "end"))
 			    {
+			    	console.log("2");
 				    // and is associated with current problem state OR the student's procedure skipped mid-problem prompt triggers
 				    // so check for special mid-problem case
 				    if(prompt.state == "mid")
 				    {
-				    	console.log(prompt.angle);
 				    	if(prompts[currentPromptIndex].orientation != prompt.angle)
 				    	{
 				    		trigger = false;
@@ -98,6 +100,7 @@ var CognitivePrompts = function(){
 
 				    if(trigger)
 				    {
+				    	console.log("3");
 					    displayTriggeredPrompt(prompt);
 					}
 				}	
@@ -130,7 +133,6 @@ var CognitivePrompts = function(){
 			$("#record").fadeIn('slow');
 			$("#record").off('click');
 			$("#record").click(function() {
-				console.log("I see clicks!");
 
 				//increment click count
 				recordClickCount = recordClickCount + 1;
@@ -197,7 +199,6 @@ var CognitivePrompts = function(){
 	}
 
 	return {
-		//makePrompt : makePrompt
 		doPromptAction : doPromptAction
 	}
 }

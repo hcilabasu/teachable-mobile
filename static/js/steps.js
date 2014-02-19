@@ -20,6 +20,7 @@ var nonDragRestrictions = {
 STEPS.init = function() {
     // Setting dialog
     APP.updateStepDialog = $("#update-step-dialog");
+    // alert(APP.updateStepDialog);
     setDialog(APP.updateStepDialog);
     APP.updateStepDialog.bind('dialogclose', function(){olddata=undefined;});
 

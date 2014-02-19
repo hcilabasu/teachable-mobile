@@ -138,10 +138,10 @@ function moveToNext(callback) {
     refreshProblem(undefined, false); // Call #2
     
 
-     //allow robot to resest, then check to see if prompts should be called
-     window.setTimeout(function(){
-           callCheckForPrompt("hit", "beg", 1);
-         }, 15000);
+    //allow robot to resest, then check to see if prompts should be called
+    window.setTimeout(function(){
+       callCheckForPrompt("hit", "beg", 1);
+    }, 15000);
 
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
@@ -174,7 +174,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     var wrongResponseArray = ["That solution is wrong.\nBy the way did you hear that buzzer, I think someone is at the door.", "Negative, that is wrong.\nEpic failure is a stepping stone to epic success. ", "Incorrect-amundo."];
     var responseArray = wrongResponseArray, responseImage = wrongImage;
     
-    if(String(solutionStatus).toLowerCase() == "true")  {
+    if(String(solutionStatus).toLowerCase() == "true") {
         responseArray = correctResponseArray;
         responseImage = correctImage;
 

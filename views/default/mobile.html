@@ -20,6 +20,7 @@
         <script src="{{=URL('static','js/problems.js')}}"></script>
         <script src="{{=URL('static','js/stepsList.js')}}"></script>
         <script src="{{=URL('static','js/main.js')}}"></script>
+        <script src="{{=URL('static','js/log.js')}}"></script>
         <script>
         	// $(function() {
         	// 	$("#check-solution-button").click(checkSolution);
@@ -67,18 +68,30 @@
         	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-
         </script>
         <script>
         	var olddata = undefined;
         	var socket = false;
         	var counter = 0;
+
+        	//Getting session information
+    	 	var datum;
+        	// jQuery.getJSON("../session/current_session", function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);});
+        	//Called this asynchronously. Can't believe this worked.
+        	$.ajax({
+			    type: 'GET',
+			    url: '../session/current_session',
+			    dataType: 'json',
+			    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+			    async: false
+			});
+        	// alert(TEST_SESSION_JSON);
         	
         	GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
         	APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
 
         	//Printing the headers
-        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id");
+        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id, Subject id, Tester Name, Condition Name", {"firstPrint":true});
 
         	// Logging page load
         	// Events are logged to logs/log.txt
@@ -97,6 +110,8 @@
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 
 		    		var incoming = JSON.parse(unescape(e.data));
+
+		    		// alert(jQuery.getJSON("../session/current_session").responseText);
 		    		
 		    		GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
 		    		APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
@@ -130,10 +145,6 @@
 
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
-// <<<<<<< HEAD
-// 			      		else if(incoming.type == "alert"){
-// 			      			alert(incoming.message);
-// =======
 			      		else if(incoming.type == "log") {
 			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
@@ -145,7 +156,6 @@
 			      			console.dir("Assigning GEOGEBRA_STATUS_STRING.....");
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
-// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
 			      		}
 			      		else {
 			      			try {

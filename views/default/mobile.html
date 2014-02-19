@@ -40,6 +40,7 @@
         	APP.CHECK_SOLUTION = "{{=URL('check_solution')}}";
         	APP.LOCK_APPLET = "{{=URL('lock_applet')}}";
         	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
+        	APP.SKIP_TO_PROMPT = "{{=URL('mobileinterface','robot','skip_prompts')}}";
         	APP.GEOGEBRA_STATUS = "{{=URL('geogebra_status')}}";
 
         	// Adding problems variable to global variable
@@ -130,10 +131,11 @@
 
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
-// <<<<<<< HEAD
-// 			      		else if(incoming.type == "alert"){
-// 			      			alert(incoming.message);
-// =======
+
+ 			      		else if(incoming.type == "alert"){
+ 			      			alert(incoming.message);
+ 			      		}
+
 			      		else if(incoming.type == "log") {
 			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
@@ -145,7 +147,6 @@
 			      			console.dir("Assigning GEOGEBRA_STATUS_STRING.....");
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
-// >>>>>>> 75b6b2fd9e86775139ca95a557dafb94f10b6909
 			      		}
 			      		else {
 			      			try {

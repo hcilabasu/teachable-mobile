@@ -112,7 +112,7 @@ var CognitivePrompts = function(){
 				if(recordClickCount == 2) 
 				{
 					//on second click, remove border to show Quinn is NOT "recording"
-					$//("#record").css({"outline":"#FF0000 dotted"});								
+					//$("#record").css({"outline":"#FF0000 dotted"});								
 					//change to dismiss button
 					$("#record").removeClass('stop').addClass('dismiss');
 					$("#record").text('DONE');

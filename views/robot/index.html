@@ -52,7 +52,10 @@
 					attributions.makeAttribution(data.value);
 					break;
 				case 'cognitive':
-					cognitive_prompts.makePrompt(data.value);
+					cognitive_prompts.doPromptAction("makePrompt",data.value);
+					break;
+				case 'cognitive_skip':
+					cognitive_prompts.doPromptAction("skipPrompts",data.value);
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;

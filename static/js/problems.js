@@ -99,6 +99,10 @@ function moveToProblemNumber(probNum) {
     APP.currentProblemIndex = probNum;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
+    //skip to appropriate prompt
+    console.log("************" + probNum);
+    ajax(APP.SKIP_TO_PROMPT + "?number=" + probNum );
+
     // log("Problem number : " + probNum);
     // log("Current problem : " + JSON.stringify(APP.currentProblem));
     // log("ALL PROBLEMS : " + JSON.stringify(APP.PROBLEMS));
@@ -145,10 +149,6 @@ function moveToNext(callback) {
 
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
-    window.setTimeout(function() {
-        callCheckForSecondPrompt("hit", "beg", 1);
-    }, 13000);
-
 
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);

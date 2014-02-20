@@ -144,6 +144,39 @@ function mergeObjects(data, newdata){
     }
 }
 
+function isClickButtonVisible(){
+    return $("#manual-click").css("display") === "block";
+}
+
+function clickButtonPromptStarted(){
+    $("#manual-click a").off().text("Record").click(clickButtonRecordStarted);
+};
+
+function clickButtonRecordStarted(e){
+    $("#manual-click a").off().text("Stop").click(clickButtonRecordFinished);
+}
+
+function clickButtonRecordFinished(e){
+    $("#manual-click a").off().text("Done").click(clickButtonSetClickAction);
+}
+
+function clickButtonSetClickAction(e){
+    $("#manual-click a").off().text("Click").click(clickButtonOpenDialog);   
+    // Sending message to the robot to dismiss the prompt subtitles
+    $.ajax({
+        url: APP.DISMISS_PROMPT
+    });
+}
+
+function clickButtonOpenDialog(e){
+    e.preventDefault();
+    // {trigger: "robot"}
+    olddata = {trigger:"all"};
+    updateCurrentStep();
+    counter = 1;
+}
+
+
 /*
  * Logging function. The parameter should be a string, which will be logged.
  * Events are logged to logs/log.txt

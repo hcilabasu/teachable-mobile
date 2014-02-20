@@ -156,7 +156,11 @@
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      		}
+			      		else if(incoming.type === "prompt_was_made"){
+			      			alert("prompt");
+			      		}
 			      		else {
+			      			// Old messages. They do not have a type. But they should. TODO
 			      			try {
 				    			// Playing attention sound
 				    			AUDIO.loadSound("audio-attention");

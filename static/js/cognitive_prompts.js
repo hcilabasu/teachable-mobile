@@ -196,6 +196,10 @@ var CognitivePrompts = function(){
 
 		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
 
+		// TODO separate into a function
+		$.ajax({
+			url: 'robot/prompt_was_made'
+		});
 	}
 
 	return {

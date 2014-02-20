@@ -218,33 +218,38 @@ var CognitivePrompts = function(){
 			else
 			{
 				console.log("b");
-				$("#record").text('Dismiss');
+				$("#record").addClass('dismiss');
+				$("#record").text('Done');
 				$("#record").fadeIn('slow');
 				$("#record").off('click');
+				console.log("c");
 				$("#record").click(function() {
+					console.log("d");
 					$("body").removeClass().addClass("neutral");
-						$("#speech").fadeOut('slow');
-						$("#record").fadeOut('slow', function(){
-							// removing dismiss class only after done fading
-							$("#record").removeClass('dismiss');
-						});
+					$("#speech").fadeOut('slow');
+					$("#record").fadeOut('slow', function(){
+						// removing dismiss class only after done fading
+						$("#record").removeClass('dismiss');
+					});
 
-						//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
-						if(!incremented)
-						{
-							currentPromptIndex = currentPromptIndex + 1;
-							//incremented = true;
-						}
+					//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
+					if(!incremented)
+					{
+						currentPromptIndex = currentPromptIndex + 1;
+						//incremented = true;
+					}
 
-						//check for second prompt at current state
-						if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
-						{
-							$("#record").off('click');
-							displayTriggeredPrompt(prompt);
-							promptsFinished = true;
-						}
+					//check for second prompt at current state
+					if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
+					{
+						$("#record").off('click');
+						displayTriggeredPrompt(prompt);
+						promptsFinished = true;
+					}
+					
+					$("#record").off('click');
 				});
-				$("#record").off('click');
+				
 				
 			}
 

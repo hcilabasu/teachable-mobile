@@ -114,8 +114,6 @@
 				url:"{{=URL('session', 'current_session')}}"
 			}).done(function(data){
 				parsedData = JSON.parse(JSON.parse(data));
-				alert(data);
-				console.dir(parsedData);
 			});
 
 		});

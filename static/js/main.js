@@ -37,13 +37,13 @@ var __SOURCE__ = "system";
 
 $(function() {
     // Initializing Step-related functions
-    STEPS.init();
+    if (window['STEPS']) STEPS.init();
     // Initializing Procedure-related functions
-    PROCEDURES.init();
+    if (window['PROCEDURES']) PROCEDURES.init();
     // Initializing Problem navigation-related functions
-    PROBLEMS.init();
+    if (window['PROBLEMS']) PROBLEMS.init();
     // Initializing Steps List
-    STEPS_LIST.init();
+    if (window['STEPS_LIST']) STEPS_LIST.init();
 });
 
 /*

@@ -97,11 +97,11 @@
         	log("", {"type":"Refresh","parameter":"", "initial" : initialStateOnLoadString, "final" : initialStateOnLoadString}, true);
 
         	$(document).ready(function() {
-        		// if(confirm('Do you want a click button on the interface?')){
-        		// 	$("#manual-click").css('display', 'block');
-        		// } else {
-        		// 	$("#manual-click").css('display', 'none');
-        		// }
+        		if(confirm('Do you want a click button on the interface?')){
+        			$("#manual-click").css('display', 'block');
+        		} else {
+        			$("#manual-click").css('display', 'none');
+        		}
 
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 
@@ -326,6 +326,6 @@
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>
-		<audio src="{{=URL('static','audio/37215__simon-lacelle__ba-da-dum.wav')}}" id="correct-solution" type = "audio/wav" preload="auto"></audio>
+		<audio src="{{=URL('static','audio/badadum.m4a')}}" id="correct-solution" type = "audio/wav" preload="auto"></audio>
 	</body>
 </html>

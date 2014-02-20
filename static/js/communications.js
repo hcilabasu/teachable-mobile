@@ -1,4 +1,5 @@
 COMM = {}
+COMM = {}
 
 COMM.sendToApplet = function(message){
 	var queryString = "?group=applet&message=" + message;

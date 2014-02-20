@@ -149,7 +149,8 @@ function isClickButtonVisible(){
 }
 
 function clickButtonPromptStarted(){
-    $("#manual-click a").off().text("Record").click(clickButtonRecordStarted);
+    // Setting click action and label
+    $("#manual-click a").css('background', 'red').off().text("Record").click(clickButtonRecordStarted);
 };
 
 function clickButtonRecordStarted(e){
@@ -161,7 +162,7 @@ function clickButtonRecordFinished(e){
 }
 
 function clickButtonSetClickAction(e){
-    $("#manual-click a").off().text("Click").click(clickButtonOpenDialog);   
+    $("#manual-click a").css('background', 'none').off().text("Click").click(clickButtonOpenDialog);   
     // Sending message to the robot to dismiss the prompt subtitles
     $.ajax({
         url: APP.DISMISS_PROMPT

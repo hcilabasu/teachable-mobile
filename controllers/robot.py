@@ -289,6 +289,9 @@ def skip_prompts():
 def prompt_was_made():
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"prompt_was_made"}', 'mykey', 'interface')
 
+def dismiss_cognitive():
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"dismiss_cognitive"}', 'mykey', 'robot')	
+
 def __reset(outcome):
 	for r in db(db.attributions.success == outcome).select():
 		r.update_record(used=False)

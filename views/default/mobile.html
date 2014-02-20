@@ -42,6 +42,7 @@
         	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
         	APP.SKIP_TO_PROMPT = "{{=URL('mobileinterface','robot','skip_prompts')}}";
         	APP.GEOGEBRA_STATUS = "{{=URL('geogebra_status')}}";
+        	APP.DISMISS_PROMPT = "{{=URL('mobileinterface','robot','dismiss_cognitive')}}";
 
 /*
         	// Adding problems variable to global variable
@@ -97,6 +98,7 @@
         	log("", {"type":"Refresh","parameter":"", "initial" : initialStateOnLoadString, "final" : initialStateOnLoadString}, true);
 
         	$(document).ready(function() {
+        		// Check if the click button should be shown
         		if(confirm('Do you want a click button on the interface?')){
         			$("#manual-click").css('display', 'block');
         		} else {
@@ -157,7 +159,9 @@
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      		}
 			      		else if(incoming.type === "prompt_was_made"){
-			      			alert("prompt");
+			      			if(isClickButtonVisible()){
+				      			clickButtonPromptStarted();
+				      		}
 			      		}
 			      		else {
 			      			// Old messages. They do not have a type. But they should. TODO
@@ -194,13 +198,7 @@
 		        	console.dir(socket);
 		        }
 
-		        $('#manual-click-btn').click(function(e){
-		        	e.preventDefault();
-		        	// {trigger: "robot"}
-		        	olddata = {trigger:"all"};
-		        	updateCurrentStep();
-		        	counter = 1;
-		        });
+		        $('#manual-click-btn').click(clickButtonOpenDialog);
 		    });
         </script>
 	</head>

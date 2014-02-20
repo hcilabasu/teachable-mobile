@@ -54,15 +54,15 @@
 					attributions.makeAttribution(data.value);
 					break;
 				case 'cognitive':
-					condition = parsedData;
-					cognitive_prompts.doPromptAction("makePrompt",data.value,condition);
+					//condition = parsedData;
+					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData.condition_name);
 					break;
 				case 'cognitive_skip':
-					cognitive_prompts.doPromptAction("skipPrompts",data.value,condition);
+					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
 					break;
 				case 'dismiss_cognitive':
 					// TODO
-					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,condition);
+					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,"dontCare");
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;

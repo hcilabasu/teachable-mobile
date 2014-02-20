@@ -26,7 +26,8 @@
  		var localProblemIndex = 540;
  		var begLast = false;
  		var recordClickCount = 0;
- 		var promptsFinished = false
+ 		var promptsFinished = false;
+ 		var parsedData = "";
 
 
 	    window.addEventListener('deviceorientation', function(e) {
@@ -47,15 +48,21 @@
 
 		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
 			var data = JSON.parse(e.data);
+			var condition = "do_not_care";
 			switch(data.type){
 				case 'attribution':
 					attributions.makeAttribution(data.value);
 					break;
 				case 'cognitive':
-					cognitive_prompts.doPromptAction("makePrompt",data.value);
+					condition = parsedData;
+					cognitive_prompts.doPromptAction("makePrompt",data.value,condition);
 					break;
 				case 'cognitive_skip':
-					cognitive_prompts.doPromptAction("skipPrompts",data.value);
+					cognitive_prompts.doPromptAction("skipPrompts",data.value,condition);
+					break;
+				case 'dismiss_cognitive':
+					// TODO
+					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,condition);
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;
@@ -102,6 +109,14 @@
 					$('#overlay').fadeOut('slow');
 				}, 3000);
 			};
+
+			$.ajax({
+				url:"{{=URL('session', 'current_session')}}"
+			}).done(function(data){
+				parsedData = JSON.parse(JSON.parse(data));
+				alert(data);
+				console.dir(parsedData);
+			});
 
 		});
 		

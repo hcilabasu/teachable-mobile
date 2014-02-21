@@ -1,6 +1,6 @@
 errors/*
 sessions/*
-static/logs/log.txt
+static/logs/log.csv
 *.pyc
 *.py.bak
 *.log

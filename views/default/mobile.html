@@ -20,6 +20,7 @@
         <script src="{{=URL('static','js/problems.js')}}"></script>
         <script src="{{=URL('static','js/stepsList.js')}}"></script>
         <script src="{{=URL('static','js/main.js')}}"></script>
+        <script src="{{=URL('static','js/log.js')}}"></script>
         <script>
         	// $(function() {
         	// 	$("#check-solution-button").click(checkSolution);
@@ -42,6 +43,8 @@
         	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
         	APP.SKIP_TO_PROMPT = "{{=URL('mobileinterface','robot','skip_prompts')}}";
         	APP.GEOGEBRA_STATUS = "{{=URL('geogebra_status')}}";
+        	APP.SEND_DATA_TO_ROBOT = "{{=URL('send_data_to_robot')}}"
+        	APP.STORE_CURR_PROB = "{{=URL('store_curr_prob')}}"
 
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
@@ -68,21 +71,31 @@
         	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-
         </script>
         <script>
         	var olddata = undefined;
         	var socket = false;
         	var counter = 0;
-        	
-        	GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
-        	APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
 
+        	//Getting session information
+    	 	var datum;
+        	// jQuery.getJSON("../session/current_session", function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);});
+        	//Called this asynchronously. Can't believe this worked.
+        	$.ajax({
+			    type: 'GET',
+			    url: '../session/current_session',
+			    dataType: 'json',
+			    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+			    async: false
+			});
+        	// alert(TEST_SESSION_JSON);
+        	
+        	
         	//Printing the headers
-        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id");
+        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id, Subject id, Tester Name, Condition Name", {"firstPrint":true});
 
         	// Logging page load
-        	// Events are logged to logs/log.txt
+        	// Events are logged to logs/log.csv
         	// log("Page Load or refresh",{"source":__SOURCE__});
         	// getGeogebraStatus();
         	var initialStateOnLoadString  = calculateInitialStateOnLoad();
@@ -98,15 +111,11 @@
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 
 		    		var incoming = JSON.parse(unescape(e.data));
+
+		    		// alert(jQuery.getJSON("../session/current_session").responseText);
 		    		
-		    		GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
-		    		APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
-
-		    		// alert("GEOGEBRA_STATUS_STRING : " + GEOGEBRA_STATUS_STRING);
-		    		// alert("APP.GEOGEBRA_STATUS_STRING : " + APP.GEOGEBRA_STATUS_STRING);
-
-		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.txt.
-					// log("incoming packet : " + JSON.stringify(incoming));
+		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.csv.
+					console.dir("incoming packet : " + JSON.stringify(incoming));
 		      		
 		      		if(incoming) {
 		      			// Reset to a particular problem number.
@@ -131,11 +140,9 @@
 
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
-
  			      		else if(incoming.type == "alert"){
  			      			alert(incoming.message);
  			      		}
-
 			      		else if(incoming.type == "log") {
 			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
@@ -148,6 +155,18 @@
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      		}
+			      		// else if(incoming.type == "robot_request") {
+			      			// console.dir("Robot requested memory objects.");
+			      			//Should encapsulating the data into the "type" message be handled at the default.py level?
+			      		// 	var requested_data = {"type":"requested_data", "APP" : APP.currentProblem};
+			      		// 	var req_data;
+
+      			  //       	$.ajax({
+							    // url: APP.SEND_DATA_TO_ROBOT +  "?data=" + escape(JSON.stringify(requested_data)),
+							    // success: function(req_data) {console.dir("DATA SENT TO ROBOT!!!" + req_data);},
+							//     async: true
+							// });
+			    //   		}
 			      		else {
 			      			try {
 				    			// Playing attention sound

@@ -1,16 +1,18 @@
 import os
 import urllib2
 
-__path = os.path.join(request.folder, "static", "logs", "log.txt")
+# __path = os.path.join(request.folder, "static", "logs", "log.txt")
+# Adrin changed the log file name from .txt to .csv throughout this file
+__path = os.path.join(request.folder, "static", "logs", "log.csv")
 
 def index():
 	return dict()
 
 def download():
 	f = open(__path, "r")
-	response.stream(__path, request=request, attachment=True, filename="log.txt")
+	response.stream(__path, request=request, attachment=True, filename="log.csv")
 	f.close();
-	#redirect(URL('static', 'logs/log.txt'))
+	#redirect(URL('static', 'logs/log.csv'))
 
 def erase():
 	f = open(__path, "w")

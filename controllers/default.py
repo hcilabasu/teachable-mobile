@@ -18,6 +18,9 @@ __socket_port = config.TORNADO_PORT
 __key = config.TORNADO_KEY
 __socket_group_name = config.TORNADO_GROUP
 
+#Adrin is adding this global variable to store the app object
+# __curr_prob = ""
+
 # -*- coding: utf-8 -*-
 ### required - do no delete
 def user(): return dict(form=auth())
@@ -326,6 +329,7 @@ def mobile():
 def update_current_problem():
     session.problemNum = request.vars.index
     data = request.vars.data
+    session.__curr_prob = data
     websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, data, 'mykey', "applet")
 
 def check_solution():
@@ -474,3 +478,13 @@ def test():
 
 def adrin():
     return "adrin"
+
+def store_curr_prob():
+    __curr_prob = request.vars.data
+
+def send_data_to_robot():
+    # data = request.vars.data
+    # websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, '{"type":"requested_data"}', 'mykey', 'robot')
+    # websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, __curr_prob, 'mykey', 'robot')
+    # Sending both the current problem object and the problem number
+    return (session.__curr_prob + '@@@' + session.problemNum)

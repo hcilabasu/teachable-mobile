@@ -261,6 +261,7 @@ def make_attribution():
 	# wrapping info in package
 	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 
 def make_cognitive_prompt():
@@ -271,8 +272,20 @@ def make_cognitive_prompt():
 	ang = request.vars['angle']
 	# wrapping info in package
 	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	
+
+	# This line caused a lot of grief while merging logs by me and Cognitive Prompts by Elissa.
+	# Original line
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	# Adrin made the change here, and for all websocket_send calls.
+	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	# websocket_send('http://' + __current_ip_local + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	# websocket_send('http://127.0.0.1:' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
+
+def request_data_from_mobile():
+	# Requesting memory objects from the mobile side.
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"robot_request"}', 'mykey', 'interface')
 
 def skip_prompts():
 	#pdb.set_trace()
@@ -284,6 +297,7 @@ def skip_prompts():
 	# wrapping info in package
 	message_wrapper = '{"type":"cognitive_skip", "value":{"number":"%s"}}' % (prob_num)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 
 def __reset(outcome):
@@ -334,6 +348,7 @@ def connect():
 
 def reset_zero():
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"reset"}', 'mykey', 'robot')
+	# websocket_send('http://' + ip + ':' + __socket_port, '{"type":"reset"}', 'mykey', 'robot')
 
 def toggle_auto_control():
 	return rc.set_auto(not rc.auto)

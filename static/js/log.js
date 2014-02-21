@@ -1,8 +1,19 @@
 var TEST_SESSION_JSON;
 
 /*
+ * Method for formatting strings. 
+ * Posted by "fearphage" on: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format/4673436#4673436
+ */
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+        return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+};
+
+/*
 * Logging function. The parameter should be a string, which will be logged.
-* Events are logged to logs/log.txt
+* Events are logged to logs/log.csv
 * Adrin made changes to this function
 * title - main log message
 * data - an object containing source and other info if needed
@@ -13,6 +24,23 @@ function log(title, data, bool_verbose, callback) {
 	    if(bool_verbose === undefined) {
 	        bool_verbose = true;//default
 	    }
+
+	    var URLString = "";
+
+	    try {
+	    	URLString = APP.LOG;
+	    }
+	    catch(e) {
+	    	console.dir("APP.LOG is not defined");
+	    	URLString = LOG;
+	    }
+
+	    // if(APP && APP.LOG) {
+	    	// URLString = APP.LOG
+	    // }
+	    // else {
+	    	// URLString = LOG;
+	    // }
 
 	    //this sets the global variable GEOGEBRA_STATUS_STRING
 	    //!!!ONLY CALL IT IF THE data IS COMING FROM THE MOBILE SIDE ITSELF
@@ -39,11 +67,16 @@ function log(title, data, bool_verbose, callback) {
 	            console.dir("##### title");
 	        }
 
-	        var logString = "%5Cn" + "\"" + title + "\"";
+	        var titleArray = title.split(',');
+	        var logString = "%5Cn" + titleArray[0];
+	        for(var i = 1 ; i < titleArray.length ; i++) {
+	        	logString += "," + titleArray[i];
+	        }
+
 
 	        // Logging in server
 	        $.ajax({
-	            url: APP.LOG + "?data=" + logString,
+	            url: URLString + "?data=" + logString,
 	            success: function(data) {
 	                console.dir("Event '" + title + "' LOGGED!");
 	            }
@@ -88,35 +121,36 @@ function log(title, data, bool_verbose, callback) {
 	                console.dir("##### logSource");
 
 	                //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-	                var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
+	                // var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
 	                console.dir("data" + JSON.stringify(data));
-	                console.dir("geogebra_status" + geogebra_status);
-	                geogebra_status = geogebra_status.replace(/"/g, "'");
-	                console.dir("##### geogebra_status");
+	                // console.dir("geogebra_status" + geogebra_status);
+	                // geogebra_status = geogebra_status.replace(/"/g, "'");
+	                // console.dir("##### geogebra_status");
 
 	                // logString += "," + geogebra_status;
 
-	                var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
+	                // var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
 	                // var nextButtonStatusString = "next button " + (($("#next-problem-button").css("opacity") == 1) ? "enabled" : "disabled");
-	                var listOfSteps = APP.currentStepsList;
+	                // var listOfSteps = APP.currentStepsList;
 	                
 	                // (title ‘problem 1 plot P2’; next button disabled; no steps;)
 	                // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
 	                
-	                var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
-	                            "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
-	                            nextButtonStatusString + ":" +
+	                // var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
+	                            // "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
+	                            // nextButtonStatusString + ":" +
 	                            /*(listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) +*/ 
-	                            (listOfSteps ? listOfSteps.length : 0) + ":)";
+	                            // (listOfSteps ? listOfSteps.length : 0) + ":)";
 	                
-	                userStatus = userStatus.replace(/"/g, "'");
-	                console.dir("##### userStatus");
+	                // userStatus = userStatus.replace(/"/g, "'");
+	                // console.dir("##### userStatus");
 
 	                if(title) {
 	                    logString += ",\"" + title + "\"";
 	                }
 
-	                var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
+	                // var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
+	                var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : "";
 	                var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
 	                var problemNumber = (data.hasOwnProperty("problem number") || data["problem number"]) ? data["problem number"] : (APP.currentProblemIndex+1);
 	                var problemDesc = (data.hasOwnProperty("problem desc") || data["problem desc"]) ? data["problem desc"] : (APP.PROBLEMS[APP.currentProblemIndex].text);
@@ -142,7 +176,7 @@ function log(title, data, bool_verbose, callback) {
 
 	            // Logging in server
 	            $.ajax({
-	                url: APP.LOG + "?data=" + logString,
+	                url: URLString + "?data=" + logString,
 	                success: function(data) {
 	                    console.dir("Event '" + title + "' LOGGED!");
 	                }
@@ -182,35 +216,36 @@ function log(title, data, bool_verbose, callback) {
 	            console.dir("##### logSource");
 
 	            //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-	            var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
+	            // var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
 	            console.dir("data" + JSON.stringify(data));
-	            console.dir("geogebra_status" + geogebra_status);
-	            geogebra_status = geogebra_status.replace(/"/g, "'");
-	            console.dir("##### geogebra_status");
+	            // console.dir("geogebra_status" + geogebra_status);
+	            // geogebra_status = geogebra_status.replace(/"/g, "'");
+	            // console.dir("##### geogebra_status");
 
 	            // logString += "," + geogebra_status;
 
-	            var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
+	            // var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
 	            // var nextButtonStatusString = "next button " + (($("#next-problem-button").css("opacity") == 1) ? "enabled" : "disabled");
-	            var listOfSteps = APP.currentStepsList;
+	            // var listOfSteps = APP.currentStepsList;
 	            
 	            // (title ‘problem 1 plot P2’; next button disabled; no steps;)
 	            // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
 	            
-	            var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
-	                        "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
-	                        nextButtonStatusString + ":" +
+	            // var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
+	                        // "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
+	                        // nextButtonStatusString + ":" +
 	                        /*(listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) +*/ 
-	                        (listOfSteps ? listOfSteps.length : 0) + ":)";
+	                        // (listOfSteps ? listOfSteps.length : 0) + ":)";
 	            
-	            userStatus = userStatus.replace(/"/g, "'");
-	            console.dir("##### userStatus");
+	            // userStatus = userStatus.replace(/"/g, "'");
+	            // console.dir("##### userStatus");
 
 	            if(title) {
 	                logString += ",\"" + title + "\"";
 	            }
 
-	            var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
+	            // var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
+	            var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : "";
 	            var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
 	            var problemNumber = (data.hasOwnProperty("problem number") || data["problem number"]) ? data["problem number"] : (APP.currentProblemIndex+1);
 	            var problemDesc = (data.hasOwnProperty("problem desc") || data["problem desc"]) ? data["problem desc"] : (APP.PROBLEMS[APP.currentProblemIndex].text);
@@ -236,7 +271,7 @@ function log(title, data, bool_verbose, callback) {
 
 	        // Logging in server
 	        $.ajax({
-	            url: APP.LOG + "?data=" + logString,
+	            url: URLString + "?data=" + logString,
 	            success: function(data) {
 	                console.dir("Event '" + title + "' LOGGED!");
 	            }

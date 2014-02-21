@@ -37,13 +37,13 @@ var __SOURCE__ = "system";
 
 $(function() {
     // Initializing Step-related functions
-    STEPS.init();
+    if (window['STEPS']) STEPS.init();
     // Initializing Procedure-related functions
-    PROCEDURES.init();
+    if (window['PROCEDURES']) PROCEDURES.init();
     // Initializing Problem navigation-related functions
-    PROBLEMS.init();
+    if (window['PROBLEMS']) PROBLEMS.init();
     // Initializing Steps List
-    STEPS_LIST.init();
+    if (window['STEPS_LIST']) STEPS_LIST.init();
 });
 
 /*
@@ -149,6 +149,39 @@ function mergeObjects(data, newdata){
 //A function to store the session information in a Global Variable!!! That's bad.
 function storeTestSessionInformation(data) {
     TEST_SESSION_JSON = JSON.parse(data);
+}
+
+function isClickButtonVisible(){
+    return $("#manual-click").css("display") === "block";
+}
+
+function clickButtonPromptStarted(){
+    // Setting click action and label
+    $("#manual-click a").css('background', 'red').off().text("Record").click(clickButtonRecordStarted);
+};
+
+function clickButtonRecordStarted(e){
+    $("#manual-click a").off().text("Stop").click(clickButtonRecordFinished);
+}
+
+function clickButtonRecordFinished(e){
+    $("#manual-click a").off().text("Done").click(clickButtonSetClickAction);
+}
+
+function clickButtonSetClickAction(e){
+    $("#manual-click a").css('background', 'none').off().text("Click").click(clickButtonOpenDialog);   
+    // Sending message to the robot to dismiss the prompt subtitles
+    $.ajax({
+        url: APP.DISMISS_PROMPT
+    });
+}
+
+function clickButtonOpenDialog(e){
+    e.preventDefault();
+    // {trigger: "robot"}
+    olddata = {trigger:"all"};
+    updateCurrentStep();
+    counter = 1;
 }
 
 //Gets the status of the cartesian plane.

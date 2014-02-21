@@ -160,7 +160,18 @@ var CognitivePrompts = function() {
 			// When robot starts to speak
 			$("body").addClass("talking");
 			$("#speech").text(prompts[currentPromptIndex].text).fadeIn('slow');
-			log("", {"type":"prompt","parameter":prompts[currentPromptIndex].text, "initial" : "", "final" : ""});
+			
+			var datum;
+			$.ajax({url : REQUEST_DATA_FROM_MOBILE,
+					success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
+												var tmpArray = datum.split('@@@', 2);
+												current_problem_object = JSON.parse(tmpArray[0]);
+												current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
+												},
+					async : false});
+
+			log("", {"type":"prompt","parameter":prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
+				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
 
 			if(condition !== "Mobile")
 			{

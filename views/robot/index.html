@@ -14,7 +14,6 @@
 	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
 	<script src="{{=URL('static','js/log.js')}}"></script>
 
-
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
 	<script>
@@ -55,7 +54,6 @@
 	                    });
 	            }
 	    }, false);
-
 
 		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
 			var data = JSON.parse(e.data);

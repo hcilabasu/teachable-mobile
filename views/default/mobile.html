@@ -68,6 +68,8 @@
 
         	// APP.init();
 
+        	// APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
+
         	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
         	APP.basicProceduresArray = function() { // This is assigning the return value of the function, not the function!

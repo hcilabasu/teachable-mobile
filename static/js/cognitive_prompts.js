@@ -79,7 +79,7 @@ var CognitivePrompts = function() {
         //check trigger criteria
         if(prompt.trigger == "hit")
         {
-        	console.log("1");
+        	console.log(prompts[currentPromptIndex].problem_num + " " + localProblemIndex);
 			if(prompts[currentPromptIndex].problem_num == localProblemIndex)//prompt.number)
 			{	
 			    //next prompt is associated with this problem
@@ -173,7 +173,7 @@ var CognitivePrompts = function() {
 			log("", {"type":"prompt","parameter":prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
 				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
 
-			if(condition !== "Mobile")
+			if(condition == "Mobile")
 			{
 				console.log("a")
 				$("#record").text('REC');

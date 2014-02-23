@@ -68,7 +68,7 @@
 					break;
 				case 'cognitive':
 					//condition = parsedData;
-					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData.condition_name);
+					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
 					break;
 				case 'cognitive_skip':
 					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");

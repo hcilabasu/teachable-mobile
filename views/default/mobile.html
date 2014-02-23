@@ -255,7 +255,7 @@
 			<div id="steps-wrapper" class="wrapper">
 				<!--<h3>Current Step:</h3>-->
 				<div id="current-step"></div>
-				<h3 id="steps-list-title">Steps: <span>Drag Mode</span> <a id="execute-steps-button" href="#" class="action-button"><span>Execute</span></a></h3>
+				<h3 id="steps-list-title">Steps: <span>Drag Mode</span> <a id="execute-steps-button" href="#" class="action-button"><span>Replay</span></a></h3>
 				<input type="hidden" id="procedure-steps" name="procedure-steps-hidden"/>
 				<ol id="steps-list">
 					<li class="droppable">&nbsp;</li><!--
@@ -299,11 +299,11 @@
 		<div id="update-step-dialog" title="Update current step">
 			<div id="update-step-form">
 				<fieldset>
-					<label for="steps">Available steps</label>
+					<label for="steps"></label>
 					<select>
 						<!-- List of procedures according to trigger -->
 					</select>
-					<label>Procedure parameters</label>
+					<label></label>
 					<!-- This hidden field will have the final value for the current procedure -->
 					<input type="hidden" id="procedure_parameters" name="procedure_parameters"/>
 					<div id="current-step-select-params"><!-- Wrapper for procedure's params --></div>

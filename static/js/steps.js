@@ -133,7 +133,7 @@ function selectCurrentStep(event) {
     var parameters = {};
     var parametersArray = []
     $.each(labels, function(index, value) {
-        var paramName = value.innerText;
+        var paramName = getCamelCaseParameterName(value.innerText);
         var paramValue = $("input#" + paramName, form).val();
         parameters[paramName] = paramValue;
         parametersArray.push(paramValue);
@@ -217,12 +217,25 @@ function getPlainParameterName(name){
     return name;
 }
 
+/*
+ * This function takes a capitalized string and outputs a camelCase string.
+ * e.g.: Camel Case -> camelCase, A Parameter 2 -> aParameter2
+ */
+function getCamelCaseParameterName(name){
+    // Lowering the case of the first character
+    name = name.charAt(0).toLowerCase() + name.slice(1);
+    // Replacing space
+    name = name.split(' ').join('');
+    return name;
+};
+
 function validateInput(form, labels, procName, parameters){
     /*
      * Validation is performed based on the procedure's name.
      * Ideally, it would be done based on each parameter's 
      * data types. Currently, parameters do not have data type.
      */
+    // procName = getPlainParameterName(procName);
     if(procName === 'moveDistance'){
         // Checks if the parameters is a number or if it's within range
         if(!isNumber(parameters['distance'])){

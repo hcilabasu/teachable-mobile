@@ -277,7 +277,7 @@ def make_cognitive_prompt():
 	# wrapping info in package
 	#message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	# message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	message_wrapper = '{"type":"timecheck", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	
 
 	# This line caused a lot of grief while merging logs by me and Cognitive Prompts by Elissa.

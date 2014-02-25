@@ -37,12 +37,9 @@
  		var begLast = false;
  		var recordClickCount = 0;
  		var promptsFinished = false;
-<<<<<<< HEAD
  		var promptsOrdered = false;
  		var prompts = [ [{"text": "prompt 01", "sound_file":"01.aiff"}, {"text": "prompt 02", "sound_file":"02.aiff"}, {"text": "prompt 03", "sound_file":"03.aiff"}, {"text": "prompt 04", "sound_file":"04.aiff"}, {"text": "prompt 05", "sound_file":"05.aiff"}], [{"text": "prompt 11", "sound_file":"11.aiff"}, {"text": "prompt 12", "sound_file":"12.aiff"}, {"text": "prompt 13", "sound_file":"13.aiff"}, {"text": "prompt 14", "sound_file":"14.aiff"}, {"text": "prompt 15", "sound_file":"15.aiff"}], [{"text": "prompt 21", "sound_file":"21.aiff"}, {"text": "prompt 22", "sound_file":"22.aiff"}, {"text": "prompt 23", "sound_file":"23.aiff"}, {"text": "prompt 24", "sound_file":"24.aiff"}, {"text": "prompt 25", "sound_file":"25.aiff"}], [{"text": "prompt 31", "sound_file":"31.aiff"}, {"text": "prompt 32", "sound_file":"32.aiff"}, {"text": "prompt 33", "sound_file":"33.aiff"}, {"text": "prompt 34", "sound_file":"34.aiff"}, {"text": "prompt 35", "sound_file":"35.aiff"}], [{"text": "prompt 41", "sound_file":"41.aiff"}, {"text": "prompt 42", "sound_file":"42.aiff"}, {"text": "prompt 43", "sound_file":"43.aiff"}, {"text": "prompt 44", "sound_file":"44.aiff"}, {"text": "prompt 45", "sound_file":"45.aiff"}] ];
-=======
  		var parsedData = "";
->>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 
 
 	    window.addEventListener('deviceorientation', function(e) {
@@ -71,18 +68,15 @@
 				case 'attribution':
 					attributions.makeAttribution(data.value);
 					break;
-<<<<<<< HEAD
 				case 'order':
 					if(!promptsOrdered)
 					{
 						cognitive_prompts.doPromptAction("randomizePrompts",data.value);
 						promptsOrdered = true;
 					}					
-=======
 				case 'cognitive':
 					//condition = parsedData;
 					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
->>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 					break;
 				case 'cognitive_skip':
 					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
@@ -92,7 +86,7 @@
 					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,"dontCare");
 					break;
 				case 'timecheck':
-					cognitive_prompts.dopromptAction("timecheck",data.value,"dontcare")
+					cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare")
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;

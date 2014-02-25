@@ -145,10 +145,10 @@ function moveToNext(callback) {
     refreshProblem(undefined, false); // Call #2
     
 
-     //allow robot to resest, then check to see if prompts should be called
-     window.setTimeout(function(){
-           callCheckForPrompt("hit", "beg", 1);
-         }, 15000);
+    //allow robot to resest, then check to see if prompts should be called
+    window.setTimeout(function(){
+       callCheckForPrompt("hit", "beg", 1);
+    }, 15000);
 
     //check to see if prompts should be called
     ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
@@ -165,7 +165,12 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     //Telling the applet to lock itself until further notice.
     var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
     problemObject.type = "lockapplet";
-    ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+    // ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
+    $.ajax({
+            url : APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)),
+            async : false
+            });
 
     var button = $("#prompt a");
     
@@ -177,7 +182,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     var wrongResponseArray = ["That solution is wrong.\nBy the way did you hear that buzzer, I think someone is at the door.", "Negative, that is wrong.\nEpic failure is a stepping stone to epic success. ", "Incorrect-amundo."];
     var responseArray = wrongResponseArray, responseImage = wrongImage;
     
-    if(String(solutionStatus).toLowerCase() == "true")  {
+    if(String(solutionStatus).toLowerCase() == "true") {
         responseArray = correctResponseArray;
         responseImage = correctImage;
 
@@ -211,10 +216,20 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         $("#feedback").fadeOut('slow');
         //Not collecting attribution feedback for now...
         // openEmoticonScreen();
+        
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
         log("",{"type":"correctness feedback","parameter":String(solutionStatus).toLowerCase(),"initial":"", "final":""});
         // log("System's response to solution '" + responseArray[rndIndx] + "'", {"source":__SOURCE__});
         // alert("You clicked OK!!!!");
+    });
+
+    //Adrin added the next two lines since we did the applet unlocking in openEmoticonScreen().
+    problemObject.type = "unlockapplet";
+    // ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
+    $.ajax({
+            url : APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)),
+            async : false
     });
 
     $("#feedback").fadeIn('slow');
@@ -323,8 +338,15 @@ function checkSolution() {
     //!!! Not sending the entire problem object, just the message that the applet needs to lock down
     ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify({"type" : "lockapplet"})), [], "");
 
+    // Adrin just put this in for testing purposes while merging logs and cog prompts.
+    // $.ajax({url : APP.MAKE_COGNITIVE_PROMPT + "?trigger=hit&state=end&number=540",
+    //         success : function(data) {
+    //             console.dir("Successfully ran MAKE_COGNITIVE_PROMPT!!!");
+    //         }});
+
     // Need to confirm if this validation is necessary and sufficient
     if(APP.currentProblem) {
+        // if(confirm("Are you you sure you want to submit this solution?")) {
         if(true) {
             // !!!Needed to do this bad cloning since putting type into the original problem structure was causing problems when using moveToProble. 
             // !!!When moving to a new problem, the "type" would persist and would immediately check for valid solution or not.

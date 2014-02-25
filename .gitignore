@@ -1,13 +1,11 @@
 errors/*
 sessions/*
-static/logs/log.txt
+static/logs/log.csv
 *.pyc
 *.py.bak
 *.log
 .DS_Store
 languages/*
 /.project
-
-databases/sql.log
 
 databases/sql.log

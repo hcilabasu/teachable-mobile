@@ -8,17 +8,27 @@
 	<title></title>
 
 	<script src="{{=URL('static','js/jquery.js')}}"></script>
-    	<script src="{{=URL('static','js/web2py.js')}}"></script>
-    	<script src="{{=URL('static','js/audio.js')}}"></script>
-    	<script src="{{=URL('static','js/attributions.js')}}"></script>
-    	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
-		<script src="{{=URL('static','js/main.js')}}"></script>
+	<script src="{{=URL('static','js/web2py.js')}}"></script>
+	<script src="{{=URL('static','js/audio.js')}}"></script>
+	<script src="{{=URL('static','js/attributions.js')}}"></script>
+	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+	<script src="{{=URL('static','js/log.js')}}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
-	
-
 	<script>
+		var REQUEST_DATA_FROM_MOBILE = "{{=URL('mobileinterface','default','send_data_to_robot')}}";
+		var LOG = "{{=URL('mobileinterface','log','log')}}";
+
+		//Called this asynchronously. Can't believe this worked.
+    	$.ajax({
+		    type: 'GET',
+		    url: 'session/current_session',
+		    dataType: 'json',
+		    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+		    async: false
+		});
+
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
@@ -45,9 +55,12 @@
 	            }
 	    }, false);
 
-
-		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
 			var data = JSON.parse(e.data);
+
+			var incoming = JSON.parse(unescape(e.data));
+			console.dir("incoming packet : " + JSON.stringify(incoming));
+			
 			var condition = "do_not_care";
 			switch(data.type){
 				case 'attribution':
@@ -55,7 +68,7 @@
 					break;
 				case 'cognitive':
 					//condition = parsedData;
-					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData.condition_name);
+					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
 					break;
 				case 'cognitive_skip':
 					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");

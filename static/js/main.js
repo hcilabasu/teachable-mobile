@@ -7,7 +7,7 @@
  * Growing pains with Javascript, right? :)
  */
 // Defining global vars
-APP = {};
+var APP = {};
 
 // Adrin added this init function to initialize certain problem tracking variables.
 // if(!(APP.hasOwnProperty("init"))) {
@@ -87,22 +87,24 @@ function setDroppable(element){
 }
 
 function setDialog(element){
-    element.dialog({
-        autoOpen: false,
-        height: 'auto',
-        width: '270px',
-        modal: true,
-        draggable: false,
-        resizable: false,
-        focusSelector: undefined
-    });
+    // if(element.hasOwnProperty("dialog")) {
+        element.dialog({
+            autoOpen: false,
+            height: 'auto',
+            width: '270px',
+            modal: true,
+            draggable: false,
+            resizable: false,
+            focusSelector: undefined
+        });
+    // }
 }
 
 
 /**************************
  * Aux Functions
  **************************/
- function toggleError(element, property, newStyle, oldStyle){
+function toggleError(element, property, newStyle, oldStyle){
     var animateObject = {};
     animateObject[property] = newStyle;
     element.animate(animateObject, 600);
@@ -111,9 +113,9 @@ function setDialog(element){
         animateObject[property] = oldStyle;
         element.animate(animateObject, 600);
     }, 3000);
- }
+}
 
- function isTriggerEqual(object1, object2){
+function isTriggerEqual(object1, object2){
     console.dir("comparing...");
     console.dir(object1);
     console.dir(object2);
@@ -125,7 +127,7 @@ function setDialog(element){
     } else {
         return false;
     }
- }
+}
 
 /*
  * This function merges the objects data, newdata. If a property with the same name is found, 
@@ -142,6 +144,11 @@ function mergeObjects(data, newdata){
             data[prop] = newdata[prop];
         }
     }
+}
+
+//A function to store the session information in a Global Variable!!! That's bad.
+function storeTestSessionInformation(data) {
+    TEST_SESSION_JSON = JSON.parse(data);
 }
 
 function isClickButtonVisible(){
@@ -176,221 +183,6 @@ function clickButtonOpenDialog(e){
     updateCurrentStep();
     counter = 1;
 }
-
-
-/*
- * Logging function. The parameter should be a string, which will be logged.
- * Events are logged to logs/log.txt
- * Adrin made changes to this function
- * title - main log message
- * data - an object containing source and other info if needed
- * bool_verbose - true => geogebra + robot status info is included in each log call
- */
- function log(title, data, bool_verbose, callback) {
-    try {
-        if(bool_verbose === undefined) {
-            bool_verbose = true;//default
-        }
-
-        //this sets the global variable GEOGEBRA_STATUS_STRING
-        //!!!ONLY CALL IT IF THE data IS COMING FROM THE MOBILE SIDE ITSELF
-        // if(data && !(data.hasOwnProperty("geo_status"))) {
-        //     getGeogebraStatus();
-        // }
-
-        // if(data && !(data.initial)) {
-        //     getGeogebraStatus();
-        // }
-
-        console.dir("log callback : " + callback);
-
-        if(callback) {
-            callback(function(title, data, bool_verbose) {
-                /*var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
-                                                                  APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
-                                                                  APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());*/
-        
-                //Doing this for formatting reasons where it becomes easy to include commas in the text file without creating a new column.
-                if(title) {
-                    title = title.replace(/"/g, "'");//replacing all double quotes with single quotes.
-                    console.dir("##### title");
-                }
-
-                var timeStamp = new Date();
-                
-                var logString = "%5Cn{0}/{1}/{2} - {3}:{4}:{5}".format(timeStamp.getMonth()+1, timeStamp.getDate(), timeStamp.getFullYear(),
-                                                                    timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds());
-
-                if(bool_verbose) {
-                    if(data !== undefined) {
-                        // logString += "    {0}%5Cn".format(data);
-                        // logString += ",\"{0}\"".format(data.source);
-                    }
-                    else {
-                        // logString += "%5Cn";
-                        // logString += ",\"{0}\"".format("NOT DEFINED");
-                        data = {"type":"", "parameter":"", "initial":"", "final":""};
-                    }
-
-                    //Getting source
-                    var logSource = (data && data.source) ? data.source : "NOT DEFINED";
-                    logSource = logSource.replace(/"/g, "'");
-                    console.dir("##### logSource");
-
-                    //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-                    var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
-                    console.dir("data" + JSON.stringify(data));
-                    console.dir("geogebra_status" + geogebra_status);
-                    geogebra_status = geogebra_status.replace(/"/g, "'");
-                    console.dir("##### geogebra_status");
-
-                    // logString += "," + geogebra_status;
-
-                    var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
-                    // var nextButtonStatusString = "next button " + (($("#next-problem-button").css("opacity") == 1) ? "enabled" : "disabled");
-                    var listOfSteps = APP.currentStepsList;
-                    
-                    // (title ‘problem 1 plot P2’; next button disabled; no steps;)
-                    // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
-                    
-                    var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
-                                "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
-                                nextButtonStatusString + ":" +
-                                /*(listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) +*/ 
-                                (listOfSteps ? listOfSteps.length : 0) + ":)";
-                    
-                    userStatus = userStatus.replace(/"/g, "'");
-                    console.dir("##### userStatus");
-
-                    if(title) {
-                        logString += ",\"" + title + "\"";
-                    }
-
-                    var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
-                    var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
-                    var problemNumber = (data.hasOwnProperty("problem number") || data["problem number"]) ? data["problem number"] : (APP.currentProblemIndex+1);
-                    var problemDesc = (data.hasOwnProperty("problem desc") || data["problem desc"]) ? data["problem desc"] : (APP.PROBLEMS[APP.currentProblemIndex].text);
-                    var problemId = (data.hasOwnProperty("problem id") || data["problem id"]) ? data["problem id"] : (APP.PROBLEMS[APP.currentProblemIndex].id);
-                    
-                    logString += ",\"" + data.type + "\""
-                            + ",\"" + data.parameter + "\""
-                            + ",\"" + initialState + "\""
-                            + ",\"" + finalState + "\""
-                            + ",\"" + problemNumber + "\""
-                            + ",\"" + problemDesc + "\""
-                            + ",\"" + problemId + "\"";
-                            // ",\"" + logSource + "\"" + 
-                            // ",\"" + geogebra_status + "\"" +
-                            // ",\"" + userStatus + "\"";
-                }
-                else {
-                    logString += ",\"" + title + "\"";
-                }
-
-                // Logging in server
-                $.ajax({
-                    url: APP.LOG + "?data=" + logString,
-                    success: function(data) {
-                        console.dir("Event '" + title + "' LOGGED!");
-                    }
-                });
-            }, title, data, bool_verbose);
-        }
-        else {
-            /*var logString = ">>> {0} | {1}:{2}h - {3}/{4}/{5}%5Cn".format(title, 
-                                                                  APP.currentDate.getHours(), APP.currentDate.getMinutes(), 
-                                                                  APP.currentDate.getMonth()+1, APP.currentDate.getDate(), APP.currentDate.getFullYear());*/
-        
-            //Doing this for formatting reasons where it becomes easy to include commas in the text file without creating a new column.
-            if(title) {
-                title = title.replace(/"/g, "'");//replacing all double quotes with single quotes.
-                console.dir("##### title");
-            }
-
-            var timeStamp = new Date();
-            
-            var logString = "%5Cn{0}/{1}/{2} - {3}:{4}:{5}".format(timeStamp.getMonth()+1, timeStamp.getDate(), timeStamp.getFullYear(),
-                                                                timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds());
-
-            if(bool_verbose) {
-                if(data !== undefined) {
-                    // logString += "    {0}%5Cn".format(data);
-                    // logString += ",\"{0}\"".format(data.source);
-                }
-                else {
-                    // logString += "%5Cn";
-                    // logString += ",\"{0}\"".format("NOT DEFINED");
-                    data = {"type":"", "parameter":"", "initial":"", "final":""};
-                }
-
-                //Getting source
-                var logSource = (data && data.source) ? data.source : "NOT DEFINED";
-                logSource = logSource.replace(/"/g, "'");
-                console.dir("##### logSource");
-
-                //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-                var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
-                console.dir("data" + JSON.stringify(data));
-                console.dir("geogebra_status" + geogebra_status);
-                geogebra_status = geogebra_status.replace(/"/g, "'");
-                console.dir("##### geogebra_status");
-
-                // logString += "," + geogebra_status;
-
-                var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
-                // var nextButtonStatusString = "next button " + (($("#next-problem-button").css("opacity") == 1) ? "enabled" : "disabled");
-                var listOfSteps = APP.currentStepsList;
-                
-                // (title ‘problem 1 plot P2’; next button disabled; no steps;)
-                // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
-                
-                var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
-                            "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
-                            nextButtonStatusString + ":" +
-                            /*(listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) +*/ 
-                            (listOfSteps ? listOfSteps.length : 0) + ":)";
-                
-                userStatus = userStatus.replace(/"/g, "'");
-                console.dir("##### userStatus");
-
-                if(title) {
-                    logString += ",\"" + title + "\"";
-                }
-
-                var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
-                var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
-                var problemNumber = (data.hasOwnProperty("problem number") || data["problem number"]) ? data["problem number"] : (APP.currentProblemIndex+1);
-                var problemDesc = (data.hasOwnProperty("problem desc") || data["problem desc"]) ? data["problem desc"] : (APP.PROBLEMS[APP.currentProblemIndex].text);
-                var problemId = (data.hasOwnProperty("problem id") || data["problem id"]) ? data["problem id"] : (APP.PROBLEMS[APP.currentProblemIndex].id);
-                
-                logString += ",\"" + data.type + "\""
-                        + ",\"" + data.parameter + "\""
-                        + ",\"" + initialState + "\""
-                        + ",\"" + finalState + "\""
-                        + ",\"" + problemNumber + "\""
-                        + ",\"" + problemDesc + "\""
-                        + ",\"" + problemId + "\"";
-                        // ",\"" + logSource + "\"" + 
-                        // ",\"" + geogebra_status + "\"" +
-                        // ",\"" + userStatus + "\"";
-            }
-            else {
-                logString += ",\"" + title + "\"";
-            }
-
-            // Logging in server
-            $.ajax({
-                url: APP.LOG + "?data=" + logString,
-                success: function(data) {
-                    console.dir("Event '" + title + "' LOGGED!");
-                }
-            });
-        }
-    }
-    catch(e) {
-        console.dir("log function failed!!! : " + e.toString());
-    }
- }
 
 //Gets the status of the cartesian plane.
 function getGeogebraStatus(onSuccessCallback, title, data, bool_verbose) {

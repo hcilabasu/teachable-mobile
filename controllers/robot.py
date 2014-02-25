@@ -85,6 +85,9 @@ def move_to():
 		angle = int(request.vars['angle'])
 	# # moving robot
 	Thread(target=__call_move_to, args=(t_x, t_y, angle, backwards)).start()
+	# trigger next cognitive prompt if at beginning of new problem
+
+
 
 def plot_point():
 	__move_forward()
@@ -246,6 +249,7 @@ def __move_to(x, y, backwards, recursion):
 
 		else:
 			print("Recursion DONE")
+			make_attribution()
 
 
 def make_attribution():
@@ -270,7 +274,8 @@ def make_cognitive_prompt():
 	trig = request.vars['trigger']
 	ang = request.vars['angle']
 	# wrapping info in package
-	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	# message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 

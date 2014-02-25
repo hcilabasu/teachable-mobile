@@ -204,7 +204,7 @@ function mergeObjects(data, newdata){
                     console.dir("##### logSource");
 
                     //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-                    var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
+                    var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : APP.GEOGEBRA_STATUS_STRING;
                     console.dir("data" + JSON.stringify(data));
                     console.dir("geogebra_status" + geogebra_status);
                     geogebra_status = geogebra_status.replace(/"/g, "'");
@@ -295,7 +295,7 @@ function mergeObjects(data, newdata){
                 console.dir("##### logSource");
 
                 //Getting geogebra status; geo_status would only be there for data coming from cartesian side.
-                var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : GEOGEBRA_STATUS_STRING;
+                var geogebra_status = (data && data.geo_status && data.geo_status.string) ? data.geo_status.string : APP.GEOGEBRA_STATUS_STRING;
                 console.dir("data" + JSON.stringify(data));
                 console.dir("geogebra_status" + geogebra_status);
                 geogebra_status = geogebra_status.replace(/"/g, "'");

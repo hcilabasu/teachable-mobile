@@ -144,14 +144,13 @@ function moveToNext(callback) {
     setCurrentProblem(); // Call #1
     refreshProblem(undefined, false); // Call #2
     
-
      //allow robot to resest, then check to see if prompts should be called
      window.setTimeout(function(){
            callCheckForPrompt("hit", "beg", 1);
          }, 15000);
 
     //check to see if prompts should be called
-    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
+    //ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
 
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);

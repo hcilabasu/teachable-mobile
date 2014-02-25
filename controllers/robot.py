@@ -275,16 +275,13 @@ def make_cognitive_prompt():
 	trig = request.vars['trigger']
 	ang = request.vars['angle']
 	# wrapping info in package
-<<<<<<< HEAD
-	message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	#message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	# message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-=======
 	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	
 
 	# This line caused a lot of grief while merging logs by me and Cognitive Prompts by Elissa.
 	# Original line
->>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	# Adrin made the change here, and for all websocket_send calls.
 	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')

@@ -8,17 +8,27 @@
 	<title></title>
 
 	<script src="{{=URL('static','js/jquery.js')}}"></script>
-    	<script src="{{=URL('static','js/web2py.js')}}"></script>
-    	<script src="{{=URL('static','js/audio.js')}}"></script>
-    	<script src="{{=URL('static','js/attributions.js')}}"></script>
-    	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
-	<script src="{{=URL('static','js/main.js')}}"></script>
+	<script src="{{=URL('static','js/web2py.js')}}"></script>
+	<script src="{{=URL('static','js/audio.js')}}"></script>
+	<script src="{{=URL('static','js/attributions.js')}}"></script>
+	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+	<script src="{{=URL('static','js/log.js')}}"></script>
 
 	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
 
-	
-
 	<script>
+		var REQUEST_DATA_FROM_MOBILE = "{{=URL('mobileinterface','default','send_data_to_robot')}}";
+		var LOG = "{{=URL('mobileinterface','log','log')}}";
+
+		//Called this asynchronously. Can't believe this worked.
+    	$.ajax({
+		    type: 'GET',
+		    url: 'session/current_session',
+		    dataType: 'json',
+		    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+		    async: false
+		});
+
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
@@ -27,8 +37,12 @@
  		var begLast = false;
  		var recordClickCount = 0;
  		var promptsFinished = false;
+<<<<<<< HEAD
  		var promptsOrdered = false;
  		var prompts = [ [{"text": "prompt 01", "sound_file":"01.aiff"}, {"text": "prompt 02", "sound_file":"02.aiff"}, {"text": "prompt 03", "sound_file":"03.aiff"}, {"text": "prompt 04", "sound_file":"04.aiff"}, {"text": "prompt 05", "sound_file":"05.aiff"}], [{"text": "prompt 11", "sound_file":"11.aiff"}, {"text": "prompt 12", "sound_file":"12.aiff"}, {"text": "prompt 13", "sound_file":"13.aiff"}, {"text": "prompt 14", "sound_file":"14.aiff"}, {"text": "prompt 15", "sound_file":"15.aiff"}], [{"text": "prompt 21", "sound_file":"21.aiff"}, {"text": "prompt 22", "sound_file":"22.aiff"}, {"text": "prompt 23", "sound_file":"23.aiff"}, {"text": "prompt 24", "sound_file":"24.aiff"}, {"text": "prompt 25", "sound_file":"25.aiff"}], [{"text": "prompt 31", "sound_file":"31.aiff"}, {"text": "prompt 32", "sound_file":"32.aiff"}, {"text": "prompt 33", "sound_file":"33.aiff"}, {"text": "prompt 34", "sound_file":"34.aiff"}, {"text": "prompt 35", "sound_file":"35.aiff"}], [{"text": "prompt 41", "sound_file":"41.aiff"}, {"text": "prompt 42", "sound_file":"42.aiff"}, {"text": "prompt 43", "sound_file":"43.aiff"}, {"text": "prompt 44", "sound_file":"44.aiff"}, {"text": "prompt 45", "sound_file":"45.aiff"}] ];
+=======
+ 		var parsedData = "";
+>>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 
 
 	    window.addEventListener('deviceorientation', function(e) {
@@ -46,22 +60,39 @@
 	            }
 	    }, false);
 
-
-		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e){
+		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
 			var data = JSON.parse(e.data);
+
+			var incoming = JSON.parse(unescape(e.data));
+			console.dir("incoming packet : " + JSON.stringify(incoming));
+			
+			var condition = "do_not_care";
 			switch(data.type){
 				case 'attribution':
 					attributions.makeAttribution(data.value);
 					break;
+<<<<<<< HEAD
 				case 'order':
 					if(!promptsOrdered)
 					{
 						cognitive_prompts.doPromptAction("randomizePrompts",data.value);
 						promptsOrdered = true;
 					}					
+=======
+				case 'cognitive':
+					//condition = parsedData;
+					cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+>>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 					break;
 				case 'cognitive_skip':
-					cognitive_prompts.doPromptAction("skipPrompts",data.value);
+					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
+					break;
+				case 'dismiss_cognitive':
+					// TODO
+					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,"dontCare");
+					break;
+				case 'timecheck':
+					cognitive_prompts.dopromptAction("timecheck",data.value,"dontcare")
 					break;
 				case 'reset':
 					offset = 360 - raw_direction;
@@ -108,6 +139,12 @@
 					$('#overlay').fadeOut('slow');
 				}, 3000);
 			};
+
+			$.ajax({
+				url:"{{=URL('session', 'current_session')}}"
+			}).done(function(data){
+				parsedData = JSON.parse(JSON.parse(data));
+			});
 
 		});
 		

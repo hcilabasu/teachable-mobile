@@ -20,6 +20,7 @@
         <script src="{{=URL('static','js/problems.js')}}"></script>
         <script src="{{=URL('static','js/stepsList.js')}}"></script>
         <script src="{{=URL('static','js/main.js')}}"></script>
+        <script src="{{=URL('static','js/log.js')}}"></script>
         <script>
         	// $(function() {
         	// 	$("#check-solution-button").click(checkSolution);
@@ -42,6 +43,9 @@
         	APP.MAKE_COGNITIVE_PROMPT = "{{=URL('mobileinterface','robot','make_cognitive_prompt')}}";
         	APP.SKIP_TO_PROMPT = "{{=URL('mobileinterface','robot','skip_prompts')}}";
         	APP.GEOGEBRA_STATUS = "{{=URL('geogebra_status')}}";
+        	APP.SEND_DATA_TO_ROBOT = "{{=URL('send_data_to_robot')}}"
+        	APP.STORE_CURR_PROB = "{{=URL('store_curr_prob')}}"
+        	APP.DISMISS_PROMPT = "{{=URL('mobileinterface','robot','dismiss_cognitive')}}";
 
 /*
         	// Adding problems variable to global variable
@@ -64,6 +68,8 @@
 
         	// APP.init();
 
+        	// APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
+
         	APP.NUM_PROBLEMS = APP.PROBLEMS.length;
         	APP.basicProcedures = JSON.parse("{{=basic_procedures}}".replace(/&quot;/g, "\"").replace(/&#x27;/g, "'"));
         	APP.basicProceduresArray = function() { // This is assigning the return value of the function, not the function!
@@ -76,45 +82,52 @@
         	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
-
         </script>
         <script>
         	var olddata = undefined;
         	var socket = false;
         	var counter = 0;
-        	
-        	GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
-        	APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
 
+        	//Getting session information
+    	 	var datum;
+        	// jQuery.getJSON("../session/current_session", function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);});
+        	//Called this asynchronously. Can't believe this worked.
+        	$.ajax({
+			    type: 'GET',
+			    url: '../session/current_session',
+			    dataType: 'json',
+			    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+			    async: false
+			});
+        	// alert(TEST_SESSION_JSON);
+        	
+        	
         	//Printing the headers
-        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id");
+        	log("Date/Time, Type, Parameter, Initial State, Final State, Problem Number, Problem Description, Problem id, Subject id, Tester Name, Condition Name", {"firstPrint":true});
 
         	// Logging page load
-        	// Events are logged to logs/log.txt
+        	// Events are logged to logs/log.csv
         	// log("Page Load or refresh",{"source":__SOURCE__});
         	// getGeogebraStatus();
         	var initialStateOnLoadString  = calculateInitialStateOnLoad();
         	log("", {"type":"Refresh","parameter":"", "initial" : initialStateOnLoadString, "final" : initialStateOnLoadString}, true);
 
         	$(document).ready(function() {
-        		// if(confirm('Do you want a click button on the interface?')){
-        		// 	$("#manual-click").css('display', 'block');
-        		// } else {
-        		// 	$("#manual-click").css('display', 'none');
-        		// }
+        		// Check if the click button should be shown
+        		if(confirm('Do you want a click button on the interface?')){
+        			$("#manual-click").css('display', 'block');
+        		} else {
+        			$("#manual-click").css('display', 'none');
+        		}
 
         		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}', function(e) {
 
 		    		var incoming = JSON.parse(unescape(e.data));
+
+		    		// alert(jQuery.getJSON("../session/current_session").responseText);
 		    		
-		    		GEOGEBRA_STATUS_STRING = GEOGEBRA_STATUS_STRING;
-		    		APP.GEOGEBRA_STATUS_STRING = APP.GEOGEBRA_STATUS_STRING;
-
-		    		// alert("GEOGEBRA_STATUS_STRING : " + GEOGEBRA_STATUS_STRING);
-		    		// alert("APP.GEOGEBRA_STATUS_STRING : " + APP.GEOGEBRA_STATUS_STRING);
-
-		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.txt.
-					// log("incoming packet : " + JSON.stringify(incoming));
+		    		//!!! Dont put in '#', it messes up the log function. The log message is not pushed to log.csv.
+					console.dir("incoming packet : " + JSON.stringify(incoming));
 		      		
 		      		if(incoming) {
 		      			// Reset to a particular problem number.
@@ -139,11 +152,9 @@
 
 			      		 	openFeedbackScreen(incoming.status, incoming.message);
 			      		}
-
  			      		else if(incoming.type == "alert"){
  			      			alert(incoming.message);
  			      		}
-
 			      		else if(incoming.type == "log") {
 			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
@@ -156,7 +167,25 @@
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      		}
+			      		// else if(incoming.type == "robot_request") {
+			      			// console.dir("Robot requested memory objects.");
+			      			//Should encapsulating the data into the "type" message be handled at the default.py level?
+			      		// 	var requested_data = {"type":"requested_data", "APP" : APP.currentProblem};
+			      		// 	var req_data;
+
+      			  //       	$.ajax({
+							    // url: APP.SEND_DATA_TO_ROBOT +  "?data=" + escape(JSON.stringify(requested_data)),
+							    // success: function(req_data) {console.dir("DATA SENT TO ROBOT!!!" + req_data);},
+							//     async: true
+							// });
+			    //   		}
+			      		else if(incoming.type === "prompt_was_made"){
+			      			if(isClickButtonVisible()){
+				      			clickButtonPromptStarted();
+				      		}
+			      		}
 			      		else {
+			      			// Old messages. They do not have a type. But they should. TODO
 			      			try {
 				    			// Playing attention sound
 				    			AUDIO.loadSound("audio-attention");
@@ -190,13 +219,7 @@
 		        	console.dir(socket);
 		        }
 
-		        $('#manual-click-btn').click(function(e){
-		        	e.preventDefault();
-		        	// {trigger: "robot"}
-		        	olddata = {trigger:"all"};
-		        	updateCurrentStep();
-		        	counter = 1;
-		        });
+		        $('#manual-click-btn').click(clickButtonOpenDialog);
 		    });
         </script>
 	</head>
@@ -232,7 +255,7 @@
 			<div id="steps-wrapper" class="wrapper">
 				<!--<h3>Current Step:</h3>-->
 				<div id="current-step"></div>
-				<h3 id="steps-list-title">Steps: <span>Drag Mode</span> <a id="execute-steps-button" href="#" class="action-button"><span>Execute</span></a></h3>
+				<h3 id="steps-list-title">Steps: <span>Drag Mode</span> <a id="execute-steps-button" href="#" class="action-button"><span>Replay</span></a></h3>
 				<input type="hidden" id="procedure-steps" name="procedure-steps-hidden"/>
 				<ol id="steps-list">
 					<li class="droppable">&nbsp;</li><!--
@@ -276,11 +299,11 @@
 		<div id="update-step-dialog" title="Update current step">
 			<div id="update-step-form">
 				<fieldset>
-					<label for="steps">Available steps</label>
+					<label for="steps"></label>
 					<select>
 						<!-- List of procedures according to trigger -->
 					</select>
-					<label>Procedure parameters</label>
+					<label></label>
 					<!-- This hidden field will have the final value for the current procedure -->
 					<input type="hidden" id="procedure_parameters" name="procedure_parameters"/>
 					<div id="current-step-select-params"><!-- Wrapper for procedure's params --></div>
@@ -326,6 +349,6 @@
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>
-		<audio src="{{=URL('static','audio/37215__simon-lacelle__ba-da-dum.wav')}}" id="correct-solution" type = "audio/wav" preload="auto"></audio>
+		<audio src="{{=URL('static','audio/badadum.m4a')}}" id="correct-solution" type = "audio/wav" preload="auto"></audio>
 	</body>
 </html>

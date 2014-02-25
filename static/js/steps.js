@@ -20,6 +20,7 @@ var nonDragRestrictions = {
 STEPS.init = function() {
     // Setting dialog
     APP.updateStepDialog = $("#update-step-dialog");
+    // alert(APP.updateStepDialog);
     setDialog(APP.updateStepDialog);
     APP.updateStepDialog.bind('dialogclose', function(){olddata=undefined;});
 
@@ -113,7 +114,7 @@ function updateStepParamsList(){
         for(var i = 0; i < selectedStep.parameters.length; i++){
             var param = selectedStep.parameters[i];
             $("#current-step-select-params").append($("<label>", {
-                text : param
+                text : getPlainParameterName(param)
             }));
             $("#current-step-select-params").append($("<input>", {
                 type : "text",
@@ -132,7 +133,7 @@ function selectCurrentStep(event) {
     var parameters = {};
     var parametersArray = []
     $.each(labels, function(index, value) {
-        var paramName = value.innerText
+        var paramName = getCamelCaseParameterName(value.innerText);
         var paramValue = $("input#" + paramName, form).val();
         parameters[paramName] = paramValue;
         parametersArray.push(paramValue);
@@ -183,12 +184,58 @@ function selectCurrentStep(event) {
 
 }
 
+/*
+ * This function takes a camelcase string and outputs a capitalized and spaced string
+ * e.g.: camelCase -> Camel Case, aParameter2 -> A Parameter 2
+ */
+function getPlainParameterName(name){
+
+    var previousIsNum = false;
+    // Making the first letter uppercase
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+
+    // Checking other letters
+    for(var i = 1; i < name.length; i++){
+        // Creating conditions
+        var isNum = isNumber(name.charAt(i));
+        var isFirstNumber = !previousIsNum && isNum;
+        var isUpperCase = !isNum && name.charAt(i).toUpperCase() === name.charAt(i);
+        
+        if(isFirstNumber || isUpperCase){
+            // If this is a number, set the previous flag as true
+            if(isNumber(name.charAt(i))){ 
+                previousIsNum = true;
+            } else {
+                previousIsNum = false;
+            }
+            // Adding the space character
+            name = name.slice(0, i) + ' ' + name.slice(i, name.length);
+            // moving to next i
+            i++;
+        }
+    }
+    return name;
+}
+
+/*
+ * This function takes a capitalized string and outputs a camelCase string.
+ * e.g.: Camel Case -> camelCase, A Parameter 2 -> aParameter2
+ */
+function getCamelCaseParameterName(name){
+    // Lowering the case of the first character
+    name = name.charAt(0).toLowerCase() + name.slice(1);
+    // Replacing space
+    name = name.split(' ').join('');
+    return name;
+};
+
 function validateInput(form, labels, procName, parameters){
     /*
      * Validation is performed based on the procedure's name.
      * Ideally, it would be done based on each parameter's 
      * data types. Currently, parameters do not have data type.
      */
+    // procName = getPlainParameterName(procName);
     if(procName === 'moveDistance'){
         // Checks if the parameters is a number or if it's within range
         if(!isNumber(parameters['distance'])){

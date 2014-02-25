@@ -7,7 +7,7 @@
  * Growing pains with Javascript, right? :)
  */
 // Defining global vars
-APP = {};
+var APP = {};
 
 // Adrin added this init function to initialize certain problem tracking variables.
 // if(!(APP.hasOwnProperty("init"))) {
@@ -37,13 +37,13 @@ var __SOURCE__ = "system";
 
 $(function() {
     // Initializing Step-related functions
-    STEPS.init();
+    if (window['STEPS']) STEPS.init();
     // Initializing Procedure-related functions
-    PROCEDURES.init();
+    if (window['PROCEDURES']) PROCEDURES.init();
     // Initializing Problem navigation-related functions
-    PROBLEMS.init();
+    if (window['PROBLEMS']) PROBLEMS.init();
     // Initializing Steps List
-    STEPS_LIST.init();
+    if (window['STEPS_LIST']) STEPS_LIST.init();
 });
 
 /*
@@ -87,22 +87,24 @@ function setDroppable(element){
 }
 
 function setDialog(element){
-    element.dialog({
-        autoOpen: false,
-        height: 'auto',
-        width: '270px',
-        modal: true,
-        draggable: false,
-        resizable: false,
-        focusSelector: undefined
-    });
+    // if(element.hasOwnProperty("dialog")) {
+        element.dialog({
+            autoOpen: false,
+            height: 'auto',
+            width: '270px',
+            modal: true,
+            draggable: false,
+            resizable: false,
+            focusSelector: undefined
+        });
+    // }
 }
 
 
 /**************************
  * Aux Functions
  **************************/
- function toggleError(element, property, newStyle, oldStyle){
+function toggleError(element, property, newStyle, oldStyle){
     var animateObject = {};
     animateObject[property] = newStyle;
     element.animate(animateObject, 600);
@@ -111,9 +113,9 @@ function setDialog(element){
         animateObject[property] = oldStyle;
         element.animate(animateObject, 600);
     }, 3000);
- }
+}
 
- function isTriggerEqual(object1, object2){
+function isTriggerEqual(object1, object2){
     console.dir("comparing...");
     console.dir(object1);
     console.dir(object2);
@@ -125,7 +127,7 @@ function setDialog(element){
     } else {
         return false;
     }
- }
+}
 
 /*
  * This function merges the objects data, newdata. If a property with the same name is found, 
@@ -144,6 +146,7 @@ function mergeObjects(data, newdata){
     }
 }
 
+<<<<<<< HEAD
 /*
  * Logging function. The parameter should be a string, which will be logged.
  * Events are logged to logs/log.txt
@@ -300,63 +303,45 @@ function mergeObjects(data, newdata){
                 console.dir("geogebra_status" + geogebra_status);
                 geogebra_status = geogebra_status.replace(/"/g, "'");
                 console.dir("##### geogebra_status");
+=======
+//A function to store the session information in a Global Variable!!! That's bad.
+function storeTestSessionInformation(data) {
+    TEST_SESSION_JSON = JSON.parse(data);
+}
 
-                // logString += "," + geogebra_status;
+function isClickButtonVisible(){
+    return $("#manual-click").css("display") === "block";
+}
+>>>>>>> 05657bf16efaa82806e0b83af68c57d5d519dd09
 
-                var nextButtonStatusString = "next button " + (GBL_BOOL_NEXT_BUTTON_ENABLED ? "enabled" : "disabled");
-                // var nextButtonStatusString = "next button " + (($("#next-problem-button").css("opacity") == 1) ? "enabled" : "disabled");
-                var listOfSteps = APP.currentStepsList;
-                
-                // (title ‘problem 1 plot P2’; next button disabled; no steps;)
-                // logString += ",problem {0},(title '{1}' {2} {3})".format((APP.currentProblemIndex + 1), APP.PROBLEMS[APP.currentProblemIndex].text, title);
-                
-                var userStatus = "problem " + (APP.currentProblemIndex + 1) + ":" +
-                            "(title " + APP.PROBLEMS[APP.currentProblemIndex].text + ":" + 
-                            nextButtonStatusString + ":" +
-                            /*(listOfSteps ? JSON.stringify(listOfSteps) : [].toString()) +*/ 
-                            (listOfSteps ? listOfSteps.length : 0) + ":)";
-                
-                userStatus = userStatus.replace(/"/g, "'");
-                console.dir("##### userStatus");
+function clickButtonPromptStarted(){
+    // Setting click action and label
+    $("#manual-click a").css('background', 'red').off().text("Record").click(clickButtonRecordStarted);
+};
 
-                if(title) {
-                    logString += ",\"" + title + "\"";
-                }
+function clickButtonRecordStarted(e){
+    $("#manual-click a").off().text("Stop").click(clickButtonRecordFinished);
+}
 
-                var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
-                var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
-                var problemNumber = (data.hasOwnProperty("problem number") || data["problem number"]) ? data["problem number"] : (APP.currentProblemIndex+1);
-                var problemDesc = (data.hasOwnProperty("problem desc") || data["problem desc"]) ? data["problem desc"] : (APP.PROBLEMS[APP.currentProblemIndex].text);
-                var problemId = (data.hasOwnProperty("problem id") || data["problem id"]) ? data["problem id"] : (APP.PROBLEMS[APP.currentProblemIndex].id);
-                
-                logString += ",\"" + data.type + "\""
-                        + ",\"" + data.parameter + "\""
-                        + ",\"" + initialState + "\""
-                        + ",\"" + finalState + "\""
-                        + ",\"" + problemNumber + "\""
-                        + ",\"" + problemDesc + "\""
-                        + ",\"" + problemId + "\"";
-                        // ",\"" + logSource + "\"" + 
-                        // ",\"" + geogebra_status + "\"" +
-                        // ",\"" + userStatus + "\"";
-            }
-            else {
-                logString += ",\"" + title + "\"";
-            }
+function clickButtonRecordFinished(e){
+    $("#manual-click a").off().text("Done").click(clickButtonSetClickAction);
+}
 
-            // Logging in server
-            $.ajax({
-                url: APP.LOG + "?data=" + logString,
-                success: function(data) {
-                    console.dir("Event '" + title + "' LOGGED!");
-                }
-            });
-        }
-    }
-    catch(e) {
-        console.dir("log function failed!!! : " + e.toString());
-    }
- }
+function clickButtonSetClickAction(e){
+    $("#manual-click a").css('background', 'none').off().text("Click").click(clickButtonOpenDialog);   
+    // Sending message to the robot to dismiss the prompt subtitles
+    $.ajax({
+        url: APP.DISMISS_PROMPT
+    });
+}
+
+function clickButtonOpenDialog(e){
+    e.preventDefault();
+    // {trigger: "robot"}
+    olddata = {trigger:"all"};
+    updateCurrentStep();
+    counter = 1;
+}
 
 //Gets the status of the cartesian plane.
 function getGeogebraStatus(onSuccessCallback, title, data, bool_verbose) {

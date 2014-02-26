@@ -289,6 +289,17 @@ def make_cognitive_prompt():
 	# websocket_send('http://127.0.0.1:' + __socket_port, message_wrapper, 'mykey', 'robot')
 	return message_wrapper
 
+def randomly_order_prompts():
+	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
+	state = request.vars['state']
+	prob_num = int(request.vars['number'])
+	trig = request.vars['trigger']
+	ang = request.vars['angle']
+	# wrapping info in package
+	message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	return message_wrapper
+
 def request_data_from_mobile():
 	# Requesting memory objects from the mobile side.
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"robot_request"}', 'mykey', 'interface')

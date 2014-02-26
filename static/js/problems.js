@@ -39,9 +39,8 @@ function refreshProblem(message, executeSteps) {
         updateStepsListInDB();
         updateCurrentProcedureStepsList();
 
-        //skip to appropriate prompt
-        var current = -1;
-        ajax(APP.SKIP_TO_PROMPT + "?number=" + current );
+        //check if it is time to deliver a cognitive prompt
+        callCheckForCognitivePrompt();
 
         if(executeSteps === undefined || executeSteps) { // TODO The first condition should be removed as soon as all calls to this function are updated accordingly
             executeStep(); 
@@ -103,8 +102,8 @@ function moveToProblemNumber(probNum) {
     APP.currentProblemIndex = probNum;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
-    //skip to appropriate prompt
-    ajax(APP.SKIP_TO_PROMPT + "?number=" + probNum );
+    //check if it is time to deliver a cognitive prompt
+    callCheckForCognitivePrompt();
 
     // log("Problem number : " + probNum);
     // log("Current problem : " + JSON.stringify(APP.currentProblem));
@@ -133,8 +132,8 @@ function nextProblem() {
     }
 }
 
-function callCheckForPrompt(trigger, state, number) {
-    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + trigger + "&state=" + state + "&number=" + number);
+function callCheckForCognitivePrompt() {
+    ajax(ADR.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "dc" + "&number=" + "dc");
 }
 
 function moveToNext(callback) {
@@ -146,16 +145,8 @@ function moveToNext(callback) {
     
      //allow robot to resest, then check to see if prompts should be called
      window.setTimeout(function(){
-           callCheckForPrompt("hit", "beg", 1);
+           callCheckForCognitivePrompt();
          }, 15000);
-
-    //allow robot to resest, then check to see if prompts should be called
-    window.setTimeout(function(){
-       callCheckForPrompt("hit", "beg", 1);
-    }, 15000);
-
-    //check to see if prompts should be called
-    //ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "beg" + "&number=" + 1);
 
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);

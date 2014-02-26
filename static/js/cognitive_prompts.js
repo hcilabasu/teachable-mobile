@@ -19,7 +19,7 @@ var CognitivePrompts = function() {
 		}
 		else if(name == "makePrompt")
 		{
-			makePrompt(info,condition)
+			//makePrompt(info,condition)
 		}
 		else if(name == "hidePromptDialog")
 		{

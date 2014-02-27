@@ -133,7 +133,7 @@ function nextProblem() {
 }
 
 function callCheckForCognitivePrompt() {
-    ajax(ADR.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "dc" + "&number=" + "dc");
+    ajax(APP.MAKE_COGNITIVE_PROMPT + "?trigger=" + "hit" + "&state=" + "dc" + "&number=" + "dc");
 }
 
 function moveToNext(callback) {

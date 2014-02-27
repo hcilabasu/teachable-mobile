@@ -29,7 +29,7 @@ body, html {
 }
 
 body {
-	background: url(../images/robotui/bg.png);
+	background: url(../images/robotui/bg.png) no-repeat #C8F526;
 }
 
 #output {
@@ -45,11 +45,12 @@ body {
 }
 
 #eyes {
-	background: url(../images/robotui/eyes.png);
+	background: url(../images/robotui/eyes.png) no-repeat;
+	width: 320px;
 }
 
 #mouth {
-	background: url(../images/robotui/mouth.png);	
+	background: url(../images/robotui/mouth.png) no-repeat;	
 }
 
 #overlay {

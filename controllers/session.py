@@ -12,7 +12,7 @@ def index():
 
 def new_session():
 	# closing previous session
-	__end_session()
+	__end_session('')
 	# retrieving data
 	subject_id = request.vars['subject_id']
 	tester = request.vars['tester']
@@ -27,8 +27,9 @@ def new_session():
 	__back_to_index()
 
 def end_session():
+	comments = request.vars['comments']
 	# ending session
-	__end_session()
+	__end_session(comments)
 	# redirecting back to index session control page
 	__back_to_index()
 
@@ -51,9 +52,10 @@ def __back_to_index():
 def __get_current_session():
 	return db(db.sessions.end_time == None).select().last()
 
-def __end_session():
+def __end_session(comments):
 	current_session = __get_current_session()
 	if current_session:
 		current_session.update_record(
-			end_time=datetime.today()
+			end_time=datetime.today(),
+			comments=comments
 		)

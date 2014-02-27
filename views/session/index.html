@@ -6,6 +6,10 @@
 		fieldset {
 			margin-bottom: 30px;
 		}
+
+		textarea {
+			display:block;
+		}
 	</style>
 </head>
 <body>
@@ -20,6 +24,7 @@
 					<li><strong>Subject ID:</strong> {{=current_session.subject_id}}</li>
 					<li><strong>Tester name:</strong> {{=current_session.tester_name}}</li>
 					<li><strong>Condition name:</strong> {{=current_session.condition_name}}</li>
+					<li><strong>Comments:</strong> <textarea name="comments"></textarea></li>
 				</ul>
 
 				<input type="submit" value="End session"/>

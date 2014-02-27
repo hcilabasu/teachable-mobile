@@ -121,3 +121,5 @@ timestamp: 2014-02-16T16:07:53.919293
 ALTER TABLE sessions ADD end_time TIMESTAMP;
 timestamp: 2014-02-16T16:07:53.921808
 ALTER TABLE sessions ADD start_time TIMESTAMP;
+timestamp: 2014-02-26T21:19:39.119086
+ALTER TABLE sessions ADD comments CHAR(512);

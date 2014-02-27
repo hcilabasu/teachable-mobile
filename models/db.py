@@ -129,5 +129,6 @@ db.define_table('sessions',
     Field('tester_name', type='string'),
     Field('condition_name', type='string'),
     Field('start_time', type='datetime'),
-    Field('end_time', type='datetime')
+    Field('end_time', type='datetime'),
+    Field('comments', type='string')
 )

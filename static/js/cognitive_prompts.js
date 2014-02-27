@@ -58,7 +58,7 @@ var CognitivePrompts = function() {
 		var cur_prompt = num_prompts;
 		cur_misconception = num_misconceptions;
 		//set the first cognitive prompt to be the training prompt
-		ordered_prompts[cur_index] = {"text":"Are  you ready to teach me geometry?", "sound_file":"training.aiff"};
+		ordered_prompts[cur_index] = {"text":"Are you ready to teach me geometry?", "sound_file":"training.aiff"};
 		cur_index += 1;
 		while(cur_prompt !== 0)
 		{
@@ -147,7 +147,6 @@ var CognitivePrompts = function() {
 		// Set facial expression
 		$("body").removeClass().addClass(prompt.emotion);
 		// load sound
-		console.log(currentPromptIndex);
 		console.log("/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
 		AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
 		AUDIO.loadSound("promptSound");

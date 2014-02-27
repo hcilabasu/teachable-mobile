@@ -27,5 +27,6 @@ AUDIO.addFinishListener = function(name, listener){
 }
 
 AUDIO.play = function(name){
+	console.log("ASDFALSDKJ" + AUDIO[name]);
 	AUDIO[name].play();
 }

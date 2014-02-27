@@ -79,10 +79,17 @@ function log(title, data, bool_verbose, callback) {
 	            url: URLString + "?data=" + logString,
 	            success: function(data) {
 	                console.dir("Event '" + title + "' LOGGED!");
-	            }
+	            },
+	            async: false
 	        });
 
 	        return;
+	    }
+		
+		if(!TEST_SESSION_JSON) {
+	    	//Interesting note, doing var TEST_SESSION_JSON = ... will create another local variable of the same name and it'll be undefined, so the flow will always enter this block.
+	    	//Don't do var, this'll mean you're looking up the global variable (yuck! global variables!!)
+	    	TEST_SESSION_JSON = {"subject_id" : "", "tester_name" : "", "condition_name" : ""};
 	    }
 
 	    console.dir("log callback : " + callback);
@@ -179,7 +186,8 @@ function log(title, data, bool_verbose, callback) {
 	                url: URLString + "?data=" + logString,
 	                success: function(data) {
 	                    console.dir("Event '" + title + "' LOGGED!");
-	                }
+	                },
+	                async: false
 	            });
 	        }, title, data, bool_verbose);
 	    }
@@ -274,7 +282,8 @@ function log(title, data, bool_verbose, callback) {
 	            url: URLString + "?data=" + logString,
 	            success: function(data) {
 	                console.dir("Event '" + title + "' LOGGED!");
-	            }
+	            },
+				async: false
 	        });
 	    }
 	}

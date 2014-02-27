@@ -96,17 +96,24 @@ var CognitivePrompts = function() {
 	var timeprompt = function(info)
 	{
 	   var newtime = new Date();
+	   var newhour = newtime.getHours();
 	   var newminute = newtime.getMinutes();
-	   console.log("first: " + firstminute + "new: " + newminute);
-	   if(firstminute == -1)
+           var newmininsec = newminute * 60;
+	   var newsec = newtime.getSeconds();
+           var newtotaltime = newmininsec + newsec ;
+	   console.log("first: " + firsthour + ":" + firstminute + ":" + firstsec +   "new: " + newhour + ":" + newminute + ":" + newsec);
+	   if(firsttotaltime == -1)
 	   {
 	   		//no cognitive prompts have been displayed yet, go ahead a show prompt
 	   		displayTriggeredPrompt(prompt);
 	   }
-	   else if (newminute - firstminute >= 2)
+	   else if (firsthour < newhour)
 	   {
+	      if (newtotaltime - firsttotaltime >= 120)
+	         {
 	   		//check if it's been at least 2 minutes since last prompt shown, if so then show prompt
 	    	displayTriggeredPrompt(prompt);
+                 }
 	   }
 	}
 
@@ -137,10 +144,17 @@ var CognitivePrompts = function() {
 		}
 	}
 
-    var firstminute = -1;
+    var firsttotaltime = -1;
+    var firsthour = 0;
+    var firstminute = 0;
+    var firstsec = 0;
 	var displayTriggeredPrompt = function(prompt, condition) {
 		var firsttime = new Date();
+        firsthour = firsttime.getHours();
         firstminute = firsttime.getMinutes();
+        var firstmininsec = firstminute * 60;
+        firstsec = firsttime.getSeconds();
+        firsttotaltime = firstmininsec + firstsec; 
 	
         var incremented = false;
         recordClickCount = 0;

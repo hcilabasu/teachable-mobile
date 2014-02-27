@@ -195,14 +195,15 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
 
     $("#responseImageHolder").attr("src","../static/images/" + responseImage);
 
+    // Commented the feedback message at Victor's request
     // Updating text
-    if(String(solutionStatus).toLowerCase() == "true")  {
+    /*if(String(solutionStatus).toLowerCase() == "true")  {
         $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text());
     }
     else {
         //$("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + "Hint : " + appletMessage);
-        $("#feedback span").html($("<div/>").html("The system says : " + responseArray[rndIndx]).text() + "<br><br>" + (appletMessage ? "Hint : " + appletMessage : ""));
-    }
+        $("#feedback span").html($("<div/>").html(solutionStatus"The system says : " + responseArray[rndIndx]).text() + "<br><br>" + (appletMessage ? "Hint : " + appletMessage : ""));
+    }*/
 
     $("#feedback-ok").off('click');
     // button.text("OK");
@@ -213,7 +214,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         // openEmoticonScreen();
         
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
-        log("",{"type":"correctness feedback","parameter":String(solutionStatus).toLowerCase(),"initial":"", "final":""});
+        log("",{"type":"correctness feedback","parameter":((String(solutionStatus).toLowerCase() == "true") ? "correct" : "incorrect"),"initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
         // log("System's response to solution '" + responseArray[rndIndx] + "'", {"source":__SOURCE__});
         // alert("You clicked OK!!!!");
     });

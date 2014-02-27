@@ -65,6 +65,7 @@
         	//Storing the cartesian plane status in a global variable
         	var GEOGEBRA_STATUS_STRING = "GEOGEBRA_STATUS_STRING_SS";
         	APP.GEOGEBRA_STATUS_STRING = "APP_GEOGEBRA_STATUS_STRING";
+			var CURRENT_GEOGEBRA_STATE = GEOGEBRA_STATUS_STRING;
 
         	// APP.init();
 
@@ -158,6 +159,10 @@
 			      		else if(incoming.type == "log") {
 			      			GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.data.geo_status.string;
+			      			
+			      			console.dir(JSON.stringify(incoming));
+
+			      			CURRENT_GEOGEBRA_STATE = incoming.data.data.final;
 			      			// log(incoming.data.title, incoming.data.data, incoming.data.bool_verbose);
 			      			log("", incoming.data.data);
 			      		}

@@ -107,13 +107,13 @@ var CognitivePrompts = function() {
 	   		//no cognitive prompts have been displayed yet, go ahead a show prompt
 	   		displayTriggeredPrompt(prompt);
 	   }
-	   else if (firsthour < newhour)
+	   else //if (firsthour < newhour)
 	   {
 	      if (newtotaltime - firsttotaltime >= 120)
 	         {
 	   		//check if it's been at least 2 minutes since last prompt shown, if so then show prompt
 	    	displayTriggeredPrompt(prompt);
-                 }
+            }
 	   }
 	}
 

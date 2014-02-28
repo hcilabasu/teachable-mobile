@@ -316,6 +316,8 @@ function openPrompt(promptMessages, isFirst) {
 }
 
 function closePrompt() {
+    
+
     // Calling moveToNext function
     moveToNext(function() {
         // Fading prompt after moving to next problem

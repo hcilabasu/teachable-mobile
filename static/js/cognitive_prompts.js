@@ -97,24 +97,41 @@ var CognitivePrompts = function() {
 	{
 	   var newtime = new Date();
 	   var newhour = newtime.getHours();
+           var newhourinmin = newhour * 60;
 	   var newminute = newtime.getMinutes();
-           var newmininsec = newminute * 60;
 	   var newsec = newtime.getSeconds();
-           var newtotaltime = newmininsec + newsec ;
-	   console.log("first: " + firsthour + ":" + firstminute + ":" + firstsec +   "new: " + newhour + ":" + newminute + ":" + newsec);
+           var newsecinmin = newsec/60;
+           var newtotaltime = newhourinmin + newminute + newsecinmin;
+           if (firsthour == 0 && firstminute == 0 && firstsec == 0 )
+	   {
+	      console.log("Time: " + newhour + ":" + newminute + ":" + newsec);
+           }
+           else
+	   {
+	      console.log("first Time: " + firsthour + ":" + firstminute + ":" + firstsec + "New Time: " + newhour + ":" + newminute + ":" + newsec);
+	   }
+
 	   if(firsttotaltime == -1)
 	   {
 	   		//no cognitive prompts have been displayed yet, go ahead a show prompt
 	   		displayTriggeredPrompt(prompt);
 	   }
-	   else if (firsthour < newhour)
+	   else if (newtotaltime < firsttotaltime)
 	   {
-	      if (newtotaltime - firsttotaltime >= 120)
-	         {
-	   		//check if it's been at least 2 minutes since last prompt shown, if so then show prompt
-	    	displayTriggeredPrompt(prompt);
-                 }
+              var minutesPerDay = 24*60; 
+              var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
+              result += newtotaltime; // Minutes in the next day 
+	      if (result >= 2)
+	      {
+	      	  //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
+	    	  displayTriggeredPrompt(prompt);
+              }
 	   }
+           else if (newtotaltime - firsttotaltime >= 2)
+	   {
+	       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
+	    	displayTriggeredPrompt(prompt);
+           }
 	}
 
 
@@ -148,13 +165,14 @@ var CognitivePrompts = function() {
     var firsthour = 0;
     var firstminute = 0;
     var firstsec = 0;
-	var displayTriggeredPrompt = function(prompt, condition) {
-		var firsttime = new Date();
+    	var displayTriggeredPrompt = function(prompt, condition) {
+        var firsttime = new Date();
         firsthour = firsttime.getHours();
+        var firsthourinmin = firsthour * 60;
         firstminute = firsttime.getMinutes();
-        var firstmininsec = firstminute * 60;
         firstsec = firsttime.getSeconds();
-        firsttotaltime = firstmininsec + firstsec; 
+        var firstsecinmin = firstsec/60;
+        firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
 	
         var incremented = false;
         recordClickCount = 0;

@@ -266,6 +266,7 @@ def make_attribution():
 	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+
 	return message_wrapper
 
 def make_cognitive_prompt():

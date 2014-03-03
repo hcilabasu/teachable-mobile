@@ -1,5 +1,5 @@
 var Attributions = function() {
-
+	var PROBLEMS = {};
 
 	var rotate = function(array, positions){
 		return array.concat(array.splice(0,positions+1));
@@ -28,12 +28,15 @@ var Attributions = function() {
 			window.setTimeout(function(){
 				$("body").removeClass().addClass("neutral");
 				$("#speech").fadeOut('slow');
+				//check to see if cognitive prompt should be displayed
+				cognitive_prompts.doPromptAction("timecheck","","dontcare");
 			}, time);
+
 		});
 		// play sound
 		window.setTimeout(function(){
 			AUDIO.play("attributionSound");
-		}, 6000);
+		}, 2500);
 	}
 
 	return {

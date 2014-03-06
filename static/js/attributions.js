@@ -10,6 +10,7 @@ var Attributions = function() {
 		// log("In makeAttribution.....");
 		// log(JSON.stringify(attr));
 		
+		console.log("here");
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
 		// load sound

@@ -164,109 +164,79 @@ var CognitivePrompts = function() {
     var firsthour = 0;
     var firstminute = 0;
     var firstsec = 0;
-    	var displayTriggeredPrompt = function(prompt, condition) {
-        var firsttime = new Date();
-        firsthour = firsttime.getHours();
-        var firsthourinmin = firsthour * 60;
-        firstminute = firsttime.getMinutes();
-        firstsec = firsttime.getSeconds();
-        var firstsecinmin = firstsec/60;
-        firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
-	
-        var incremented = false;
-        recordClickCount = 0;
-		// Set facial expression
-		$("body").removeClass().addClass(prompt.emotion);
-		// load sound
-		console.log("/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
-		AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
-		AUDIO.loadSound("promptSound");
-		// Attach handlers
-		console.log(condition);
-		AUDIO.addStartListener("promptSound", function(){
-			// When robot starts to speak
-			$("body").addClass("talking");
-			$("#speech").text(ordered_prompts[currentPromptIndex].text).fadeIn('slow');
-			
-			var datum;
-			$.ajax({url : REQUEST_DATA_FROM_MOBILE,
-					success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
-												var tmpArray = datum.split('@@@', 2);
-												current_problem_object = JSON.parse(tmpArray[0]);
-												current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
-												},
-					async : false});
 
-			log("", {"type":"prompt","parameter":ordered_prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
-				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
+	var displayTriggeredPrompt = function(prompt, condition) {
+    var firsttime = new Date();
+    var firsthourinmin = firsthour * 60;
+    var firstsecinmin = firstsec/60;
+    var incremented = false;
+    firsthour = firsttime.getHours();
+    
+    firstminute = firsttime.getMinutes();
+    firstsec = firsttime.getSeconds();
+    
+    firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
 
-			if(condition !== "Mobile")
-			{
-				console.log("a")
-				$("#record").text('REC');
-				$("#record").fadeIn('slow');
-				$("#record").off('click');
-				$("#record").click(function() {
+    
+    recordClickCount = 0;
+	// Set facial expression
+	$("body").removeClass().addClass(prompt.emotion);
+	// load sound
+	console.log("/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
+	AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
+	AUDIO.loadSound("promptSound");
+	// Attach handlers
+	console.log(condition);
 
-					//increment click count
-					recordClickCount = recordClickCount + 1;
+	AUDIO.addStartListener("promptSound", function(){
+		// When robot starts to speak
+		$("body").addClass("talking");
+		$("#speech").text(ordered_prompts[currentPromptIndex].text).fadeIn('slow');
+		
+		var datum;
+		$.ajax({url : REQUEST_DATA_FROM_MOBILE,
+				success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
+											var tmpArray = datum.split('@@@', 2);
+											current_problem_object = JSON.parse(tmpArray[0]);
+											current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
+											},
+				async : false});
 
-					if(recordClickCount == 1) 
-					{
-						//on first click, add border to show Quinn is "recording"
-						// $("#record").css("background-image","url(../images/stop.png)");
-						$("#record").addClass('stop');
-						$("#record").text('STOP');
-					}
-					if(recordClickCount == 2) 
-					{
-						//on second click, remove border to show Quinn is NOT "recording"
-						//$("#record").css({"outline":"#FF0000 dotted"});								
-						//change to dismiss button
-						$("#record").removeClass('stop').addClass('dismiss');
-						$("#record").text('DONE');
+		log("", {"type":"prompt","parameter":ordered_prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
+			"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
 
-					}
-					if(recordClickCount >= 3)
-					{
-						//on third click, reset and remove prompts
-						recordClickCount = 0;
-						//REMOVE THE PROMPTS
-						$("body").removeClass().addClass("neutral");
-						$("#speech").fadeOut('slow');
-						$("#record").fadeOut('slow', function(){
-							// removing dismiss class only after done fading
-							$("#record").removeClass('dismiss');
-						});
+		if(condition !== "Mobile")
+		{
+			console.log("a")
+			$("#record").text('REC');
+			$("#record").fadeIn('slow');
+			$("#record").off('click');
+			$("#record").click(function() {
 
-						//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
-						if(!incremented)
-						{
-							currentPromptIndex = currentPromptIndex + 1;
-							//incremented = true;
-						}
+				//increment click count
+				recordClickCount = recordClickCount + 1;
 
-						//check for second prompt at current state
-						if(!promptsFinished && ordered_prompts[currentPromptIndex-1].another_prompt == "true")
-						{
-							$("#record").off('click');
-							displayTriggeredPrompt(prompt);
-							promptsFinished = true;
-						}
-						$("#record").off('click');
-					}
-				});
-			}
-			else
-			{
-				console.log("b");
-				$("#record").addClass('dismiss');
-				$("#record").text('Done');
-				$("#record").fadeIn('slow');
-				$("#record").off('click');
-				console.log("c");
-				$("#record").click(function() {
-					console.log("d");
+				if(recordClickCount == 1) 
+				{
+					//on first click, add border to show Quinn is "recording"
+					// $("#record").css("background-image","url(../images/stop.png)");
+					$("#record").addClass('stop');
+					$("#record").text('STOP');
+				}
+				if(recordClickCount == 2) 
+				{
+					//on second click, remove border to show Quinn is NOT "recording"
+					//$("#record").css({"outline":"#FF0000 dotted"});								
+					//change to dismiss button
+					$("#record").removeClass('stop').addClass('dismiss');
+					$("#record").text('DONE');
+
+				}
+				if(recordClickCount >= 3)
+				{
+					//on third click, reset and remove prompts
+					recordClickCount = 0;
+					//REMOVE THE PROMPTS
 					$("body").removeClass().addClass("neutral");
 					$("#speech").fadeOut('slow');
 					$("#record").fadeOut('slow', function(){
@@ -282,38 +252,71 @@ var CognitivePrompts = function() {
 					}
 
 					//check for second prompt at current state
-					/*if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
+					if(!promptsFinished && ordered_prompts[currentPromptIndex-1].another_prompt == "true")
 					{
 						$("#record").off('click');
 						displayTriggeredPrompt(prompt);
 						promptsFinished = true;
 					}
-					*/
 					$("#record").off('click');
+				}
+			});
+		}
+		else
+		{
+			console.log("b");
+			$("#record").addClass('dismiss');
+			$("#record").text('Done');
+			$("#record").fadeIn('slow');
+			$("#record").off('click');
+			console.log("c");
+			$("#record").click(function() {
+				console.log("d");
+				$("body").removeClass().addClass("neutral");
+				$("#speech").fadeOut('slow');
+				$("#record").fadeOut('slow', function(){
+					// removing dismiss class only after done fading
+					$("#record").removeClass('dismiss');
 				});
-				
-				
-			}
 
-		});
+				//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
+				if(!incremented)
+				{
+					currentPromptIndex = currentPromptIndex + 1;
+					//incremented = true;
+				}
 
-		AUDIO.addFinishListener("promptSound", function(){
-			// When robot finishes speaking
-			$("body").removeClass("talking");
-		});
-		// play sound
-		window.setTimeout(function(){
-			AUDIO.play("promptSound");
-		}, 3000);
+				//check for second prompt at current state
+				/*if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
+				{
+					$("#record").off('click');
+					displayTriggeredPrompt(prompt);
+					promptsFinished = true;
+				}
+				*/
+				$("#record").off('click');
+			});
+		}
+	});
 
-		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
+	AUDIO.addFinishListener("promptSound", function(){
+		// When robot finishes speaking
+		$("body").removeClass("talking");
+	});
 
-		// TODO separate into a function
-		$.ajax({
-			url: 'robot/prompt_was_made'
-		});
-		
-	}
+	// play sound
+	window.setTimeout(function(){
+		AUDIO.play("promptSound");
+	}, 3000);
+
+	console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
+
+	// TODO separate into a function
+	//$.ajax({
+	//	url: 'robot/prompt_was_made'
+	//});
+	
+}
 
 	/*
 	var skipPrompts = function(problem) {

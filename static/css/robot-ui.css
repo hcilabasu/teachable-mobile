@@ -30,6 +30,7 @@ body, html {
 
 body {
 	background: url(../images/robotui/bg.png) no-repeat #C8F526;
+	background-size: cover;
 }
 
 #output {
@@ -42,15 +43,20 @@ body {
 	bottom: 0;
 	top: 0;
 	width: 100%;
+	left: 50%;
+	margin-left: -160px;
 }
 
 #eyes {
 	background: url(../images/robotui/eyes.png) no-repeat;
+	height: 480px;
 	width: 320px;
 }
 
 #mouth {
 	background: url(../images/robotui/mouth.png) no-repeat;	
+	height: 480px;
+	width: 320px;
 }
 
 #overlay {

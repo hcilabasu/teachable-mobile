@@ -118,14 +118,15 @@ var CognitivePrompts = function() {
 	   }
 	   else if (newtotaltime < firsttotaltime)
 	   {
-              var minutesPerDay = 24*60; 
-              var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
-              result += newtotaltime; // Minutes in the next day 
-	      if (result >= 2)
-	      {
-	      	  //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
-	    	  displayTriggeredPrompt(prompt);
-              }
+            var minutesPerDay = 24*60; 
+            var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
+            result += newtotaltime; // Minutes in the next day 
+	        if (result >= 2)
+	        {
+	      	    //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
+	    	    displayTriggeredPrompt(prompt);
+            }
+        }
 	   else if (newtotaltime - firsttotaltime >= 2)
 	   {
 	       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
@@ -207,16 +208,15 @@ var CognitivePrompts = function() {
 
 		if(condition !== "Mobile")
 		{
-			console.log("a")
-			$("#record").text('REC');
+			$("#record").text('DONE');
 			$("#record").fadeIn('slow');
 			$("#record").off('click');
+			$("#record").addClass('dismiss');
 			$("#record").click(function() {
 
 				//increment click count
 				recordClickCount = recordClickCount + 1;
-
-				if(recordClickCount == 1) 
+				/*if(recordClickCount == 1) 
 				{
 					//on first click, add border to show Quinn is "recording"
 					// $("#record").css("background-image","url(../images/stop.png)");
@@ -231,8 +231,8 @@ var CognitivePrompts = function() {
 					$("#record").removeClass('stop').addClass('dismiss');
 					$("#record").text('DONE');
 
-				}
-				if(recordClickCount >= 3)
+				}*/
+				if(recordClickCount == 1)
 				{
 					//on third click, reset and remove prompts
 					recordClickCount = 0;

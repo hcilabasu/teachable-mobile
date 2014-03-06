@@ -501,17 +501,80 @@ a.action-button > span {
 }
 
 	#emoticon label {
-		width: 50px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-left: 55px;
+		padding-right: 55px;
+		border:1px solid;
+		border-radius:10px;
+		background-color: white;
+		font-size: 0.9em;
+		font-weight: normal;
+		color: #737373;
+		text-shadow: 0 1px 0 #505050;
 		display: inline-block;
 	}
 
+	#emoticon img {
+		width: 75px;
+		display: inline-block;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+
+	#emoticon a {
+		margin-left: 10px;
+	}
+
+	#emoticon input {
+		margin-left: 40px;
+		margin-right: 40px;
+	}
+
 	#emoticon h2 {
+		font-size: 2em;
 		margin-top: 20px;
-		margin-bottom: 10px;
+		margin-bottom: 50px;
+	}
+
+	#emoticon p {
+    position: relative;
+    background: #fff;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-left: 100px;
+    margin-right: 10px;
+    margin-bottom: 140px;
+    font-size: 18px;
+    font-weight: normal;
+    color: #1A1A1A;
+    text-shadow: 0 1px 0 #000000;
+    text-align: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+	#emoticon p:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 15%;
+    bottom: -60px;
+    margin-left: -15px;
+    border-width: 30px 20px 30px 20px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+}
+
+	#emoticon h6 {
+		width: 40px;
 	}
 
 	#emoticon-ok {
-		display: block;
+		display: inline;
 		margin-top: 15px;
 		text-decoration: none;
 	}

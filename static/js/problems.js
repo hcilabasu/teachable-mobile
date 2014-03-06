@@ -211,7 +211,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
         //Not collecting attribution feedback for now...
-        // openEmoticonScreen();
+        openEmoticonScreen();
         
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
         log("",{"type":"correctness feedback","parameter":((String(solutionStatus).toLowerCase() == "true") ? "correct" : "incorrect"),"initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
@@ -241,48 +241,90 @@ function openEmoticonScreen() {
     var inputs = container.find('input');
     // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Happy", "Sad", "Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
-    
-    for(var i = 0 ; i < emotionArray.length ; i++, id++) {
-        var currentEmotion = emotionArray[i];
-        
-        $('<div />', {id : currentEmotion}).appendTo(container);
-        var currentEmotionContainer = $('#' + currentEmotion);
+    var emotionArray = ["Happy", "Sad", "Neutral"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var emotionEmojiArray = ["happy.png", "neutral.png", "sad.png"];
+    var currentEmotion = "TextMessages";
+    var currentEmotionContainer = $('#' + currentEmotion);
 
-        $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion}).appendTo(currentEmotionContainer);
 
-        // var currentEmotionCB = $('#cb' + id);
+    //add text message interface to make it look like students are talking to Quinn
+    $('<div />', {id : currentEmotion}).appendTo(container);
+    $('<p />', {text: "How are you feeling right now?"}).appendTo("#TextMessages");
+    //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + "quinn.jpg", align : 'bottom' }).appendTo("#TextMessages");
 
-        $('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
-    }
 
-    $('<a/>', {id : "emoticon-ok", href : "#", text : "OK", click : function() {
-        $("#emoticon").fadeOut('slow');
+    //add text message entry fields
+    currentEmotion = "MessageEntry";
+    currentEmotionContainer = $('#' + currentEmotion);
+    $('<div />', {id : currentEmotion}).appendTo(container);
+    $('<label />', {id : "entryfield", text: "Select an emoticon" }).appendTo("#MessageEntry");
+    $('<a/>', {id : "emoticon-ok", href : "#", text : "Send", click : function() {
+            $("#emoticon").fadeOut('slow');
 
-        // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
-        var length = 9;
-        var checkedEmotions = [];
-        //alert(length);
-        for(var i = 0 ; i < length ; i++) {
-            var isChecked = $("#cb" + i).prop('checked');
-            var emotion = $("#cb" + i).prop('value');
-            // alert(emotion);
-            if(isChecked) {
-                checkedEmotions.push(emotion);
+            // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
+            var length = 3;
+            var checkedEmotions = [];
+            //alert(length);
+            for(var i = 0 ; i < length ; i++) {
+                var isChecked = $("#cb" + i).prop('checked');
+                var emotion = $("#cb" + i).prop('value');
+                // alert(emotion);
+                if(isChecked) {
+                    checkedEmotions.push(emotion);
+                }
             }
+
+            //alert("Checked emotions are " + checkedEmotions.toString() + ".");
+            // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
+
+            $('#emoticon').empty();
+
+            //Telling the applet to unlock itself until further notice.
+            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+            problemObject.type = "unlockapplet";
+            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+        }}).appendTo("#MessageEntry");
+        // $("emoticon-ok").appendTo(container);
+    console.log(currentEmotionContainer);
+    
+
+    //add emoticon options that students can select from
+    for(var i = 0 ; i < emotionEmojiArray.length ; i+3, id++) {
+        currentEmotion = "Emojis";//emotionArray[i];       
+        var j = 0;
+
+        $('<div />', {id : currentEmotion}).appendTo(container);
+        while(i<emotionEmojiArray.length && j<3)
+        {
+            var currentEmotionEmoji = emotionEmojiArray[i];
+            currentEmotionContainer = $('#' + currentEmotion);
+
+            //populate window with 3 emoticons per row
+            // var currentEmotionCB = $('#cb' + id);
+            $('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + currentEmotionEmoji, align : 'bottom' }).appendTo(currentEmotionContainer);
+            //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+            i++;
+            id++;
+            j++;
         }
+        i=i-3;
+        j = 0;
+        currentEmotion = "Checkboxes";    
+        $('<div />', {id : currentEmotion}).appendTo(container);
+        while(i<emotionEmojiArray.length && j<3)
+        {
+            var currentEmotionEmoji = emotionEmojiArray[i];
+            var currentEmotionContainer = $('#' + currentEmotion);
 
-        //alert("Checked emotions are " + checkedEmotions.toString() + ".");
-        // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
-
-        $('#emoticon').empty();
-
-        //Telling the applet to unlock itself until further notice.
-        var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
-        problemObject.type = "unlockapplet";
-        ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
-    }}).appendTo(container);
-    // $("emoticon-ok").appendTo(container);
+            //populate window with 3 checkboxes per row
+            $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            // var currentEmotionCB = $('#cb' + id);
+            //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+            i++;
+            id++;
+            j++;
+        }
+    }
 }
 
 function openPrompt(promptMessages, isFirst) {

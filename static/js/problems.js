@@ -265,7 +265,8 @@ function openEmoticonScreen() {
             var length = 3;
             var checkedEmotions = [];
             //alert(length);
-            for(var i = 0 ; i < length ; i++) {
+            //Adrin made this change, since the checkbox ids are cb3,4,5
+            for(var i = 3 ; i < length + 3; i++) {
                 var isChecked = $("#cb" + i).prop('checked');
                 var emotion = $("#cb" + i).prop('value');
                 // alert(emotion);
@@ -274,7 +275,7 @@ function openEmoticonScreen() {
                 }
             }
 
-            //alert("Checked emotions are " + checkedEmotions.toString() + ".");
+            alert("Checked emotions are " + checkedEmotions.toString() + ".");
             // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
 
             $('#emoticon').empty();
@@ -283,6 +284,8 @@ function openEmoticonScreen() {
             var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
             problemObject.type = "unlockapplet";
             ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
+            log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
         }}).appendTo("#MessageEntry");
         // $("emoticon-ok").appendTo(container);
     console.log(currentEmotionContainer);
@@ -317,7 +320,11 @@ function openEmoticonScreen() {
             var currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 checkboxes per row
-            $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            //Adrin made a change here, value will be Happy, Neutral, Sad
+            $('<input />', {type: 'checkbox', id: 'cb' + id, value: emotionArray[i], align : 'center'}).appendTo(currentEmotionContainer);
+            //Here the value was being set as "Checkboxes"
+            // $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            
             // var currentEmotionCB = $('#cb' + id);
             //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
             i++;

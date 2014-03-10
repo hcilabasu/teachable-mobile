@@ -500,7 +500,7 @@ a.action-button > span {
 	display: none;
 }
 
-	#emoticon label {
+	#emoticon label.title {
 		padding-top: 10px;
 		padding-bottom: 10px;
 		padding-left: 55px;

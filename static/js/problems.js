@@ -241,8 +241,8 @@ function openEmoticonScreen() {
     var inputs = container.find('input');
     // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Happy", "Sad", "Neutral"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
-    var emotionEmojiArray = ["happy.png", "neutral.png", "sad.png"];
+    var emotionArray = ["Happier", "Happy", "Sad", "Frustrated", "Neutral"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var emotionEmojiArray = ["happy-2.png", "happy.png", "sad.png", "angry.png", "neutral.png"];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
 
@@ -257,7 +257,7 @@ function openEmoticonScreen() {
     currentEmotion = "MessageEntry";
     currentEmotionContainer = $('#' + currentEmotion);
     $('<div />', {id : currentEmotion}).appendTo(container);
-    $('<label />', {id : "entryfield", text: "Select an emoticon" }).appendTo("#MessageEntry");
+    $('<label />', {id : "entryfield", text: "Select an emoticon", 'class':'title'}).appendTo("#MessageEntry");
     $('<a/>', {id : "emoticon-ok", href : "#", text : "Send", click : function() {
             $("#emoticon").fadeOut('slow');
 
@@ -289,42 +289,44 @@ function openEmoticonScreen() {
     
 
     //add emoticon options that students can select from
-    for(var i = 0 ; i < emotionEmojiArray.length ; i+3, id++) {
+    // for(var i = 0 ; i < emotionEmojiArray.length ; i+3, id++) {
         currentEmotion = "Emojis";//emotionArray[i];       
         var j = 0;
-
+        var i = 0;
         $('<div />', {id : currentEmotion}).appendTo(container);
-        while(i<emotionEmojiArray.length && j<3)
+        while(i<emotionEmojiArray.length)// && j<3)
         {
             var currentEmotionEmoji = emotionEmojiArray[i];
             currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 emoticons per row
             // var currentEmotionCB = $('#cb' + id);
-            $('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + currentEmotionEmoji, align : 'bottom' }).appendTo(currentEmotionContainer);
+            var label = $('<label/>', {'for' : 'cb' + currentEmotionEmoji});
+            $('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + currentEmotionEmoji, align : 'bottom' }).appendTo(label);
+            label.appendTo(currentEmotionContainer)
             //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
             i++;
             id++;
             j++;
         }
-        i=i-3;
+        i=0;  
         j = 0;
         currentEmotion = "Checkboxes";    
         $('<div />', {id : currentEmotion}).appendTo(container);
-        while(i<emotionEmojiArray.length && j<3)
+        while(i<emotionEmojiArray.length)// && j<3)
         {
             var currentEmotionEmoji = emotionEmojiArray[i];
             var currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 checkboxes per row
-            $('<input />', {type: 'checkbox', id: 'cb' + id, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
             // var currentEmotionCB = $('#cb' + id);
             //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
             i++;
             id++;
             j++;
         }
-    }
+    //}
 }
 
 function openPrompt(promptMessages, isFirst) {

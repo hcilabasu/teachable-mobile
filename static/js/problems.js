@@ -241,15 +241,17 @@ function openEmoticonScreen() {
     var inputs = container.find('input');
     // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Happier", "Happy", "Sad", "Frustrated", "Neutral"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
-    var emotionEmojiArray = ["happy-2.png", "happy.png", "sad.png", "angry.png", "neutral.png"];
+    var emotionArray = ["Happy", "Neutral", "Frustrated"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var emotionEmojiArray = ["happy.png", "neutral.png", "angry.png"];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
 
 
     //add text message interface to make it look like students are talking to Quinn
     $('<div />', {id : currentEmotion}).appendTo(container);
-    $('<p />', {text: "How are you feeling right now?"}).appendTo("#TextMessages");
+    var textMessage = $('<p />', {text: "How are you feeling right now?"});
+    $('<span/>', {'class':'dialog-detail'}).appendTo(textMessage);
+    textMessage.appendTo("#TextMessages");
     //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + "quinn.jpg", align : 'bottom' }).appendTo("#TextMessages");
 
 

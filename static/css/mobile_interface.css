@@ -488,7 +488,7 @@ a.action-button > span {
 	position: fixed;
 	top: 0;
 	left: 0;
-	background: #844569;
+	background: #E5E4EA;
 	height: 100%;
 	width: 100%;
 	text-align: center;
@@ -499,20 +499,28 @@ a.action-button > span {
 	font-size: 1.4em;
 	display: none;
 }
+	
+	#emoticon #MessageEntry {
+		background: #E5E4EA;
+		border-top: solid 1px #CCC;
+	}
+
+
 
 	#emoticon label.title {
 		padding-top: 10px;
 		padding-bottom: 10px;
 		padding-left: 55px;
 		padding-right: 55px;
-		border:1px solid;
-		border-radius:10px;
+		border:1px solid #CCC;
+		border-radius:3px;
 		background-color: white;
 		font-size: 0.9em;
 		font-weight: normal;
-		color: #737373;
-		text-shadow: 0 1px 0 #505050;
+		color: #999;
+		text-shadow: none;
 		display: inline-block;
+		margin: 5px 0;
 	}
 
 	#emoticon img {
@@ -532,42 +540,65 @@ a.action-button > span {
 	}
 
 	#emoticon h2 {
-		font-size: 2em;
-		margin-top: 20px;
-		margin-bottom: 50px;
+		font-size: 1.3em;
+		margin-top: 0px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		background: #E5E4EA;
+		color: black;
+		text-shadow: none;
+		border-bottom: solid 1px #CCC;
+	}
+
+	#emoticon .dialog-detail {
+		height: 22px;
+		width: 22px;
+		background: url(../images/dialog.png) no-repeat;
+		display: block;
+		position: absolute;
+		bottom: -1px;
+		right: -4px;
+		background-size: 22px 22px;
 	}
 
 	#emoticon p {
-    position: relative;
-    background: #fff;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    margin-left: 100px;
-    margin-right: 10px;
-    margin-bottom: 140px;
-    font-size: 18px;
-    font-weight: normal;
-    color: #1A1A1A;
-    text-shadow: 0 1px 0 #000000;
-    text-align: center;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-}
+	    position: relative;
+	    background: #3699FC;
+	    padding-top: 40px;
+	    padding-bottom: 40px;
+	    margin-left: 10px;
+	    margin-right: 10px;
+	    margin-bottom: 15px;
+	    font-size: 18px;
+	    font-weight: normal;
+	    color: white;
+	    text-shadow: none;
+	    text-align: center;
+	    -webkit-border-radius: 20px;
+	    -moz-border-radius: 20px;
+	    border-radius: 20px;
+	}
 
-	#emoticon p:after {
-    content: "";
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: 15%;
-    bottom: -60px;
-    margin-left: -15px;
-    border-width: 30px 20px 30px 20px;
-    border-style: solid;
-    border-color: #fff transparent transparent transparent;
-}
+	#emoticon #TextMessages {
+		background: white;
+		padding: 15px 0;
+	}
+
+	/*#emoticon p:after {
+	    content: "asd";
+	    color: red;
+	    background: blue;
+	    display: block;
+	    width: 0;
+	    height: 0;
+	    position: absolute;
+	    left: 15%;
+	    bottom: -60px;
+	    margin-left: -15px;
+	    border-width: 30px 20px 30px 20px;
+	    border-style: solid;
+	    border-color: #fff transparent transparent transparent;
+	}*/
 
 	#emoticon h6 {
 		width: 40px;
@@ -577,6 +608,23 @@ a.action-button > span {
 		display: inline;
 		margin-top: 15px;
 		text-decoration: none;
+		text-shadow: none;
+		color: white;
+		background: #3699FC;
+		border-radius: 10px;
+		padding: 5px;
+	}
+
+	#Emojis {
+
+	}
+	#Emojis label {
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	#Checkboxes {
+		/*display: none;*/
 	}
 
 @-webkit-keyframes glow {

@@ -277,7 +277,7 @@ function openEmoticonScreen() {
                 }
             }
 
-            alert("Checked emotions are " + checkedEmotions.toString() + ".");
+            // alert("Checked emotions are " + checkedEmotions.toString() + ".");
             // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
 
             $('#emoticon').empty();

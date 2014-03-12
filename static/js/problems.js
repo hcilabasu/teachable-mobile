@@ -117,18 +117,16 @@ function moveToProblemNumber(probNum) {
 }
 
 function nextProblem() {
-    if(confirm("Are you sure you want to move on? You are not going to be able to go back.")){
-        if(APP.currentProblem.prompts.length > 0) {
-            openPrompt(APP.currentProblem.prompts, true);
+    if(APP.currentProblem.prompts.length > 0) {
+        openPrompt(APP.currentProblem.prompts, true);
+    }
+    else {
+        // log("Moving to next problem", {"source":"ipod"});
+        if((APP.currentProblemIndex + 1) < APP.PROBLEMS.length) {
+            log("",{"type":"change prob","parameter":APP.currentProblemIndex + 2,"initial":"", "final":"", "problem number" : APP.currentProblemIndex + 2, 
+                "problem desc" : APP.PROBLEMS[APP.currentProblemIndex + 1].text, "problem id" : APP.PROBLEMS[APP.currentProblemIndex + 1].id});
         }
-        else {
-            // log("Moving to next problem", {"source":"ipod"});
-            if((APP.currentProblemIndex + 1) < APP.PROBLEMS.length) {
-                log("",{"type":"change prob","parameter":APP.currentProblemIndex + 2,"initial":"", "final":"", "problem number" : APP.currentProblemIndex + 2, 
-                    "problem desc" : APP.PROBLEMS[APP.currentProblemIndex + 1].text, "problem id" : APP.PROBLEMS[APP.currentProblemIndex + 1].id});
-            }
-            moveToNext();
-        }
+        moveToNext();
     }
 }
 

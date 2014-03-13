@@ -266,13 +266,32 @@ function openEmoticonScreen() {
             var checkedEmotions = [];
             //alert(length);
             //Adrin made this change, since the checkbox ids are cb3,4,5
-            for(var i = 3 ; i < length + 3; i++) {
+            /*for(var i = 3 ; i < length + 3; i++) {
                 var isChecked = $("#cb" + i).prop('checked');
                 var emotion = $("#cb" + i).prop('value');
                 // alert(emotion);
                 if(isChecked) {
+                    // checkedEmotions.push(emotion);
+                }
+            }*/
+
+            //Adrin added this code after checkbox ids were changed.
+            var checkBoxArray = $("#Checkboxes").children();
+            for(var i = 0 ; i < checkBoxArray.length ; i++) {
+                var currCB_ID = String(checkBoxArray[i].id);
+                currCB_ID = currCB_ID.replace(".", "\\" + ".");//Needed to do this since dots in the id should be escaped for jquery access
+
+                var isChecked = $("#" + currCB_ID).prop('checked');
+                var emotion = $("#" + currCB_ID).prop('value');
+
+                // console.log("currCB_ID!!" + currCB_ID);
+                // console.log("CHECKED!!" + emotion);
+                // console.log("EMOTION!!" + emotion);
+
+                if(isChecked) {
                     checkedEmotions.push(emotion);
                 }
+
             }
 
             // alert("Checked emotions are " + checkedEmotions.toString() + ".");
@@ -322,7 +341,9 @@ function openEmoticonScreen() {
             var currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 checkboxes per row
-            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            //Adrin changed the value to reflect the emotion, instead of Checkboxes
+            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: emotionArray[i], align : 'center'}).appendTo(currentEmotionContainer);
+            // $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
 
             // var currentEmotionCB = $('#cb' + id);
             //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);

@@ -1,5 +1,12 @@
 var current_problem_object = {};
+var PROBLEMS = {};
 var TEST_SESSION_JSON;
+var ordered_abstract_prompts = new Array();
+var ordered_action_prompts = new Array();
+var firsttotaltime = -1;
+var firsthour = 0;
+var firstminute = 0;
+var firstsec = 0;
 
 //A function to store the session information in a Global Variable!!! That's bad.
 function storeTestSessionInformation(data) {
@@ -27,7 +34,6 @@ var CognitivePrompts = function() {
 		}
 		else if(name == "timecheck")
 		{
-			console.log("HERE!");
 			timeprompt(info)
 		}
 		else if(name == "randomizePrompts")
@@ -36,14 +42,16 @@ var CognitivePrompts = function() {
 		}
 	}
 
-	var ordered_prompts = new Array();
+	/********************************************************** 
+	* Randomizes the order of prompts at the beginning of
+	* each session
+	**********************************************************/
 	var randomizePrompts = function() {
-		//var prompts = [ ["prompt 1", "prompt 2", "prompt 3", "prompt 4", "prompt 5"], ["prompt 11", "prompt 12", "prompt 13", "prompt 14", "prompt 15"], ["prompt 21", "prompt 22", "prompt 23", "prompt 24", "prompt 25"], ["prompt 31", "prompt 32", "prompt 33", "prompt 34", "prompt 35"], ["prompt 41", "prompt 42", "prompt 43", "prompt 44", "prompt 45"] ];
 		var num_prompts = prompts[0].length - 1;
 		var num_misconceptions = prompts.length - 1;
 		var cur_misconception = num_misconceptions;
 
-		console.log("randomizing!");
+		console.log("Beginning prompt randomization...");
 
 		//randomize prompt order within each misconception
 		while(cur_misconception !== 0)
@@ -52,28 +60,32 @@ var CognitivePrompts = function() {
 			cur_misconception -= 1;
 		}
 
-		console.log("still randomizing!");
 		//create a prompt order, alternating between each misconception
 		var cur_index = 0;
 		var cur_prompt = num_prompts;
 		cur_misconception = num_misconceptions;
 		//set the first cognitive prompt to be the training prompt
-		ordered_prompts[cur_index] = {"text":"Are you ready to teach me geometry?", "sound_file":"training.aiff"};
+		ordered_abstract_prompts[cur_index] = {"text":"Are you ready to teach me geometry?", "sound_file":"training.mp3"};
 		cur_index += 1;
 		while(cur_prompt !== 0)
 		{
 			while(cur_misconception !== 0)
 			{
-				ordered_prompts[cur_index] = prompts[cur_misconception][cur_prompt];
+				ordered_action_prompts[cur_index] = prompts[cur_misconception][cur_prompt];
+				ordered_abstract_prompts[cur_index] = abstractPrompts[cur_misconception][cur_prompt];
 				cur_index += 1;
 				cur_misconception -= 1;
 			}
 			cur_misconception = num_misconceptions;
 			cur_prompt -= 1;
 		}
-		console.log("done randomizing");
+		console.log("Prompt randomization complete!");
 	}
 
+	/**********************************************************
+	* Helper function for randomization process - shuffles
+	* values within an array
+	**********************************************************/
 	var shuffle = function(array) {
 		var currentIndex = array.length;
 		var tempValue;
@@ -92,23 +104,26 @@ var CognitivePrompts = function() {
 		return array;
 	}
 
-
+	/********************************************************** 
+	* Checks if enough time has elapsed since last prompt was 
+	* displayed (2 minutes)
+	**********************************************************/
 	var timeprompt = function(info)
 	{
 	   var newtime = new Date();
 	   var newhour = newtime.getHours();
-           var newhourinmin = newhour * 60;
+       var newhourinmin = newhour * 60;
 	   var newminute = newtime.getMinutes();
 	   var newsec = newtime.getSeconds();
-           var newsecinmin = newsec/60;
-           var newtotaltime = newhourinmin + newminute + newsecinmin;
-           if (firsthour == 0 && firstminute == 0 && firstsec == 0 )
+       var newsecinmin = newsec/60;
+       var newtotaltime = newhourinmin + newminute + newsecinmin;
+       if (firsthour == 0 && firstminute == 0 && firstsec == 0 )
 	   {
-	      console.log("Time: " + newhour + ":" + newminute + ":" + newsec);
-           }
-           else
+	    	console.log("Time: " + newhour + ":" + newminute + ":" + newsec);
+       }
+       else
 	   {
-	      console.log("first Time: " + firsthour + ":" + firstminute + ":" + firstsec + "New Time: " + newhour + ":" + newminute + ":" + newsec);
+	      	console.log("first Time: " + firsthour + ":" + firstminute + ":" + firstsec + "New Time: " + newhour + ":" + newminute + ":" + newsec);
 	   }
 
 	   if(firsttotaltime == -1)
@@ -131,7 +146,7 @@ var CognitivePrompts = function() {
 	   {
 	       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
 	    	displayTriggeredPrompt(prompt);
-           }
+        }
 	}
 
 
@@ -160,83 +175,123 @@ var CognitivePrompts = function() {
 			promptsFinished = true;
 		}
 	}
+	
 
-    var firsttotaltime = -1;
-    var firsthour = 0;
-    var firstminute = 0;
-    var firstsec = 0;
 
+	/********************************************************** 
+	* Opens dialogue to display prompt text and plays audio
+	* file associated with current prompt
+	**********************************************************/
 	var displayTriggeredPrompt = function(prompt, condition) {
-    var firsttime = new Date();
-    var firsthourinmin = firsthour * 60;
-    var firstsecinmin = firstsec/60;
-    var incremented = false;
-    firsthour = firsttime.getHours();
-    
-    firstminute = firsttime.getMinutes();
-    firstsec = firsttime.getSeconds();
-    
-    firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
+	    var firsttime = new Date();
+	    var firsthourinmin = firsthour * 60;
+	    var firstsecinmin = firstsec/60;
+	    var incremented = false;
 
-    
-    recordClickCount = 0;
-	// Set facial expression
-	$("body").removeClass().addClass(prompt.emotion);
-	// load sound
-	console.log("/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
-	AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
-	AUDIO.loadSound("promptSound");
-	// Attach handlers
-	console.log(condition);
+	    //update the interface on the student iPod
+	    promptIsTriggered = true;
+	    console.log("triggered = " + promptIsTriggered);
 
-	AUDIO.addStartListener("promptSound", function(){
-		// When robot starts to speak
-		$("body").addClass("talking");
-		$("#speech").text(ordered_prompts[currentPromptIndex].text).fadeIn('slow');
-		
-		var datum;
-		$.ajax({url : REQUEST_DATA_FROM_MOBILE,
-				success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
-											var tmpArray = datum.split('@@@', 2);
-											current_problem_object = JSON.parse(tmpArray[0]);
-											current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
-											},
-				async : false});
+	    firsthour = firsttime.getHours();
+	    firstminute = firsttime.getMinutes();
+	    firstsec = firsttime.getSeconds();   
+	    firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
 
-		log("", {"type":"prompt","parameter":ordered_prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
-			"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
+	    recordClickCount = 0;
+		// Set facial expression
+		$("body").removeClass().addClass(prompt.emotion);
+		// load sound
+		console.log("/mobileinterface/static/audio/" + ordered_abstract_prompts[currentPromptIndex].sound_file);
+		AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_abstract_prompts[currentPromptIndex].sound_file);
+		AUDIO.loadSound("promptSound");
+		// Attach handlers
+		console.log(condition);
 
-		if(condition !== "Mobile")
-		{
-			$("#record").text('DONE');
-			$("#record").fadeIn('slow');
-			$("#record").off('click');
-			$("#record").addClass('dismiss');
-			$("#record").click(function() {
+		AUDIO.addStartListener("promptSound", function(){
+			// When robot starts to speak
+			$("body").addClass("talking");
+			$("#speech").text(ordered_abstract_prompts[currentPromptIndex].text).fadeIn('slow');
+			
+			var datum;
+			$.ajax({url : REQUEST_DATA_FROM_MOBILE,
+					success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
+												var tmpArray = datum.split('@@@', 2);
+												current_problem_object = JSON.parse(tmpArray[0]);
+												current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
+												},
+					async : false});
 
-				//increment click count
-				recordClickCount = recordClickCount + 1;
-				/*if(recordClickCount == 1) 
-				{
-					//on first click, add border to show Quinn is "recording"
-					// $("#record").css("background-image","url(../images/stop.png)");
-					$("#record").addClass('stop');
-					$("#record").text('STOP');
-				}
-				if(recordClickCount == 2) 
-				{
-					//on second click, remove border to show Quinn is NOT "recording"
-					//$("#record").css({"outline":"#FF0000 dotted"});								
-					//change to dismiss button
-					$("#record").removeClass('stop').addClass('dismiss');
-					$("#record").text('DONE');
+			log("", {"type":"prompt","parameter":ordered_abstract_prompts[currentPromptIndex].text, "initial" : "", "final" : "", 
+				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
 
-				}*/
-				if(recordClickCount == 1)
-				{
-					//on third click, reset and remove prompts
-					recordClickCount = 0;
-					//REMOVE THE PROMPTS
+			if(condition !== "Mobile")
+			{
+				/*
+				$("#record").text('DONE');
+				$("#record").fadeIn('slow');
+				$("#record").off('click');
+				$("#record").addClass('dismiss');
+				$("#record").click(function() {
+				
+					//increment click count
+					recordClickCount = recordClickCount + 1;
+					if(recordClickCount == 1) 
+					{
+						//on first click, add border to show Quinn is "recording"
+						// $("#record").css("background-image","url(../images/stop.png)");
+						$("#record").addClass('stop');
+						$("#record").text('STOP');
+					}
+					if(recordClickCount == 2) 
+					{
+						//on second click, remove border to show Quinn is NOT "recording"
+						//$("#record").css({"outline":"#FF0000 dotted"});								
+						//change to dismiss button
+						$("#record").removeClass('stop').addClass('dismiss');
+						$("#record").text('DONE');
+
+					}
+					if(recordClickCount == 1)
+					{
+						//on third click, reset and remove prompts
+						recordClickCount = 0;
+						//REMOVE THE PROMPTS
+						$("body").removeClass().addClass("neutral");
+						$("#speech").fadeOut('slow');
+						$("#record").fadeOut('slow', function(){
+							// removing dismiss class only after done fading
+							$("#record").removeClass('dismiss');
+						});
+
+						//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
+						if(!incremented)
+						{
+							currentPromptIndex = currentPromptIndex + 1;
+							//incremented = true;
+						}
+
+						//check for second prompt at current state
+						if(!promptsFinished && ordered_abstract_prompts[currentPromptIndex-1].another_prompt == "true")
+						{
+							$("#record").off('click');
+							displayTriggeredPrompt(prompt);
+							promptsFinished = true;
+						}
+						$("#record").off('click');
+					}
+				});
+				*/
+			}
+			else
+			{
+				console.log("b");
+				$("#record").addClass('dismiss');
+				$("#record").text('Done');
+				$("#record").fadeIn('slow');
+				$("#record").off('click');
+				console.log("c");
+				$("#record").click(function() {
+					console.log("d");
 					$("body").removeClass().addClass("neutral");
 					$("#speech").fadeOut('slow');
 					$("#record").fadeOut('slow', function(){
@@ -252,71 +307,36 @@ var CognitivePrompts = function() {
 					}
 
 					//check for second prompt at current state
-					if(!promptsFinished && ordered_prompts[currentPromptIndex-1].another_prompt == "true")
+					/*if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
 					{
 						$("#record").off('click');
 						displayTriggeredPrompt(prompt);
 						promptsFinished = true;
 					}
+					*/
 					$("#record").off('click');
-				}
-			});
-		}
-		else
-		{
-			console.log("b");
-			$("#record").addClass('dismiss');
-			$("#record").text('Done');
-			$("#record").fadeIn('slow');
-			$("#record").off('click');
-			console.log("c");
-			$("#record").click(function() {
-				console.log("d");
-				$("body").removeClass().addClass("neutral");
-				$("#speech").fadeOut('slow');
-				$("#record").fadeOut('slow', function(){
-					// removing dismiss class only after done fading
-					$("#record").removeClass('dismiss');
 				});
+			}
+		});
 
-				//increment prompt counter (IMPROVE LATER, WORKS BUT IT'S WEIRD)
-				if(!incremented)
-				{
-					currentPromptIndex = currentPromptIndex + 1;
-					//incremented = true;
-				}
+		AUDIO.addFinishListener("promptSound", function(){
+			// When robot finishes speaking
+			$("body").removeClass("talking");
+		});
 
-				//check for second prompt at current state
-				/*if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
-				{
-					$("#record").off('click');
-					displayTriggeredPrompt(prompt);
-					promptsFinished = true;
-				}
-				*/
-				$("#record").off('click');
-			});
-		}
-	});
+		// play sound
+		window.setTimeout(function(){
+			AUDIO.play("promptSound");
+		}, 3000);
 
-	AUDIO.addFinishListener("promptSound", function(){
-		// When robot finishes speaking
-		$("body").removeClass("talking");
-	});
+		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
 
-	// play sound
-	window.setTimeout(function(){
-		AUDIO.play("promptSound");
-	}, 3000);
-
-	console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
-
-	// TODO separate into a function
-	//$.ajax({
-	//	url: 'robot/prompt_was_made'
-	//});
-	
-}
+		// TODO separate into a function
+		//$.ajax({
+		//	url: 'robot/prompt_was_made'
+		//});
+		
+	}
 
 	/*
 	var skipPrompts = function(problem) {

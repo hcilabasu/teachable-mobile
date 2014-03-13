@@ -540,14 +540,14 @@ a.action-button > span {
 	}
 
 	#emoticon h2 {
-		font-size: 1.3em;
+		font-size: 0.9em;
 		margin-top: 0px;
 		padding-top: 15px;
 		padding-bottom: 15px;
 		background: #E5E4EA;
+		text-align: center;
 		color: black;
 		text-shadow: none;
-		border-bottom: solid 1px #CCC;
 	}
 
 	#emoticon .dialog-detail {

@@ -109,7 +109,7 @@ function updateStepParamsList(){
     var selectedStep = JSON.parse(selected);
     // Create fields based on parameters array
     if(selectedStep.parameters.length === 0){
-        $("#current-step-select-params").text("No parameters");
+        $("#current-step-select-params").text("");
     } else {
         for(var i = 0; i < selectedStep.parameters.length; i++){
             var param = selectedStep.parameters[i];

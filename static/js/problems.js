@@ -208,7 +208,6 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback-ok").click(function () {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
-        //Not collecting attribution feedback for now...
         openEmoticonScreen();
         
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
@@ -229,6 +228,115 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback").fadeIn('slow');
 }
 
+function openPromptResponseScreen() {
+    // alert("I'm emoting!!!");
+
+    $("#emoticon").fadeIn('slow');
+
+    var container = $('#emoticon');
+    var inputs = container.find('input');
+    // var id = inputs.length + 1;
+    var id = 0;
+    var emotionArray = ["Happy", "Neutral", "Frustrated"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var emotionEmojiArray = ["Yep! Thanks for your question!", "Alright, let's see what's next.", "Sure. You ask too many questions."];
+    var currentEmotion = "TextMessages";
+    var currentEmotionContainer = $('#' + currentEmotion);
+
+    promptIsTriggered = false;
+
+    //add text message interface to make it look like students are talking to Quinn
+    $('<div />', {id : currentEmotion}).appendTo(container);
+    var textMessage = $('<p />', {text: "Should we keep going?"});
+    $('<span/>', {'class':'dialog-detail'}).appendTo(textMessage);
+    textMessage.appendTo("#TextMessages");
+    //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + "quinn.jpg", align : 'bottom' }).appendTo("#TextMessages");
+
+
+    //add text message entry fields
+    currentEmotion = "MessageEntry";
+    currentEmotionContainer = $('#' + currentEmotion);
+    $('<div />', {id : currentEmotion}).appendTo(container);
+    $('<label />', {id : "entryfield", text: "Select a message", 'class':'title'}).appendTo("#MessageEntry");
+    $('<a/>', {id : "emoticon-ok", href : "#", text : "Send", click : function() {
+            $("#emoticon").fadeOut('slow');
+
+            //CCALL HIDE PROMPT DIALOG
+            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+
+            // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
+            var length = 3;
+            var checkedEmotions = [];
+            //alert(length);
+            //Adrin made this change, since the checkbox ids are cb3,4,5
+            for(var i = 3 ; i < length + 3; i++) {
+                var isChecked = $("#cb" + i).prop('checked');
+                var emotion = $("#cb" + i).prop('value');
+                // alert(emotion);
+                if(isChecked) {
+                    checkedEmotions.push(emotion);
+                }
+            }
+
+            // alert("Checked emotions are " + checkedEmotions.toString() + ".");
+            // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
+
+            $('#emoticon').empty();
+
+            //Telling the applet to unlock itself until further notice.
+            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+            problemObject.type = "unlockapplet";
+            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
+            log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});            
+        }}).appendTo("#MessageEntry");
+        // $("emoticon-ok").appendTo(container);
+    console.log(currentEmotionContainer);
+    
+
+    //add emoticon options that students can select from
+    // for(var i = 0 ; i < emotionEmojiArray.length ; i+3, id++) {
+        currentEmotion = "Emojis";//emotionArray[i];       
+        var j = 0;
+        var i = 0;
+        $('<div />', {id : currentEmotion}).appendTo(container);
+        while(i<emotionEmojiArray.length)// && j<3)
+        {
+            var currentEmotionEmoji = emotionEmojiArray[i];
+            currentEmotionContainer = $('#' + currentEmotion);
+
+            //populate window with 3 emoticons per row
+            // var currentEmotionCB = $('#cb' + id);
+            var label = $('<label/>', {'for' : 'cb' + currentEmotionEmoji});
+            //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + currentEmotionEmoji, align : 'bottom' }).appendTo(label);
+            $('<h2 />', {'for': 'cb' + id, text: emotionEmojiArray[i], align : 'left', color : 'black'}).appendTo(currentEmotionContainer);
+            label.appendTo(currentEmotionContainer)
+            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            i++;
+            id++;
+            j++;
+        }
+        i=0;  
+        j = 0;
+        //currentEmotion = "Checkboxes";    
+        //$('<div />', {id : currentEmotion}).appendTo(container);
+        //while(i<emotionEmojiArray.length)// && j<3)
+        //{
+        //    var currentEmotionEmoji = emotionEmojiArray[i];
+        //    var currentEmotionContainer = $('#' + currentEmotion);
+
+            //populate window with 3 checkboxes per row
+        //    $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+
+            // var currentEmotionCB = $('#cb' + id);
+            //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
+        //    i++;
+        //    id++;
+        //    j++;
+        //}
+        
+    //}
+}
+
 // !!! Read this and see the changes Victor made and learn from them.
 function openEmoticonScreen() {
     // alert("I'm emoting!!!");
@@ -243,6 +351,7 @@ function openEmoticonScreen() {
     var emotionEmojiArray = ["happy.png", "neutral.png", "angry.png"];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
+    attributionFinished = false;
 
 
     //add text message interface to make it look like students are talking to Quinn
@@ -286,6 +395,13 @@ function openEmoticonScreen() {
             ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
 
             log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
+        
+            //if prompt triggered after attribution message, display another feedback window
+            window.setTimeout(function(){
+                openPromptResponseScreen();
+            }, 7000);
+            
+            
         }}).appendTo("#MessageEntry");
         // $("emoticon-ok").appendTo(container);
     console.log(currentEmotionContainer);
@@ -409,3 +525,4 @@ function checkSolution() {
         }
     }
 }
+

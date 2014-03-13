@@ -9,7 +9,6 @@ var Attributions = function() {
 		//Adrin added the 2 log lines
 		// log("In makeAttribution.....");
 		// log(JSON.stringify(attr));
-		
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
 		// load sound
@@ -20,6 +19,7 @@ var Attributions = function() {
 			// When robot starts to speak
 			$("body").addClass("talking");
 			$("#speech").text(attr.message).fadeIn('slow');
+			
 		});
 		AUDIO.addFinishListener("attributionSound", function(){
 			// When robot finishes speaking
@@ -30,6 +30,7 @@ var Attributions = function() {
 				$("#speech").fadeOut('slow');
 				//check to see if cognitive prompt should be displayed
 				cognitive_prompts.doPromptAction("timecheck","","dontcare");
+				attributionFinished = true;
 			}, time);
 
 		});

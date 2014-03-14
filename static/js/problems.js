@@ -237,8 +237,8 @@ function openPromptResponseScreen() {
     var inputs = container.find('input');
     // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Happy", "Neutral", "Frustrated"]; //Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
-    var emotionEmojiArray = ["Yep! Thanks for your question!", "Alright, let's see what's next.", "Sure. You ask too many questions."];
+    var emotionArray = ["Neutral"]; //"Happy", "Frustrated", "Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var promptResponseArray = ["Ok, I'm done."];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
 
@@ -294,21 +294,21 @@ function openPromptResponseScreen() {
     
 
     //add emoticon options that students can select from
-    // for(var i = 0 ; i < emotionEmojiArray.length ; i+3, id++) {
+    // for(var i = 0 ; i < promptResponseArray.length ; i+3, id++) {
         currentEmotion = "Emojis";//emotionArray[i];       
         var j = 0;
         var i = 0;
         $('<div />', {id : currentEmotion}).appendTo(container);
-        while(i<emotionEmojiArray.length)// && j<3)
+        while(i<promptResponseArray.length)// && j<3)
         {
-            var currentEmotionEmoji = emotionEmojiArray[i];
+            var currentEmotionEmoji = promptResponseArray[i];
             currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 emoticons per row
             // var currentEmotionCB = $('#cb' + id);
             var label = $('<label/>', {'for' : 'cb' + currentEmotionEmoji});
             //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + currentEmotionEmoji, align : 'bottom' }).appendTo(label);
-            $('<h2 />', {'for': 'cb' + id, text: emotionEmojiArray[i], align : 'left', color : 'black'}).appendTo(currentEmotionContainer);
+            $('<h2 />', {'for': 'cb' + id, text: promptResponseArray[i], align : 'left' }).appendTo(currentEmotionContainer);
             label.appendTo(currentEmotionContainer)
             $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
             i++;
@@ -319,9 +319,9 @@ function openPromptResponseScreen() {
         j = 0;
         //currentEmotion = "Checkboxes";    
         //$('<div />', {id : currentEmotion}).appendTo(container);
-        //while(i<emotionEmojiArray.length)// && j<3)
+        //while(i<promptResponseArray.length)// && j<3)
         //{
-        //    var currentEmotionEmoji = emotionEmojiArray[i];
+        //    var currentEmotionEmoji = promptResponseArray[i];
         //    var currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 checkboxes per row
@@ -375,13 +375,32 @@ function openEmoticonScreen() {
             var checkedEmotions = [];
             //alert(length);
             //Adrin made this change, since the checkbox ids are cb3,4,5
-            for(var i = 3 ; i < length + 3; i++) {
+            /*for(var i = 3 ; i < length + 3; i++) {
                 var isChecked = $("#cb" + i).prop('checked');
                 var emotion = $("#cb" + i).prop('value');
                 // alert(emotion);
                 if(isChecked) {
+                    // checkedEmotions.push(emotion);
+                }
+            }*/
+
+            //Adrin added this code after checkbox ids were changed.
+            var checkBoxArray = $("#Checkboxes").children();
+            for(var i = 0 ; i < checkBoxArray.length ; i++) {
+                var currCB_ID = String(checkBoxArray[i].id);
+                currCB_ID = currCB_ID.replace(".", "\\" + ".");//Needed to do this since dots in the id should be escaped for jquery access
+
+                var isChecked = $("#" + currCB_ID).prop('checked');
+                var emotion = $("#" + currCB_ID).prop('value');
+
+                // console.log("currCB_ID!!" + currCB_ID);
+                // console.log("CHECKED!!" + emotion);
+                // console.log("EMOTION!!" + emotion);
+
+                if(isChecked) {
                     checkedEmotions.push(emotion);
                 }
+
             }
 
             // alert("Checked emotions are " + checkedEmotions.toString() + ".");
@@ -438,7 +457,9 @@ function openEmoticonScreen() {
             var currentEmotionContainer = $('#' + currentEmotion);
 
             //populate window with 3 checkboxes per row
-            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
+            //Adrin changed the value to reflect the emotion, instead of Checkboxes
+            $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: emotionArray[i], align : 'center'}).appendTo(currentEmotionContainer);
+            // $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
 
             // var currentEmotionCB = $('#cb' + id);
             //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);

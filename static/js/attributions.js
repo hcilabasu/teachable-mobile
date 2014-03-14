@@ -6,13 +6,20 @@ var Attributions = function() {
 	}
 
 	var makeAttribution = function(attr) {
+		var audioFile; 
+		var formattedAudioFile;
+		var audioFileLength; 
 		//Adrin added the 2 log lines
 		// log("In makeAttribution.....");
 		// log(JSON.stringify(attr));
 		// Set facial expression
 		$("body").removeClass().addClass(attr.emotion);
-		// load sound
-		AUDIO.setFile("attributionSound", "/mobileinterface/static/audio/" + attr.file);
+		// format audio file location string
+		audioFile = "/mobileinterface/static/audio/" + attr.file;
+		audioFileLength = audioFile.length - 5;
+		formattedAudioFile = audioFile.substring(0, audioFileLength) + ".mp3";
+		//load sound
+		AUDIO.setFile("attributionSound", formattedAudioFile);
 		AUDIO.loadSound("attributionSound");
 		// Attach handlers
 		AUDIO.addStartListener("attributionSound", function(){

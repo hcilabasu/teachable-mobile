@@ -38,7 +38,7 @@ var CognitivePrompts = function() {
 		}
 		else if(name == "randomizePrompts")
 		{
-			randomizePrompts()
+			randomizePrompts(info)
 		}
 	}
 
@@ -46,7 +46,7 @@ var CognitivePrompts = function() {
 	* Randomizes the order of prompts at the beginning of
 	* each session
 	**********************************************************/
-	var randomizePrompts = function() {
+	var randomizePrompts = function(problem) {
 		var num_prompts = prompts[0].length - 1;
 		var num_misconceptions = prompts.length - 1;
 		var cur_misconception = num_misconceptions;
@@ -64,7 +64,9 @@ var CognitivePrompts = function() {
 		var cur_index = 0;
 		var cur_prompt = num_prompts;
 		cur_misconception = num_misconceptions;
-		//set the first cognitive prompt to be the training prompt
+		//set the first cognitive prompt to be the training prompt (unless just performed system reset)
+		console.log("@@@@@" + problem.number);
+		if(problem.number == 540)
 		ordered_abstract_prompts[cur_index] = {"text":"Are you ready to teach me geometry?", "sound_file":"training.mp3"};
 		cur_index += 1;
 		while(cur_prompt !== 0)

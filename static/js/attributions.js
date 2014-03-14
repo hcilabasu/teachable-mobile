@@ -17,7 +17,7 @@ var Attributions = function() {
 		// format audio file location string
 		audioFile = "/mobileinterface/static/audio/" + attr.file;
 		audioFileLength = audioFile.length - 5;
-		formattedAudioFile = audioFile.substring(0, audioFileLength) + ".mp3";
+		formattedAudioFile = audioFile.substring(0, audioFileLength) + ".m4a";
 		//load sound
 		AUDIO.setFile("attributionSound", formattedAudioFile);
 		AUDIO.loadSound("attributionSound");

@@ -265,9 +265,13 @@ def make_attribution():
 	# wrapping info in package
 	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	console.log('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot');
 	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 
 	return message_wrapper
+
+def hide_attribution():
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"dismiss_attribution"}', 'mykey', 'robot')	
 
 def make_cognitive_prompt():
 	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure

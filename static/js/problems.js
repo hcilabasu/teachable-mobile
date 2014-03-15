@@ -228,28 +228,26 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback").fadeIn('slow');
 }
 
+/**************************************************************** 
+* Opens a "text message"-type interface on the Student iPod for
+* students to respond to Quinn and dismiss cognitive prompts
+****************************************************************/
 function openPromptResponseScreen() {
-    // alert("I'm emoting!!!");
-
     $("#emoticon").fadeIn('slow');
 
     var container = $('#emoticon');
     var inputs = container.find('input');
-    // var id = inputs.length + 1;
     var id = 0;
-    var emotionArray = ["Neutral"]; //"Happy", "Frustrated", "Guilty", "Hungry", "Grateful", "Ashamed", "Pitiful", "Frustrated", "Proud"];
+    var emotionArray = ["Neutral"]; 
     var promptResponseArray = ["Ok, I'm done."];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
-
-    promptIsTriggered = false;
 
     //add text message interface to make it look like students are talking to Quinn
     $('<div />', {id : currentEmotion}).appendTo(container);
     var textMessage = $('<p />', {text: "Should we keep going?"});
     $('<span/>', {'class':'dialog-detail'}).appendTo(textMessage);
     textMessage.appendTo("#TextMessages");
-    //$('<img />', {'for': 'cb' + id, src: "/mobileinterface/static/images/attributions/" + "quinn.jpg", align : 'bottom' }).appendTo("#TextMessages");
 
 
     //add text message entry fields
@@ -260,15 +258,12 @@ function openPromptResponseScreen() {
     $('<a/>', {id : "emoticon-ok", href : "#", text : "Send", click : function() {
             $("#emoticon").fadeOut('slow');
 
-            //CCALL HIDE PROMPT DIALOG
-            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
-
             // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
-            var length = 3;
+            var length = promptResponseArray.length;
             var checkedEmotions = [];
-            //alert(length);
+
             //Adrin made this change, since the checkbox ids are cb3,4,5
-            for(var i = 3 ; i < length + 3; i++) {
+            for(var i = promptResponseArray.length ; i < length + 3; i++) {
                 var isChecked = $("#cb" + i).prop('checked');
                 var emotion = $("#cb" + i).prop('value');
                 // alert(emotion);
@@ -277,9 +272,6 @@ function openPromptResponseScreen() {
                 }
             }
 
-            // alert("Checked emotions are " + checkedEmotions.toString() + ".");
-            // log("Checked emotions are " + checkedEmotions.toString() + ".", {"source":__SOURCE__});
-
             $('#emoticon').empty();
 
             //Telling the applet to unlock itself until further notice.
@@ -287,13 +279,16 @@ function openPromptResponseScreen() {
             problemObject.type = "unlockapplet";
             ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
 
-            log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});            
+            //remove currently displayed attribution message
+            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+            cognitivePromptFinished = true;
+
+            //log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});            
         }}).appendTo("#MessageEntry");
-        // $("emoticon-ok").appendTo(container);
     console.log(currentEmotionContainer);
     
 
-    //add emoticon options that students can select from
+    //add message options that students can select from
     // for(var i = 0 ; i < promptResponseArray.length ; i+3, id++) {
         currentEmotion = "Emojis";//emotionArray[i];       
         var j = 0;
@@ -317,27 +312,13 @@ function openPromptResponseScreen() {
         }
         i=0;  
         j = 0;
-        //currentEmotion = "Checkboxes";    
-        //$('<div />', {id : currentEmotion}).appendTo(container);
-        //while(i<promptResponseArray.length)// && j<3)
-        //{
-        //    var currentEmotionEmoji = promptResponseArray[i];
-        //    var currentEmotionContainer = $('#' + currentEmotion);
-
-            //populate window with 3 checkboxes per row
-        //    $('<input />', {type: 'checkbox', id: 'cb' + currentEmotionEmoji, value: currentEmotion, align : 'center'}).appendTo(currentEmotionContainer);
-
-            // var currentEmotionCB = $('#cb' + id);
-            //$('<label />', {'for': 'cb' + id, text: currentEmotion, align : 'left' }).appendTo(currentEmotionContainer);
-        //    i++;
-        //    id++;
-        //    j++;
-        //}
-        
     //}
 }
 
-// !!! Read this and see the changes Victor made and learn from them.
+/**************************************************************** 
+* Opens a "text message"-type interface on the Student iPod for
+* students to respond to Quinn and dismiss attribution messages 
+****************************************************************/
 function openEmoticonScreen() {
     // alert("I'm emoting!!!");
 
@@ -415,11 +396,11 @@ function openEmoticonScreen() {
 
             log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
         
-            //if prompt triggered after attribution message, display another feedback window
-            window.setTimeout(function(){
-                openPromptResponseScreen();
-            }, 7000);
-            
+            //remove currently displayed attribution message
+            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+            attributionFinished = true;  
+            //make call to robot to check for cognitive prompts
+            $.ajax({url : APP.MAKE_COGNITIVE_PROMPT + "?trigger=hit&state=end&number=540" });   
             
         }}).appendTo("#MessageEntry");
         // $("emoticon-ok").appendTo(container);
@@ -469,6 +450,8 @@ function openEmoticonScreen() {
         }
     //}
 }
+
+
 
 function openPrompt(promptMessages, isFirst) {
     var button = $("#prompt a");

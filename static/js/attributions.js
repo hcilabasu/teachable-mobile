@@ -5,6 +5,10 @@ var Attributions = function() {
 		return array.concat(array.splice(0,positions+1));
 	}
 
+	/**************************************************************** 
+	* Opens dialogue to display attribution text and plays 
+	* audio file associated with current attribution
+	****************************************************************/
 	var makeAttribution = function(attr) {
 		var audioFile; 
 		var formattedAudioFile;
@@ -17,7 +21,7 @@ var Attributions = function() {
 		// format audio file location string
 		audioFile = "/mobileinterface/static/audio/" + attr.file;
 		audioFileLength = audioFile.length - 5;
-		formattedAudioFile = audioFile.substring(0, audioFileLength) + ".m4a";
+		formattedAudioFile = audioFile.substring(0, audioFileLength) + ".mp3";
 		//load sound
 		AUDIO.setFile("attributionSound", formattedAudioFile);
 		AUDIO.loadSound("attributionSound");
@@ -33,11 +37,8 @@ var Attributions = function() {
 			$("body").removeClass("talking");
 			var time = Math.floor((Math.random()*5)+5)*1000;
 			window.setTimeout(function(){
-				$("body").removeClass().addClass("neutral");
-				$("#speech").fadeOut('slow');
-				//check to see if cognitive prompt should be displayed
-				cognitive_prompts.doPromptAction("timecheck","","dontcare");
-				attributionFinished = true;
+				//$("body").removeClass().addClass("neutral");
+				//$("#speech").fadeOut('slow');
 			}, time);
 
 		});
@@ -46,6 +47,19 @@ var Attributions = function() {
 			AUDIO.play("attributionSound");
 		}, 2500);
 	}
+
+	/**************************************************************** 
+	* Closes current dialogue displaying prompt text and stops audio
+	* file associated with current attribution 
+	*****************************************************************/
+	/*var hidePromptDialog = function() {
+		var incremented = false;
+
+		//REMOVE THE PROMPTS
+		$("body").removeClass().addClass("neutral");
+		$("#speech").fadeOut('slow');
+		});
+	}*/
 
 	return {
 		makeAttribution : makeAttribution

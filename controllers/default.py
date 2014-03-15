@@ -488,3 +488,7 @@ def send_data_to_robot():
     # websocket_send('http://' + get_ip(request.vars) + ':' + __socket_port, __curr_prob, 'mykey', 'robot')
     # Sending both the current problem object and the problem number
     return (session.__curr_prob + '@@@' + session.problemNum)
+
+def set_cognitive_prompt_triggered():
+    data = request.vars.data
+    websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', 'interface')

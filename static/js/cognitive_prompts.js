@@ -42,10 +42,10 @@ var CognitivePrompts = function() {
 		}
 	}
 
-	/********************************************************** 
+	/**************************************************************** 
 	* Randomizes the order of prompts at the beginning of
 	* each session
-	**********************************************************/
+	****************************************************************/
 	var randomizePrompts = function(problem) {
 		var num_prompts = prompts[0].length - 1;
 		var num_misconceptions = prompts.length - 1;
@@ -84,10 +84,10 @@ var CognitivePrompts = function() {
 		console.log("Prompt randomization complete!");
 	}
 
-	/**********************************************************
+	/****************************************************************
 	* Helper function for randomization process - shuffles
 	* values within an array
-	**********************************************************/
+	****************************************************************/
 	var shuffle = function(array) {
 		var currentIndex = array.length;
 		var tempValue;
@@ -106,10 +106,10 @@ var CognitivePrompts = function() {
 		return array;
 	}
 
-	/********************************************************** 
+	/**************************************************************** 
 	* Checks if enough time has elapsed since last prompt was 
 	* displayed (2 minutes)
-	**********************************************************/
+	****************************************************************/
 	var timeprompt = function(info)
 	{
 	   var newtime = new Date();
@@ -152,7 +152,10 @@ var CognitivePrompts = function() {
 	}
 
 
-
+	/**************************************************************** 
+	* Closes current dialogue displaying prompt text and stops audio
+	* file associated with current prompt
+	*****************************************************************/
 	var hidePromptDialog = function() {
 		var incremented = false;
 
@@ -170,29 +173,29 @@ var CognitivePrompts = function() {
 			currentPromptIndex = currentPromptIndex + 1;
 			//incremented = true;
 		}
-
-		if(!promptsFinished && prompts[currentPromptIndex-1].another_prompt == "true")
-		{
-			displayTriggeredPrompt(prompt);
-			promptsFinished = true;
-		}
 	}
 	
 
 
-	/********************************************************** 
+	/**************************************************************** 
 	* Opens dialogue to display prompt text and plays audio
 	* file associated with current prompt
-	**********************************************************/
+	****************************************************************/
 	var displayTriggeredPrompt = function(prompt, condition) {
 	    var firsttime = new Date();
 	    var firsthourinmin = firsthour * 60;
 	    var firstsecinmin = firstsec/60;
 	    var incremented = false;
+	    cognitivePromptFinished = false;
 
 	    //update the interface on the student iPod
-	    promptIsTriggered = true;
-	    console.log("triggered = " + promptIsTriggered);
+	    $.ajax({
+	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
+	        async: false,
+	        success: function() {
+	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
+	        }
+	    });
 
 	    firsthour = firsttime.getHours();
 	    firstminute = firsttime.getMinutes();

@@ -46,24 +46,27 @@
         	APP.SEND_DATA_TO_ROBOT = "{{=URL('send_data_to_robot')}}"
         	APP.STORE_CURR_PROB = "{{=URL('store_curr_prob')}}"
         	APP.DISMISS_PROMPT = "{{=URL('mobileinterface','robot','dismiss_cognitive')}}";
+        	APP.DISMISS_ATTRIBUTION = "{{=URL('mobileinterface','robot','dismiss_attribution')}}";
 
-/*
+
+
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
         	problems = problems.replace(/&quot;/g, "\"");
         	problems = problems.replace(/&#x27;/g, "'");
 
         	APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
-*/
 
-        	// TEMPORARILY HARDCODING PROBLEMS, ABOVE SHOULD BE UNCOMMENTED LATER
+
+/*        	TEMPORARILY HARDCODING PROBLEMS, ABOVE SHOULD BE UNCOMMENTED LATER
         	var promptIsTriggered = false;
         	var attributionFinished = true;
         	var hardcoded_problems = '[{"id":540,"name":"problem 1","type":"t1","text":"Learning to use TAG.","prompts":[],"points":[{"name":"P1", "x":-3, "y":2}],"lines":[],"solution":{"points":[],"lines":[]}, "problemType":"Default", "type":"Default"}, {"id":541,"name":"problem 2","type":"t2","text":"1. Plot the point (4, 0)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":4,"y":0}],"lines":[]}, "problemType":"plot", "type":"Default"},{"id":542,"name":"problem 3","type":"t3","text":"2. Plot the point (-3, 2)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":-3, "y":2}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":543,"name":"problem 4","type":"t4","text":"3. Plot the point (1, 3)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":1, "y":3}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":544,"name":"problem 5","type":"t5","text":"4. Plot the point (-2, -2)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":-2, "y":-2}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":545,"name":"problem 6","type":"t6","text":"5. Plot the point (0, 2)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":0, "y":2}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":546,"name":"problem 7","type":"t7","text":"6. Plot the point (-1, 4)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":-1, "y":4}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":547,"name":"problem 8","type":"t8","text":"7. Plot the point (2, -2)","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":2, "y":-2}],"lines":[]}, "problemType":"Default", "type":"Default"},{"id":548,"name":"problem 9","type":"t9","text":"8. Plot the point (-3, 1) ","prompts":[],"points":[],"lines":[],"solution":{"points":[{"name":"P1", "x":-3, "y":1}],"lines":[]}, "problemType":"Default", "type":"Default"}]';
         	hardcoded_problems = hardcoded_problems.replace(/&quot;/g, "\"");
         	hardcoded_problems = hardcoded_problems.replace(/&#x27;/g, "'");
         	APP.PROBLEMS = JSON.parse(hardcoded_problems);
-
+*/
+        	
         	//Storing the cartesian plane status in a global variable
         	var GEOGEBRA_STATUS_STRING = "GEOGEBRA_STATUS_STRING_SS";
         	APP.GEOGEBRA_STATUS_STRING = "APP_GEOGEBRA_STATUS_STRING";
@@ -85,6 +88,7 @@
         	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+        	APP.COGNITIVE_PROMPT_TRIGGERED = false;
         </script>
         <script>
         	var olddata = undefined;
@@ -173,6 +177,12 @@
 			      			console.dir("Assigning GEOGEBRA_STATUS_STRING.....");
 			      			GEOGEBRA_STATUS_STRING = incoming.data.string;
 			      			APP.GEOGEBRA_STATUS_STRING = incoming.data.string;
+			      		}
+			      		else if(incoming.type == "setcognitivetrigger") {
+			      			APP.COGNITIVE_PROMPT_TRIGGERED = true;
+		      			     window.setTimeout(function(){
+					           openPromptResponseScreen();
+					         }, 3000);	
 			      		}
 			      		// else if(incoming.type == "robot_request") {
 			      			// console.dir("Robot requested memory objects.");

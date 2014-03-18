@@ -28,10 +28,13 @@ function refreshProblem(message, executeSteps) {
         refresh = confirm(message);
     }
 
+    // refreshing problem
     if(refresh) {
-        // refreshing problem
+        var initialStateOnLoadString  = calculateInitialStateOnLoad();
+
+        CURRENT_GEOGEBRA_STATE = initialStateOnLoadString;
+        
         if(message == "Restart current problem?") {//logging only if clicked from header
-            var initialStateOnLoadString  = calculateInitialStateOnLoad();
             log("", {"type":"reset","parameter":"","initial":initialStateOnLoadString, "final":initialStateOnLoadString});
         }
 
@@ -99,6 +102,8 @@ function moveToProblemNumber(probNum) {
 
     alert("Moving to problem number " + (probNum + 1) + ".");
 
+    PREVIOUS_GEOGEBRA_STATE = CURRENT_GEOGEBRA_STATE;
+
     APP.currentProblemIndex = probNum;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
 
@@ -113,7 +118,7 @@ function moveToProblemNumber(probNum) {
     refreshProblem(); // Call #2
     // Logging
     // log("Moving to Problem " + APP.currentProblem.id);
-    log("", {"type":"admin changed problem","parameter":probNum+1,"initial":"", "final":""});
+    log("", {"type":"admin changed problem","parameter":probNum+1,"initial":PREVIOUS_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
 }
 
 function nextProblem() {
@@ -121,12 +126,13 @@ function nextProblem() {
         openPrompt(APP.currentProblem.prompts, true);
     }
     else {
+        moveToNext();
+
         // log("Moving to next problem", {"source":"ipod"});
-        if((APP.currentProblemIndex + 1) < APP.PROBLEMS.length) {
-            log("",{"type":"change prob","parameter":APP.currentProblemIndex + 2,"initial":"", "final":"", "problem number" : APP.currentProblemIndex + 2, 
+        if((APP.currentProblemIndex) < APP.PROBLEMS.length) {
+            log("",{"type":"change prob","parameter":APP.currentProblemIndex + 2,"initial":PREVIOUS_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE, "problem number" : APP.currentProblemIndex + 2, 
                 "problem desc" : APP.PROBLEMS[APP.currentProblemIndex + 1].text, "problem id" : APP.PROBLEMS[APP.currentProblemIndex + 1].id});
         }
-        moveToNext();
     }
 }
 
@@ -136,6 +142,9 @@ function callCheckForCognitivePrompt() {
 
 function moveToNext(callback) {
     // log("Calling moveToNext");
+
+    PREVIOUS_GEOGEBRA_STATE = CURRENT_GEOGEBRA_STATE;
+    
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
     setCurrentProblem(); // Call #1

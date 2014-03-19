@@ -239,13 +239,19 @@ function openPromptResponseScreen() {
     var inputs = container.find('input');
     var id = 0;
     var emotionArray = ["Neutral"]; 
-    var promptResponseArray = ["Ok, I'm done."];
+    var promptResponseArray = ["Yes, I'm done."];
     var currentEmotion = "TextMessages";
     var currentEmotionContainer = $('#' + currentEmotion);
+    var problemObject = problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+    var delayFinished = false;
+
+    //tell the applet to lock itself
+    problemObject.type = "lockapplet";
+    ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
 
     //add text message interface to make it look like students are talking to Quinn
     $('<div />', {id : currentEmotion}).appendTo(container);
-    var textMessage = $('<p />', {text: "Should we keep going?"});
+    var textMessage = $('<p />', {text: "Did you answer my question?"});
     $('<span/>', {'class':'dialog-detail'}).appendTo(textMessage);
     textMessage.appendTo("#TextMessages");
 
@@ -254,37 +260,46 @@ function openPromptResponseScreen() {
     currentEmotion = "MessageEntry";
     currentEmotionContainer = $('#' + currentEmotion);
     $('<div />', {id : currentEmotion}).appendTo(container);
-    $('<label />', {id : "entryfield", text: "Select a message", 'class':'title'}).appendTo("#MessageEntry");
+    $('<label />', {id : "entryfield", text: "Select a message", 'class':'title'}).appendTo("#MessageEntry");    
     $('<a/>', {id : "emoticon-ok", href : "#", text : "Send", click : function() {
-            $("#emoticon").fadeOut('slow');
 
-            // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
-            var length = promptResponseArray.length;
-            var checkedEmotions = [];
+            if(delayFinished == true)
+            {
+                $("#emoticon").fadeOut('slow');
 
-            //Adrin made this change, since the checkbox ids are cb3,4,5
-            for(var i = promptResponseArray.length ; i < length + 3; i++) {
-                var isChecked = $("#cb" + i).prop('checked');
-                var emotion = $("#cb" + i).prop('value');
-                // alert(emotion);
-                if(isChecked) {
-                    checkedEmotions.push(emotion);
+                // !!!Need to remove this hardcoded length and somehow get the emotionArray length in here.
+                var length = promptResponseArray.length;
+                var checkedEmotions = [];
+
+                //Adrin made this change, since the checkbox ids are cb3,4,5
+                for(var i = promptResponseArray.length ; i < length + 3; i++) {
+                    var isChecked = $("#cb" + i).prop('checked');
+                    var emotion = $("#cb" + i).prop('value');
+                    // alert(emotion);
+                    if(isChecked) {
+                        checkedEmotions.push(emotion);
+                    }
                 }
+
+                $('#emoticon').empty();
+
+                //Telling the applet to unlock itself until further notice.
+                var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+                problemObject.type = "unlockapplet";
+                ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
+
+                //remove currently displayed attribution message
+                $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+                APP.COGNITIVE_PROMPT_TRIGGERED = false;
+                cognitivePromptFinished = true;
+
             }
-
-            $('#emoticon').empty();
-
-            //Telling the applet to unlock itself until further notice.
-            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
-            problemObject.type = "unlockapplet";
-            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
-
-            //remove currently displayed attribution message
-            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
-            cognitivePromptFinished = true;
-
-            //log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});            
         }}).appendTo("#MessageEntry");
+
+        //10 second lock after cognitive prompt displayed before students can dismiss
+        window.setTimeout(function(){  
+            delayFinished = true;
+        }, 10000);
     console.log(currentEmotionContainer);
     
 
@@ -389,18 +404,18 @@ function openEmoticonScreen() {
 
             $('#emoticon').empty();
 
-            //Telling the applet to unlock itself until further notice.
-            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
-            problemObject.type = "unlockapplet";
-            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
-
             log("", {"type":"checked emotions", "parameter":checkedEmotions.toString(), "initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
         
             //remove currently displayed attribution message
             $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
-            attributionFinished = true;  
+            APP.ATTRIBUTION_TRIGGERED == false;
             //make call to robot to check for cognitive prompts
             $.ajax({url : APP.MAKE_COGNITIVE_PROMPT + "?trigger=hit&state=end&number=540" });   
+
+            //Telling the applet to unlock itself until further notice.
+            var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
+            problemObject.type = "unlockapplet";
+            ajax(APP.LOCK_APPLET + "?index=" + APP.currentProblemIndex + "&data=" + escape(JSON.stringify(problemObject)), [], "");
             
         }}).appendTo("#MessageEntry");
         // $("emoticon-ok").appendTo(container);

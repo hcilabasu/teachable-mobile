@@ -10,10 +10,47 @@
 		textarea {
 			display:block;
 		}
+
+		nav {
+			float: left;
+			margin-bottom: 20px;
+			margin-right: 40px;
+		}
+
+		form {
+			clear: left;
+		}
 	</style>
 </head>
 <body>
 	<h1>Session Control</h1>
+
+	<nav>
+		<h3>Virtual Condition:</h3>
+		<ul>
+			<li><a href="{{=URL(a='cartesianplane', c='virtual', f='index')}}" target="_blank">One-window application</a></li>
+		</ul> 
+	</nav>
+	<nav>
+		<h3>TAG Condition:</h3>
+		<ul>
+			<li><a href="{{=URL('robot', 'control')}}" target="_blank">Cartesian plane</a></li>
+		</ul>
+	</nav>
+	<nav>
+		<h3>Quinn Condition:</h3>
+		<ul>
+			<li><a href="{{=URL('robot', 'control')}}" target="_blank">Cartesian plane</a></li>
+			<li><a href="{{=URL('robot', 'control')}}" target="_blank">Robot Control</a></li> 
+		</ul>
+	</nav>
+	<nav>
+		<h3>ALL Conditions:</h3>
+		<ul>
+			<li><a href="{{=URL('log', 'index')}}" target="_blank">Logs</a></li>
+		</ul>
+	</nav>
+	
 
 	<form method="post" action="{{=URL('end_session')}}">
 		<fieldset>

@@ -53,7 +53,7 @@
         	// Adding problems variable to global variable
         	var problems = "{{=problems}}";
         	problems = problems.replace(/&quot;/g, "\"");
-        	problems = problems.replace(/&#x27;/g, "'");
+        	problems = problems.replace(/&#x27;/g, "\'");
 
         	APP.PROBLEMS = JSON.parse(problems); // TODO use better encoding mechanism
 
@@ -88,6 +88,7 @@
         	}(); // Pay attention: I am actually calling the function
         	APP.currentProblemIndex = {{=current_problem}};//we get it from mobile(), which returns a dict, defined in default.py.
         	APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+        	APP.ATTRIBUTION_TRIGGERED = false;
         	APP.COGNITIVE_PROMPT_TRIGGERED = false;
         </script>
         <script>
@@ -143,21 +144,25 @@
 			      			// log("Admin Change Problem. Moving to problem number " + (incoming.number + 1));
 				    		moveToProblemNumber(incoming.number);
 				      	}
-				      	else if(incoming.type == "check") {
-			      		 	if(incoming.status) {
-			      		 		AUDIO.loadSound("correct-solution");
-			      		 		AUDIO.play("correct-solution");
-			      		 		// log("SOLUTION IS CORRECT!!!");
-			      		 		// AUDIO.play("audio-attention");
-			      		 	}
-			      		 	else {
-			      		 		AUDIO.loadSound("wrong-solution");
-			      		 		AUDIO.play("wrong-solution");
-			      		 		// log("SOLUTION IS WRONG!!!");
-			      		 		// AUDIO.play("audio-attention");
-			      		 	}
-
-			      		 	openFeedbackScreen(incoming.status, incoming.message);
+				      	else if(incoming.type == "check")
+				      	{
+				      		if(APP.ATTRIBUTION_TRIGGERED == false && APP.COGNITIVE_PROMPT_TRIGGERED == false) 
+				      		{
+			      		 		if(incoming.status) {
+				      		 		AUDIO.loadSound("correct-solution");
+				      		 		AUDIO.play("correct-solution");
+				      		 		// log("SOLUTION IS CORRECT!!!");
+				      		 		// AUDIO.play("audio-attention");
+				      		 	}
+				      		 	else {
+				      		 		AUDIO.loadSound("wrong-solution");
+				      		 		AUDIO.play("wrong-solution");
+				      		 		// log("SOLUTION IS WRONG!!!");
+				      		 		// AUDIO.play("audio-attention");
+				      		 	}
+				      		 	APP.ATTRIBUTION_TRIGGERED == true;
+				      		 	openFeedbackScreen(incoming.status, incoming.message);
+				      		}
 			      		}
  			      		else if(incoming.type == "alert"){
  			      			alert(incoming.message);
@@ -202,29 +207,32 @@
 				      		}
 			      		}
 			      		else {
-			      			// Old messages. They do not have a type. But they should. TODO
-			      			try {
-				    			// Playing attention sound
-				    			AUDIO.loadSound("audio-attention");
-		    					AUDIO.play("audio-attention");
-				    			var temp = JSON.parse(e.data)
-				    			console.log(temp);
-				    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
-				    				// Same trigger. Update params.
-				    				mergeObjects(olddata, temp);
-				    				updateStepParamsList();
-				    				counter++;
-				    			}
-				    			else {
-				    				// Different trigger. Start over.
-						      		olddata = temp;
-						      		updateCurrentStep();
-						      		counter = 1;
-						      	}
-				      		}
-				      		catch(err) {
-				      			console.dir(e.data);
-				      		}
+			      			if(APP.ATTRIBUTION_TRIGGERED == false && APP.COGNITIVE_PROMPT_TRIGGERED == false) 
+				      		{
+				      			// Old messages. They do not have a type. But they should. TODO
+				      			try {
+					    			// Playing attention sound
+					    			AUDIO.loadSound("audio-attention");
+			    					AUDIO.play("audio-attention");
+					    			var temp = JSON.parse(e.data)
+					    			console.log(temp);
+					    			if(counter < 2 && isTriggerEqual(olddata, temp)) {
+					    				// Same trigger. Update params.
+					    				mergeObjects(olddata, temp);
+					    				updateStepParamsList();
+					    				counter++;
+					    			}
+					    			else {
+					    				// Different trigger. Start over.
+							      		olddata = temp;
+							      		updateCurrentStep();
+							      		counter = 1;
+							      	}
+					      		}
+					      		catch(err) {
+					      			console.dir(e.data);
+					      		}
+					      	}
 			      		}
 			      	}
 		      	});

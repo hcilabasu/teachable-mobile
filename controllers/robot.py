@@ -254,6 +254,7 @@ def __move_to(x, y, backwards, recursion):
 
 def make_attribution():
 	outcome = True if request.vars['out'] == 'success' else False # either success or failure
+	number = request.vars['number']
 	attribution = __search_attribution(outcome)
 	if not attribution:
 		__reset(outcome)
@@ -263,9 +264,8 @@ def make_attribution():
 	attribution.session = True
 	attribution.update_record()
 	# wrapping info in package
-	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message)	
+	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s","number":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message,number)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	console.log('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot');
 	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 
 	return message_wrapper

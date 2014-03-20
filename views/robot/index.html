@@ -64,7 +64,7 @@
 	    }, false);
 
 		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
-			console.dir("*******" + e);
+			console.dir("*******" + e.data);
 			var data = JSON.parse(e.data);
 
 			var incoming = JSON.parse(unescape(e.data));

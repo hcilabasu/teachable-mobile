@@ -10,9 +10,7 @@ import config
 import urllib
 import collections
 import sys
-import pdb
 from copy import copy
-from gluon.contrib.websocket_messaging import websocket_send
 
 __current_user_name = config.TORNADO_USER
 __current_ip = config.TORNADO_IP
@@ -36,21 +34,7 @@ rc = RobotController()
 
 recursion_cutoff = 7
 
-def index():
-	ip = __current_ip
-	if 'local' in request.vars.keys():
-		ip = __current_ip_local
-	return dict(ip=ip, port=__socket_port, group_name=__socket_group_name)
 
-def control():
-	return dict()
-
-def update_direction():
-	RobotController.d = request.vars['d']
-	return RobotController.d
-
-def see_position():
-	return str(session.position)
 
 def current_status():
 	position = __get_position()
@@ -59,33 +43,25 @@ def current_status():
 	y = position[1]
 	return 'Position(' + str(x) + ',' + str(y) + '), Orientation(' + str(get_direction()) + ')'
 
-def load_options():
-	# Notifying interface of click on robot
-	websocket_send('http://127.0.0.1:8888', '{"trigger": "all"}', 'mykey', 'interface')
 
-def turn_to():
-	angle = int(request.vars['angle'])
-	backwards = 'backwards' in request.vars
+def turn_to(angle, backwards):
 
 	Thread(target=__call_turn_to, args=(angle, backwards)).start()
 	# __turn_to(angle, backwards, 0)
 	
 
-def move_to():
+def move_to(x, y, a, backwards):
 
 	# retrieving current position
 	curr_position = __get_position()
 	c_x = curr_position[0]
 	c_y = curr_position[1]
 	# retrieving target position
-	t_x = float(request.vars['x'])
-	t_y = float(request.vars['y'])
-	# should the robot move backwards?
-	backwards = 'backwards' in request.vars
+	t_x = float(x)
+	t_y = float(y)
 	# final angle
 	angle = None
-	if 'angle' in request.vars:
-		angle = int(request.vars['angle'])
+	angle = int(a)
 	# # moving robot
 	Thread(target=__call_move_to, args=(t_x, t_y, angle, backwards)).start()
 	# trigger next cognitive prompt if at beginning of new problem
@@ -168,9 +144,6 @@ def test():
 	print('X:' + str(math.fabs(c_x - 0)))
 	print('Y:' + str(math.fabs(c_y - 0)))
 	return small_distance_threshold
-
-def test_th():
-	return __within_threshold(float(request.vars['angle']), small_angle_threshold)	
 
 def __within_threshold(desired, th):
 	current = get_direction()
@@ -255,106 +228,6 @@ def __move_to(x, y, backwards, recursion):
 			make_attribution()
 
 
-def make_attribution():
-	outcome = True if request.vars['out'] == 'success' else False # either success or failure
-	number = request.vars['number']
-	attribution = __search_attribution(outcome)
-	if not attribution:
-		__reset(outcome)
-		attribution = __search_attribution(outcome)
-	# updating db
-	attribution.used = True
-	attribution.session = True
-	attribution.update_record()
-	# wrapping info in package
-	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s","number":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message,number)	
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-
-	return message_wrapper
-
-def hide_attribution():
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"dismiss_attribution"}', 'mykey', 'robot')	
-
-def make_cognitive_prompt():
-	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
-	state = request.vars['state']
-	prob_num = int(request.vars['number'])
-	trig = request.vars['trigger']
-	ang = request.vars['angle']
-	# wrapping info in package
-	#message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	# message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	message_wrapper = '{"type":"timecheck", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	
-
-	# This line caused a lot of grief while merging logs by me and Cognitive Prompts by Elissa.
-	# Original line
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	# Adrin made the change here, and for all websocket_send calls.
-	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	# websocket_send('http://' + __current_ip_local + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	# websocket_send('http://127.0.0.1:' + __socket_port, message_wrapper, 'mykey', 'robot')
-	return message_wrapper
-
-def randomly_order_prompts():
-	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
-	state = request.vars['state']
-	prob_num = int(request.vars['number'])
-	trig = request.vars['trigger']
-	ang = request.vars['angle']
-	# wrapping info in package
-	message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	return message_wrapper
-
-def request_data_from_mobile():
-	# Requesting memory objects from the mobile side.
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"robot_request"}', 'mykey', 'interface')
-
-def skip_prompts():
-	#pdb.set_trace()
-	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure
-	state = request.vars['state']
-	prob_num = int(request.vars['number'])
-	trig = request.vars['trigger']
-	ang = request.vars['angle']
-	# wrapping info in package
-	message_wrapper = '{"type":"cognitive_skip", "value":{"number":"%s"}}' % (prob_num)	
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
-	return message_wrapper
-
-def prompt_was_made():
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"prompt_was_made"}', 'mykey', 'interface')
-
-def dismiss_cognitive():
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"dismiss_cognitive"}', 'mykey', 'robot')	
-
-def __reset(outcome):
-	for r in db(db.attributions.success == outcome).select():
-		r.update_record(used=False)
-
-def new_session():
-	for r in db(db.attributions).select():
-		r.update_record(session=False)
-
-queries = {
-	'both':(db.attributions.used == False) & (db.attributions.session == False),
-	'session':(db.attributions.session == False),
-	'used':(db.attributions.used == False)
-}
-
-def __search_attribution(outcome):
-	success_query = db.attributions.success == outcome
-	if not db(success_query & queries['both']).isempty():
-		return db(success_query & queries['both']).select(orderby='<random>').first()
-	else:
-		if not db(success_query & queries['session']).isempty():
-			return db(success_query & queries['session']).select(orderby='<random>').first()
-		else:
-			return db(success_query & queries['used']).select(orderby='<random>').first()
-
 def move_forward():
 	__move_forward()
 
@@ -376,10 +249,6 @@ def connect():
 		return 'yes'
 	except Exception as ex:
 		return 'no'
-
-def reset_zero():
-	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"reset"}', 'mykey', 'robot')
-	# websocket_send('http://' + ip + ':' + __socket_port, '{"type":"reset"}', 'mykey', 'robot')
 
 def toggle_auto_control():
 	return rc.set_auto(not rc.auto)

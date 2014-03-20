@@ -244,7 +244,9 @@ var CognitivePrompts = function() {
 		// Set facial expression
 		$("body").removeClass().addClass("neutral");
 		// load sound
+		console.log("?????" + currentPromptIndex);
 		console.log("/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
+
 		AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + ordered_prompts[currentPromptIndex].sound_file);
 		AUDIO.loadSound("promptSound");
 		// Attach handlers
@@ -273,6 +275,7 @@ var CognitivePrompts = function() {
 
 			//increment prompt counter
 			currentPromptIndex = currentPromptIndex + 1;
+			console.log("incrementing cog prompt counter" + currentPromptIndex);
 		});
 
 		// play sound

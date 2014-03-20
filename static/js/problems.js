@@ -63,6 +63,9 @@ function setCurrentProblem() {
     //Here we're as disallowing the user from going to the next problem, once a new problem has been presented.
     $("#next-problem-button").fadeTo(1, 0.5);
     $("#next-problem-button").unbind();//removing the listener
+    // $("#next-problem-button").off();//removing the listener
+
+
     // $('#next-problem-button').removeClass();
     // $('#next-problem-button').addClass('disabled');
 
@@ -122,6 +125,8 @@ function moveToProblemNumber(probNum) {
 }
 
 function nextProblem() {
+    console.dir("@@@Next Problem@@@");
+
     if(APP.currentProblem.prompts.length > 0) {
         openPrompt(APP.currentProblem.prompts, true);
     }
@@ -190,7 +195,15 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
 
         //!!! Very important, make the next-problem-button clickable again.
         $("#next-problem-button").fadeTo(1, 1);
-        $("#next-problem-button").click(nextProblem);
+
+
+        var nextProblemButtonElement = document.getElementById("next-problem-button");
+        var nextProblemButtonEvents = jQuery._data(nextProblemButtonElement, "events");
+        if(!nextProblemButtonEvents || !(nextProblemButtonEvents.hasOwnProperty("click"))) {
+            console.log("@@@@Adding event for click@@@@");
+            $("#next-problem-button").click(nextProblem);
+        }
+        
         GBL_BOOL_NEXT_BUTTON_ENABLED = true;
     }
     

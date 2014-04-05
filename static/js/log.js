@@ -156,6 +156,14 @@ function log(title, data, bool_verbose, callback) {
 	                    logString += ",\"" + title + "\"";
 	                }
 
+	                if(data.type) {
+	                	data.type = data.type.replace(/"/g, "'");//replacing all double quotes with single quotes.
+	                }
+
+	                if(data.parameter) {
+                		data.parameter = data.parameter.replace(/"/g, "'");//replacing all double quotes with single quotes.
+                	}
+
 	                // var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
 	                var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : "";
 	                var finalState = (data.hasOwnProperty("final") || data.final) ? data.final : initialState;
@@ -251,6 +259,14 @@ function log(title, data, bool_verbose, callback) {
 	            if(title) {
 	                logString += ",\"" + title + "\"";
 	            }
+
+	            if(data.type) {
+                	data.type = data.type.replace(/"/g, "'");//replacing all double quotes with single quotes.
+                }
+
+                if(data.parameter) {
+                	data.parameter = data.parameter.replace(/"/g, "'");//replacing all double quotes with single quotes.
+                }
 
 	            // var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : APP.GEOGEBRA_STATUS_STRING;
 	            var initialState = (data.hasOwnProperty("initial") || data.initial) ? data.initial : "";

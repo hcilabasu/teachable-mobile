@@ -190,7 +190,13 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
 
         //!!! Very important, make the next-problem-button clickable again.
         $("#next-problem-button").fadeTo(1, 1);
-        $("#next-problem-button").click(nextProblem);
+        var nextProblemButtonElement = document.getElementById("next-problem-button");
+        var nextProblemButtonEvents = jQuery._data(nextProblemButtonElement, "events");
+        if(!nextProblemButtonEvents || !(nextProblemButtonEvents.hasOwnProperty("click"))) {
+            console.log("@@@@Adding event for click@@@@");
+            $("#next-problem-button").click(nextProblem);
+        }
+        
         GBL_BOOL_NEXT_BUTTON_ENABLED = true;
     }
     

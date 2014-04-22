@@ -241,6 +241,9 @@ function validateInput(form, labels, procName, parameters){
         if(!isNumber(parameters['distance'])){
             toggleError(labels, "color", "red", "black");
             return false;
+        } else if(parameters['distance'] == 0){
+            alert("Distance has to be greater than 0");
+            return false;
         }
     } else if(procName === 'turnAngle'){
         if(!isNumber(parameters['angle']) || parameters['angle'] > 360 || (parameters['angle'] % 90) !== 0){

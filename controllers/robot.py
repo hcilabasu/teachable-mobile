@@ -388,7 +388,7 @@ def test_d():
 	return RobotController.d
 
 def get_direction():
-	return gateway.getCurrentOrientation()
+	return (gateway.getCurrentOrientation() + 180) % 360
 	# if not RobotController.d:
 		# info from iPod not available
 		# return gateway.getCurrentOrientation()

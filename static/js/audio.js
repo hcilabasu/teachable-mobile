@@ -26,6 +26,10 @@ AUDIO.addFinishListener = function(name, listener){
 	AUDIO[name].addEventListener('ended', listener);
 }
 
+AUDIO.removeFinishListener = function(name, listener){
+	AUDIO[name].removeEventListener('ended', listener);
+}
+
 AUDIO.play = function(name){
 	AUDIO[name].play();
 }

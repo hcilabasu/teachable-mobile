@@ -19,6 +19,7 @@ var Attributions = function() {
 		// Set facial expression
 		if(attributionFinished == true && cognitivePromptFinished == true)
 		{
+			console.log("Playing attribution message......." + attr.number);
 			if(attr.number != "540")
 			{
 				$("body").removeClass().addClass(attr.emotion);

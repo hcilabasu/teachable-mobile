@@ -33,15 +33,15 @@ var CognitivePrompts = function() {
 		}
 		else if(name == "hidePromptDialog")
 		{
-			hidePromptDialog()
+			hidePromptDialog();
 		}
 		else if(name == "timecheck")
 		{
-			timeprompt(info)
+			timeprompt(info);
 		}
 		else if(name == "randomizePrompts")
 		{
-			randomizePrompts(info)
+			randomizePrompts(info);
 		}
 	}
 
@@ -90,7 +90,7 @@ var CognitivePrompts = function() {
 		cur_misconception = num_misconceptions;
 		//set the first cognitive prompt to be the training prompt (unless just performed system reset)
 		console.log("@@@@@" + problem.number);
-		if(problem.number == 540)
+		if(problem.number == "540")
 		{
 			ordered_prompts[cur_index] = {"text":"Are you ready to teach me geometry?", "sound_file":"training.mp3"};
 			cur_index += 1;
@@ -163,28 +163,29 @@ var CognitivePrompts = function() {
 	   }
 
 	   attributionFinished = true;  
-
-	   if(firsttotaltime == -1)
-	   {
-	   		//no cognitive prompts have been displayed yet, go ahead a show prompt
-	   		displayTriggeredPrompt(prompt);
-	   }
-	   else if (newtotaltime < firsttotaltime)
-	   {
-            var minutesPerDay = 24*60; 
-            var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
-            result += newtotaltime; // Minutes in the next day 
-	        if (result >= 2)
-	        {
-	      	    //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
-	    	    displayTriggeredPrompt(prompt);
-            }
-        }
-	   else if (newtotaltime - firsttotaltime >= 2)
-	   {
-	       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
-	    	displayTriggeredPrompt(prompt);
-        }
+	   if (info.firstProblem == false){
+		   if(firsttotaltime == -1)
+		   {
+		   		//no cognitive prompts have been displayed yet, go ahead a show prompt
+		   		displayTriggeredPrompt(prompt);
+		   }
+		   else if (newtotaltime < firsttotaltime)
+		   {
+	            var minutesPerDay = 24*60; 
+	            var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
+	            result += newtotaltime; // Minutes in the next day 
+		        if (result >= 2)
+		        {
+		      	    //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
+		    	    displayTriggeredPrompt(prompt);
+	            }
+	        }
+		   else if (newtotaltime - firsttotaltime >= 2)
+		   {
+		       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
+		    	displayTriggeredPrompt(prompt);
+	        }
+	    }
 	}
 
 
@@ -269,14 +270,20 @@ var CognitivePrompts = function() {
 			
 		});
 
-		AUDIO.addFinishListener("promptSound", function(){
+		AUDIO.addFinishListener("promptSound", finListener = function(){
 			// When robot finishes speaking
 			$("body").removeClass("talking");
 
 			//increment prompt counter
 			currentPromptIndex = currentPromptIndex + 1;
-			console.log("incrementing cog prompt counter" + currentPromptIndex);
+			//if student has seen all of the prompts, start repeating
+			if(currentPromptIndex == ordered_prompts.length)
+			{
+				currentPromptIndex = 1;
+			}
+			AUDIO.removeFinishListener("promptSound", finListener);
 		});
+
 
 		// play sound
 		window.setTimeout(function(){
@@ -284,11 +291,6 @@ var CognitivePrompts = function() {
 		}, 3000);
 
 		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
-
-		// TODO separate into a function
-		//$.ajax({
-		//	url: 'robot/prompt_was_made'
-		//});
 		}
 	}
 

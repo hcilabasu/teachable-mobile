@@ -33,6 +33,7 @@
 		    async: false
 		});
 
+    	var firstProblem = true; // this variable defines that this is the first problem (learning to use TAG)
 		var direction = undefined;
 		var raw_direction = undefined;
 		var offset = 0;
@@ -71,8 +72,18 @@
 			console.dir("incoming packet : " + JSON.stringify(incoming));
 			
 			var condition = "do_not_care";
+
+			// Adding problem information to data.value object
+			if (data['value'] !== undefined){
+				data.value.firstProblem = firstProblem;
+			}
 			switch(data.type){
 				case 'attribution':
+					/*
+						The first time a cognitive prompt is shown will set this variable
+						to false. This means that the student is moving on from the initial problem.
+					*/
+					firstProblem = false;
 					attributions.makeAttribution(data.value);
 					break;
 				case 'dismiss_attribution':

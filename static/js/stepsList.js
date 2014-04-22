@@ -168,6 +168,7 @@ function deleteStep(e){
         // Update list in db
         updateStepsListInDB();
         // Logging
-        log("Deleted step from list", deletedObject);
+        // log("Deleted step from list", deletedObject);
+        log("", {"type":"Deleted step from list","parameter":JSON.stringify(deletedObject),"initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
     }
 }

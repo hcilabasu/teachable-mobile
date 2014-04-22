@@ -93,20 +93,25 @@ def move_to():
 
 
 def plot_point():
+	set_is_moving(True) # Warn interface that robot is moving
 	__move_forward()
 	time.sleep(0.4)
 	__move_backward()
 	time.sleep(0.5)
 	__stop()
+	set_is_moving(False) # Warn interface that robot is NOT moving anymore
 
 def __call_turn_to(angle, backwards):
+	set_is_moving(True) # Warn interface that robot is moving
 	print("Starting turn to!")
 	__turn_to(angle, backwards, 0)
 	__set_auto(True)
 	__stop()
+	set_is_moving(False) # Warn interface that robot is NOT moving anymore
 	print("Finished turn to!")
 
 def __call_move_to(x, y, angle, backwards):
+	set_is_moving(True) # Warn interface that robot is moving
 	print("Starting move to!")
 	__move_to(x,y,backwards,0)
 	if angle != None:
@@ -116,6 +121,7 @@ def __call_move_to(x, y, angle, backwards):
 	print('angle! ' + str(angle))
 	__set_auto(True)
 	__stop()
+	set_is_moving(False) # Warn interface that robot is NOT moving anymore
 	print("Finished move to!")
 
 def __turn_to(angle, backwards, recursion):
@@ -275,6 +281,18 @@ def make_attribution():
 
 def hide_attribution():
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, '{"type":"dismiss_attribution"}', 'mykey', 'robot')	
+
+def test_set_is_moving():
+	moving = request.vars["moving"] == "True"
+	set_is_moving(moving)
+	return moving
+
+def set_is_moving(moving):
+	''' This function sends a message to the robot .html 
+		page, saying if the robot is moving or not'''
+	message_wrapper = '{"type":"moving", "value":%s}' % (str(moving).lower())
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+
 
 def make_cognitive_prompt():
 	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure

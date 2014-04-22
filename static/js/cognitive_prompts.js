@@ -10,6 +10,7 @@ var firstminute = 0;
 var firstsec = 0;
 var condition = 'Virtual';
 var promptsRandomized = false;
+var minutesThreshold = 2; // Sets how long the system waits before displaying another prompt
 
 //A function to store the session information in a Global Variable!!! That's bad.
 function storeTestSessionInformation(data) {
@@ -174,13 +175,13 @@ var CognitivePrompts = function() {
 	            var minutesPerDay = 24*60; 
 	            var result = minutesPerDay - firsttotaltime;  // Minutes till midnight
 	            result += newtotaltime; // Minutes in the next day 
-		        if (result >= 2)
+		        if (result >= minutesThreshold)
 		        {
 		      	    //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
 		    	    displayTriggeredPrompt(prompt);
 	            }
 	        }
-		   else if (newtotaltime - firsttotaltime >= 2)
+		   else if (newtotaltime - firsttotaltime >= minutesThreshold)
 		   {
 		       //check if it's been at least 2 minutes since last prompt shown, if so then show prompt
 		    	displayTriggeredPrompt(prompt);

@@ -50,6 +50,16 @@ function refreshProblem(message, executeSteps) {
         }
         STEPS.stopDragMode();
     }
+
+    //Enabling the solution check button
+    $("#check-solution-button").fadeTo(1, 1);
+    var checkSolutionButtonElement = document.getElementById("check-solution-button");
+    var checkSolutionButtonEvents = jQuery._data(checkSolutionButtonElement, "events");
+    if(!checkSolutionButtonEvents || !(checkSolutionButtonEvents.hasOwnProperty("click"))) {
+        console.log("@@@@Adding event for click of solution check button@@@@");
+        $("#check-solution-button").click(checkSolution);
+    }
+    
     // Do nothing...
 }
 
@@ -68,7 +78,6 @@ function setCurrentProblem() {
 
     // $('#next-problem-button').removeClass();
     // $('#next-problem-button').addClass('disabled');
-
 
     GBL_BOOL_NEXT_BUTTON_ENABLED = false;
 
@@ -199,11 +208,15 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
         var nextProblemButtonElement = document.getElementById("next-problem-button");
         var nextProblemButtonEvents = jQuery._data(nextProblemButtonElement, "events");
         if(!nextProblemButtonEvents || !(nextProblemButtonEvents.hasOwnProperty("click"))) {
-            console.log("@@@@Adding event for click@@@@");
+            console.log("@@@@Adding event for click for next problem button@@@@");
             $("#next-problem-button").click(nextProblem);
         }
         
         GBL_BOOL_NEXT_BUTTON_ENABLED = true;
+
+        //Disable check-solution-button here
+        $("#check-solution-button").fadeTo(1, 0.5);
+        $("#check-solution-button").unbind();
     }
     
     var rndIndx = Math.floor(10 * Math.random()) % (correctResponseArray.length);
@@ -486,8 +499,6 @@ function openEmoticonScreen() {
         }
     //}
 }
-
-
 
 function openPrompt(promptMessages, isFirst) {
     var button = $("#prompt a");

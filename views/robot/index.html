@@ -202,7 +202,8 @@
 					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
 					break;
 				case 'dismiss_cognitive':
-					// TODO
+					// Acknowledging response
+					attributions.makeAck();
 					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,"dontCare");
 					break;
 				case 'reset':

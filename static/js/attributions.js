@@ -5,6 +5,54 @@ var Attributions = function() {
 		return array.concat(array.splice(0,positions+1));
 	}
 
+	/*
+	 Acknowledgment messages. Each string corresponds to a file name. 
+	 */
+	var acks = ["ok", "cool", "allright", "soundsgood", "thanks"];
+
+	/*
+	 @param file: file that will be played
+	 @param emotion (optional): emotion to displayed
+	 @param message (optional): message to be displayed together with the audio
+	 @param delay: delay before the message is played 
+	 */
+	var speak = function(file, emotion, message, delay, removeExtension){
+		if(emotion){
+			$("body").removeClass().addClass(emotion);
+		}
+		// format audio file location string
+		audioFile = "/mobileinterface/static/audio/" + file;
+		// checks if the original extension should be removed
+		if(removeExtension === true){
+			audioFileLength = audioFile.length - 5;
+			audioFile = audioFile.substring(0, audioFileLength) + ".mp3";
+		}
+		//load sound
+		AUDIO.setFile("attributionSound", audioFile);
+		AUDIO.loadSound("attributionSound");
+		// Attach handlers
+		AUDIO.addStartListener("attributionSound", function(){
+			// When robot starts to speak
+			$("body").addClass("talking");
+			// Display the message if there is one
+			if(message !== undefined){
+				$("#speech").text(message).fadeIn('slow');
+			}
+			// Remove listener
+			this.removeEventListener('play', arguments.callee, false);
+		});
+		AUDIO.addFinishListener("attributionSound", function(){
+			// When robot finishes speaking
+			$("body").removeClass("talking");
+			// Remove listener
+			this.removeEventListener('ended', arguments.callee, false);
+		});
+		// play sound
+		window.setTimeout(function(){
+			AUDIO.play("attributionSound");
+		}, delay);
+	};
+
 	/**************************************************************** 
 	* Opens dialogue to display attribution text and plays 
 	* audio file associated with current attribution
@@ -22,35 +70,14 @@ var Attributions = function() {
 			console.log("Playing attribution message......." + attr.number);
 			if(attr.number != "540")
 			{
-				$("body").removeClass().addClass(attr.emotion);
-				// format audio file location string
-				audioFile = "/mobileinterface/static/audio/" + attr.file;
-				audioFileLength = audioFile.length - 5;
-				formattedAudioFile = audioFile.substring(0, audioFileLength) + ".mp3";
-				//load sound
-				AUDIO.setFile("attributionSound", formattedAudioFile);
-				AUDIO.loadSound("attributionSound");
-				// Attach handlers
-				AUDIO.addStartListener("attributionSound", function(){
-					// When robot starts to speak
-					$("body").addClass("talking");
-					$("#speech").text(attr.message).fadeIn('slow');
-					
-				});
-				AUDIO.addFinishListener("attributionSound", function(){
-					// When robot finishes speaking
-					$("body").removeClass("talking");
-					var time = Math.floor((Math.random()*5)+5)*1000;
-					window.setTimeout(function(){
-						//$("body").removeClass().addClass("neutral");
-						//$("#speech").fadeOut('slow');
-					}, time);
-
-				});
-				// play sound
-				window.setTimeout(function(){
-					AUDIO.play("attributionSound");
-				}, 2500);
+				// Make robot speak
+				speak(
+					attr.file,
+					attr.emotion,
+					attr.message,
+					2500,
+					true
+				);
 
 				var datum;
 				$.ajax({url : REQUEST_DATA_FROM_MOBILE,
@@ -66,34 +93,14 @@ var Attributions = function() {
 			}
 			else
 			{
-				//play specific attribution message for training
-				$("body").removeClass().addClass(attr.emotion);
-				// format audio file location string
-				formattedAudioFile = "/mobileinterface/static/audio/trainingAttr.mp3";
-				//load sound
-				AUDIO.setFile("attributionSound", formattedAudioFile);
-				AUDIO.loadSound("attributionSound");
-				// Attach handlers
-				AUDIO.addStartListener("attributionSound", function(){
-					// When robot starts to speak
-					$("body").addClass("talking");
-					$("#speech").text("Cool! You worked hard learning how to use TAG.").fadeIn('slow');
-					
-				});
-				AUDIO.addFinishListener("attributionSound", function(){
-					// When robot finishes speaking
-					$("body").removeClass("talking");
-					var time = Math.floor((Math.random()*5)+5)*1000;
-					window.setTimeout(function(){
-						//$("body").removeClass().addClass("neutral");
-						//$("#speech").fadeOut('slow');
-					}, time);
-
-				});
-				// play sound
-				window.setTimeout(function(){
-					AUDIO.play("attributionSound");
-				}, 2500);
+				// Making robot speak
+				speak(
+					"trainingAttr",
+					attr.emotion,
+					"Cool! You worked hard learning how to use TAG.",
+					2500,
+					true					
+				);
 
 				var datum;
 				$.ajax({url : REQUEST_DATA_FROM_MOBILE,
@@ -110,6 +117,19 @@ var Attributions = function() {
 		}
 	}
 
+	var makeAck = function(){
+		// Selecting ack message
+		var ack = acks[Math.floor(Math.random() * acks.length)] + ".mp3";
+		// Making robot speak
+		speak(
+			ack,
+			undefined,
+			undefined,
+			0,
+			false
+		);
+	};
+
 	/**************************************************************** 
 	* Closes current dialogue displaying prompt text and stops audio
 	* file associated with current attribution 
@@ -124,7 +144,8 @@ var Attributions = function() {
 	}*/
 
 	return {
-		makeAttribution : makeAttribution
+		makeAttribution : makeAttribution,
+		makeAck : makeAck
 	}
 }
 

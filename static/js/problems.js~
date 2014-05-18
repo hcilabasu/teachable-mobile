@@ -1,4 +1,5 @@
 var PROBLEMS = {};
+var error;
 
 var GBL_BOOL_NEXT_BUTTON_ENABLED = true; //Adrin, did this out of frustration when ._data() to the next-button-element to get event handlers was not working.
 

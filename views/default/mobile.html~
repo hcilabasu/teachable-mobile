@@ -21,7 +21,8 @@
         <script src="{{=URL('static','js/stepsList.js')}}"></script>
         <script src="{{=URL('static','js/main.js')}}"></script>
         <script src="{{=URL('static','js/log.js')}}"></script>
-
+	<!--Added by ABha to send incorrect error type-->
+        <script src="{{=URL('static','js/error.js')}}"></script>
         <script>
         	// $(function() {
         	// 	$("#check-solution-button").click(checkSolution);

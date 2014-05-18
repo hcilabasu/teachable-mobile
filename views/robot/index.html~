@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width = device-width">
+
+	<title></title>
+
+	<script src="{{=URL('static','js/jquery.js')}}"></script>
+	<script src="{{=URL('static','js/web2py.js')}}"></script>
+	<script src="{{=URL('static','js/audio.js')}}"></script>
+	<script src="{{=URL('static','js/problems.js')}}"></script>
+	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+	<script src="{{=URL('static','js/attributions.js')}}"></script>
+	
+	<script src="{{=URL('static','js/log.js')}}"></script>
+
+	<link rel="stylesheet" type="text/css" href="{{=URL('static','css/robot-ui.css')}}">
+
+	<script>
+		var REQUEST_DATA_FROM_MOBILE = "{{=URL('mobileinterface','default','send_data_to_robot')}}";
+		var LOG = "{{=URL('mobileinterface','log','log')}}";
+		var SET_COGNITIVE_TRIGGERED = "{{=URL('mobileinterface','default','set_cognitive_prompt_triggered')}}";
+		var REQUEST_SESSION_DATA = "{{=URL('mobileinterface','session','current_session')}}";
+
+		//Called this asynchronously. Can't believe this worked.
+    	$.ajax({
+		    type: 'GET',
+		    url: 'session/current_session',
+		    dataType: 'json',
+		    success: function(datum) {console.dir("DATA!!!" + datum); storeTestSessionInformation(datum);},
+		    async: false
+		});
+    	var firstProblem = true; // this variable defines that this is the first problem (learning to use TAG)
+		var direction = undefined;
+		var raw_direction = undefined;
+		var offset = 0;
+ 		var currentPromptIndex = 0;
+ 		var localProblemIndex = 540;
+ 		var begLast = false;
+        //Saving prompt/attribution state data
+        var attributionFinished = true;
+        var cognitivePromptFinished = true;
+        var promptsOrdered = false;
+ 		var prompts = [ [{"text": "I think if I started at the origin and moved 2 units down on the y-axis, I would be standing at -2.  Is that right - can you show me by walking down 2 units from the origin along the y-axis to get to -2?", "sound_file":"01.mp3"}, {"text": "IHmmm I think if I started at the origin and moved 1 unit left on the x-axis, I would be standing at -1.  Is that right - can you show me by walking left 1 unit from the origin along the x-axis to get to -1?", "sound_file":"02.mp3"}, {"text": "I think if I started at the origin and moved 1 unit up on the y-axis, I would be standing at 1.  Is that right - can you show me by walking up 1 unit from the origin along the y-axis to get to 1?", "sound_file":"03.mp3"}, {"text": "I think if I started at the origin and moved 2 units right on the x-axis, I would be standing at 2.  Is that right - can you show me by walking right 2 units from the origin along the x-axis to get to 2?", "sound_file":"04.mp3"}], [{"text": "The x in (x, y) tells me to move left or right. Which direction does the y in (x, y) tell me to move...can you walk in that direction?", "sound_file":"11.mp3"}, {"text": "The y in (x, y) tells me to move up or down. Can you point in the direction the x in (x, y) tells me to move?", "sound_file":"12.mp3"}, {"text": "Wait, we don't add x and y in (x, y) right? Can you show me how many units I need to move on the x-axis?", "sound_file":"13.mp3"}, {"text": "Wait, we don't add x and y in (x, y) right? Can you show me how many units I need to move on the y-axis?", "sound_file":"14.mp3"}], [{"text": "I forgot which number is the x coordinate! Can you point it out for me on the graph?", "sound_file":"21.mp3"}, {"text": "I have a feeling the second number in the point I'm plotting is the y-coordinate...can you point it out for me on the graph?", "sound_file":"22.mp3"}, {"text": "Which axis does the first number in the (x, y) coordinate tell me to move on? Can you walk along that axis?", "sound_file":"23.mp3"}, {"text": "Hmmm which axis does the second number in the (x, y) coordinate tell me to move on? Can you walk along that axis?", "sound_file":"24.mp3"}], [{"text": "I’m trying to remember where all the x’s are positive. Can you walk to a part of the graph where the x's are all positive?", "sound_file":"31.mp3"}, {"text": "Wait...can you walk to a part of the graph where the x's are all positive?", "sound_file":"32.mp3"}, {"text": "I want to understand positive and negative values better...could you move to the left side of the x-axis and tell me if x is positive or negative there?", "sound_file":"33.mp3"}, {"text": "Could you check something for me? Move to the right side of the x-axis, the x's are positive there, right?", "sound_file":"34.mp3"}], [{"text": "I forgot something... can you walk to a part of the graph where the y's are all positive?", "sound_file":"41.mp3"}, {"text": "I can't remember if the negative y's are at the top or the bottom, can you walk to a part of the graph where the y's are all negative?", "sound_file":"42.mp3"}, {"text": "I wish I could remember where the positive and negative y-values are...could you move up to the top of the y-axis and tell me if y is positive or negative there?", "sound_file":"43.mp3"}, {"text": "Hmmm can you show me something? Move down to the bottom of the y-axis...are the y-values there positive or negative?", "sound_file":"44.mp3"}] ];
+ 		var abstractPrompts = [ [ {"text": "I think if I started at the origin and moved 2 units down on the y-axis, I would be standing at -2.  Is that right?", "sound_file":"abstract_01.mp3"}, {"text": "Hmmm I think if I started at the origin and moved 1 unit left on the x-axis, I would be standing at -1.  Is that right?", "sound_file":"abstract_02.mp3"}, {"text": "I think if I started at the origin and moved 1 unit up on the y-axis, I would be standing at 1.  Is that right?", "sound_file":"abstract_03.mp3"}, {"text": "I think if I started at the origin and moved 2 units right on the x-axis, I would be standing at 2. Is that right?", "sound_file":"abstract_04.mp3"}], [{"text": "The  x in (x, y) tells me to move left or right. Which direction does the  y in (x, y)  tell me to move?", "sound_file":"abstract_11.mp3"}, {"text": "The y in (x, y) tells me to move up or down. Which direction does the x in (x, y) tell me to move?", "sound_file":"abstract_12.mp3"}, {"text": "Wait, we don't add x and y in (x, y) right? How many units do I need to move on the x-axis?", "sound_file":"abstract_13.mp3"}, {"text": "Wait, we don't add x and y in (x, y) right? How many units do I need to move on the y-axis?", "sound_file":"abstract_14.mp3"}], [{"text": "I forgot which number is the x coordinate! What is the x coordinate?", "sound_file":"abstract_21.mp3"}, {"text": "I have a feeling the second number in the point I'm plotting is the y-coordinate...what number is the y-coordinate?", "sound_file":"abstract_22.mp3"}, {"text": "Which axis does the first number in the (x, y) coordinate tell me to move on?", "sound_file":"abstract_23.mp3"}, {"text": "Hmmm which axis does the second number in the (x, y) coordinate tell me to move on?", "sound_file":"abstract_24.mp3"}], [{"text": "I’m trying to remember where all the x’s are positive. Where on the graph are the x's all positive?", "sound_file":"abstract_31.mp3"}, {"text": "Wait...where on the graph are the x's all positive?", "sound_file":"abstract_32.mp3"}, {"text": "I want to understand positive and negative values better...could you look at the left side of the x-axis and see if x is positive or negative there?", "sound_file":"abstract_33.mp3"}, {"text": "Could  you check something for me? Look at the right side of the x-axis, the x's are positive there, right?", "sound_file":"abstract_34.mp3"}], [{"text": "I forgot something...where on the graph are the y's all positive?", "sound_file":"abstract_41.mp3"}, {"text": "I can't remember if the negative y's are at the top or the bottom...where on the graph are the y's all positive?", "sound_file":"abstract_42.mp3"}, {"text": "I wish I could remember where the positive and negative y-values are...could  you look at the top of  the y-axis and see if y is positive or negative there?", "sound_file":"abstract_43.mp3"}, {"text": "Hmmm...look down at the bottom of the y-axis. Are the y-values there positive or negative?", "sound_file":"abstract_44.mp3"} ] ];
+ 		var parsedData = "";
+		// Added by Abha for incorrect message change
+		var plotpoint = [{"text": "Did I plot the point, before checking the solution?", "sound_file":"plotpoint1.mp3"}, {"text": "I should make sure to plot the point, before checking the solution.", "sound_file":"plotpoint2.mp3"} , {"text": "I think I missed to plot the point, before checking the solution", "sound_file":"plotpoint3.mp3"}];
+		var sign = [{"text": "If the x-coordinate is negative then I have to move to the left of the origin along the x-axis.", "sound_file":"sign1.mp3"}, {"text": "If the x-coordinate is positive then I have to move towards the right side of the x-axis.", "sound_file":"sign2.mp3"} , {"text": "If the x-coordinate is positive then I have to move right of the origin along the x-axis.", "sound_file":"sign3.mp3"} , {"text": "If the y-coordinate is positive then I have to move up and above the origin along the y-axis.", "sound_file":"sign4.mp3"} , {"text": "If the y-coordinate is negative then I have to move below the origin and down the y-axis.", "sound_file":"sign5.mp3"} , {"text": "If the y-coordinate is negative then I have to move down and below the origin along the y-axis.", "sound_file":"sign6.mp3"} , {"text": "If the y-coordinate is positive then I have to move above the origin and up the y-axis.", "sound_file":"sign7.mp3"}];
+		var flip = [{"text": "if asked to plot point (a,b), the first number is the x-coordinate and the second number is the y-coordinate", "sound_file":"flip1.mp3"}, {"text": "In (a,b), the a tells me to move on the x-axis.", "sound_file":"flip2.mp3"} , {"text": "In (a,b), the b tells me to move on the y-axis.", "sound_file":"flip3.mp3"}];
+		var offbyone = [{"text": "If I start at the origin and walk a units to the right, my X coordinate will be ‘a units’", "sound_file":"offbyone1.mp3"}, {"text": "If I start at the origin and walk a units to the left, my X coordinate will be ‘-a units’", "sound_file":"offbyone2.mp3"} , {"text": "If I start at the origin and walk b units to the up, my Y coordinate will be ‘b units’", "sound_file":"offbyone3.mp3"}, {"text": "If I start at the origin and walk b units below, my Y coordinate will be ‘-b units’", "sound_file":"offbyone4.mp3"}];
+		
+		sendarray(plotpoint,sign,flip,offbyone);
+
+
+	    window.addEventListener('deviceorientation', function(e) {
+	            var prop = e.alpha;
+	            raw_direction = prop;
+
+	            if(direction === undefined || Math.abs((prop + offset)%360 - direction) > 1){
+	                direction = (prop + offset) % 360;
+	                // document.getElementById("output").innerText = direction;
+	                // Sending direction to controller
+	                $.ajax({
+	                      url: "{{=URL('update_direction')}}",
+	                      data: {d: direction}
+	                    });
+	            }
+	    }, false);
+
+	    /*
+	    	Start move control
+	     */
+		var isMoving = false;
+		var moveListeners = [];
+
+		/*
+			Each time the isMoving variable is set 
+			through this function, it calls the listeners.
+			Important: this function removes the listeners 
+			as they are called IFF they return "true".
+
+			Params:
+			- moving: boolean, determining if real robot is moving or not
+		 */
+		var setMoving = function(moving){
+			isMoving = moving;
+			for(var i = 0; i < moveListeners.length; i++){
+				// Check if listener exists
+				if(moveListeners[i]){
+					// call listener
+					console.dir(">>> Calling listener " + i);
+					if(moveListeners[i](moving)){
+						// Remove listener
+						console.dir(">>> Removing listener " + i);
+						moveListeners.splice(i, 1);
+					}
+				}
+			}
+		};
+
+		/*
+			Adds a listener to the isMoving variable
+			IMPORTANT: this function is currently set to store only ONE listener.
+
+			Params:
+			- listener: a function to be called when the isMoving variable changes.
+						This function should take a boolean as a parameter, indicating
+						the new value that isMoving acquired.
+		 */
+		var addMoveListener = function(listener){
+			// moveListeners.push(listener);
+			moveListeners = [listener];
+		};
+
+		/* End move control */
+		socket = web2py_websocket('ws://{{=ip}}:{{=port}}/realtime/{{=group_name}}',function(e) {
+			console.dir("*******" + e.data);
+			var data = JSON.parse(e.data);
+
+			var incoming = JSON.parse(unescape(e.data));
+			console.dir("incoming packet : " + JSON.stringify(incoming));
+		
+			var condition = "do_not_care";
+
+			// Adding problem information to data.value object
+			if (data['value'] !== undefined){
+				data.value.firstProblem = firstProblem;
+			}
+			console.dir(">>> Starting switch for '" + data.type + "'");
+                        console.log(data.value);
+			switch(data.type){
+				case 'moving':
+					setMoving(data.value);
+					console.dir(">>> Set isMoving = " + isMoving);
+					break;
+				case 'attribution':
+					/*
+						The first time a cognitive prompt is shown will set this variable
+						to false. This means that the student is moving on from the initial problem.
+					*/
+					firstProblem = false;
+					attributions.makeAttribution(data.value);
+					break;
+				case 'dismiss_attribution':
+					attributions.hidePromptDialog(data.value);
+					break;
+				case 'order':
+					if(!promptsOrdered)
+					{
+						cognitive_prompts.doPromptAction("randomizePrompts",data.value);
+						promptsOrdered = true;
+					}					
+				case 'cognitive':
+					console.dir("Cognitive. Moving: " + isMoving);
+					//condition = parsedData;
+					if(!isMoving){
+						console.dir(">>> Robot is not moving. Make cognitive");
+						cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+					} else {
+						/*
+							Robot is moving. Add listener, so that when the robot stops and 
+							changes the variable, this function will be executed
+						 */
+						console.dir(">>> Adding moveListener for cognitive");
+						addMoveListener(function(moving){
+							console.dir(">>> Calling moveListener for cognitive")
+							// check if the robot is done moving
+							if(!moving){
+								cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+								// Return true so that this function is removed
+								return true;
+							} else {
+								// variable wasn't changed as expected. Don't remove the function
+								return false;
+							}
+						});
+					}
+					break;
+				case 'timecheck':
+					console.dir("Timecheck. Moving: " + isMoving);
+					if(!isMoving){
+						console.dir(">>> Robot is not moving. Make timecheck");
+						cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
+					} else {
+						/*
+							Robot is moving. Add listener, so that when the robot stops and 
+							changes the variable, this function will be executed
+						 */
+						console.dir(">>> Adding moveListener for timecheck");
+						addMoveListener(function(moving){
+							console.dir(">>> Calling moveListener for timecheck")
+							// check if the robot is done moving
+							if(!moving){
+								cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
+								// Return true so that this function is removed
+								return true;
+							} else {
+								// variable wasn't changed as expected. Don't remove the function
+								return false;
+							}
+						});
+					}
+				case 'cognitive_skip':
+					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
+					break;
+				case 'dismiss_cognitive':
+					// Acknowledging response
+					attributions.makeAck();
+					cognitive_prompts.doPromptAction("hidePromptDialog",data.value,"dontCare");
+					break;
+				case 'reset':
+					offset = 360 - raw_direction;
+					break;
+				default:
+					console.dir("Nothing to do here " + data);
+			}
+		});
+
+		$(function(){
+			var currClass;
+			
+			$("body > div:not(#overlay,#speech,#record)").on("touchstart", function(){
+				console.dir("start touch");
+				currClass = $("body").attr('class');
+				$("body").attr('class', 'frown');
+				return false;
+			});
+
+			$("body > div:not(#overlay,#speech,#record)").on("touchend", function(){
+				console.dir("end touch");
+				$("body").attr('class', currClass);
+				notifyClick();
+				return false;
+			});
+
+			var notifyClick = function(){
+				//don't register clicks if cognitive prompts or attribution messages playing
+				console.dir(attributionFinished + "- - -" + cognitivePromptFinished);
+				if(attributionFinished == true && cognitivePromptFinished == true)
+				{
+					// Notifying mobile application
+					$.ajax({url:"robot/load_options", 
+				      	success: function(data) {
+				          console.dir(data);
+				    	}
+				    });
+
+				    //dismiss any visible prompts
+				    recordClickCount = 5;
+				    $("#record").click();
+
+				    // Notifying user
+				    showClick();
+				}
+			};
+
+			var showClick = function(){
+				console.dir('clicked');
+				$('#overlay').fadeIn('slow');
+				window.setTimeout(function(){
+					$('#overlay').fadeOut('slow');
+				}, 3000);
+			};
+
+			$.ajax({
+				url:"{{=URL('session', 'current_session')}}"
+			}).done(function(data){
+				parsedData = JSON.parse(JSON.parse(data));
+			});
+
+		});
+		
+	</script>
+
+</head>
+<body class="neutral">
+	<div id="output"></div>
+	<div id="eyes"></div>
+	<div id="mouth"></div>
+	<div id="speech"></div>
+	<div id="record"></div>
+	<div id="overlay"></div>
+	<audio id="promptSound"/>
+	<audio id="attributionSound"/>
+</body>
+</html>

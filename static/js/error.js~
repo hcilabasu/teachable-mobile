@@ -1,0 +1,7 @@
+var errmsg;
+
+function geterror(error)
+{ errmsg = error; }
+
+function senderror()
+{ return errmsg; }

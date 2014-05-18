@@ -174,7 +174,7 @@ var Attributions = function() {
 					attr.emotion,
 					"Cool! You worked hard learning how to use TAG.",
 					2500,
-					true					
+					true 					
 				);
 
 				var datum;

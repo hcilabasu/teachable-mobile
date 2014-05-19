@@ -85,60 +85,60 @@ var Attributions = function() {
 			console.log("Playing attribution message......." + attr.number);
 			if(attr.number != "540")
 			{
-				if(attr.emotion == "sad" || attr.emotion == "sadder" && attr.error == "PlotPoint")
+				if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "PlotPoint")
 				{
 				   if(counter == plotpoint.length)
 				   {
 				      counter = 0;
 				   }
-				   var soundfile = "plotpoint" +counter+".aiff";
+				   var soundfile = plotpoint[counter].sound_file;
 				   speak(// Make robot speak
-					soundfile.sound_file,
+					soundfile,
 					attr.emotion,
 					plotpoint[counter].text,
 					2500,
 					true
 				        ); counter++; 
 				}
-				else if(attr.emotion == "sad" || attr.emotion == "sadder" && attr.error == "Sign")
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Sign")
 				{
 				   if(counter == sign.length)
 				   {
 				      counter = 0;
 				   }
-				   var soundfile = "sign" +counter+".aiff";
+				   var soundfile = sign[counter].sound_file;
 				   speak(// Make robot speak
-					soundfile.sound_file,
+					soundfile,
 					attr.emotion,
 					sign[counter].text,
 					2500,
 					true
 				        ); counter++; 
 				}
-				else if(attr.emotion == "sad" || attr.emotion == "sadder" && attr.error == "Flip")
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Flip")
 				{
 				   if(counter == flip.length)
 				   {
 				      counter = 0;
 				   }
-				   var soundfile = "flip" +counter+".aiff";
+				   var soundfile = flip[counter].sound_file;
 				   speak(// Make robot speak
-					soundfile.sound_file,
+					soundfile,
 					attr.emotion,
 					flip[counter].text,
 					2500,
 					true
 				        ); counter++; 
 				}
-				else if(attr.emotion == "sad" || attr.emotion == "sadder" && attr.error == "Offbyone")
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Offbyone")
 				{
 				   if(counter == offbyone.length)
 				   {
 				      counter = 0;
 				   }
-				   var soundfile = "offbyone" +counter+".aiff";
+				   var soundfile = offbyone[counter].sound_file;
 				   speak(// Make robot speak
-					soundfile.sound_file,
+					soundfile,
 					attr.emotion,
 					offbyone[counter].text,
 					2500,

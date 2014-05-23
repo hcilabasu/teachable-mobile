@@ -38,7 +38,7 @@ var Attributions = function() {
 		audioFile = "/mobileinterface/static/audio/" + file;
 		// checks if the original extension should be removed
 		if(removeExtension === true){
-			audioFileLength = audioFile.length - 5;
+			audioFileLength = audioFile.indexOf(".");
 			audioFile = audioFile.substring(0, audioFileLength) + ".mp3";
 		}
 		//load sound
@@ -170,7 +170,7 @@ var Attributions = function() {
 			{
 				// Making robot speak
 				speak(
-					"trainingAttr",
+					"trainingAttr.mp3",
 					attr.emotion,
 					"Cool! You worked hard learning how to use TAG.",
 					2500,

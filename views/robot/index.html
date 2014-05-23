@@ -148,63 +148,65 @@
 					attributions.hidePromptDialog(data.value);
 					break;
 				case 'order':
-					if(!promptsOrdered)
-					{
-						cognitive_prompts.doPromptAction("randomizePrompts",data.value);
-						promptsOrdered = true;
-					}					
-				 case 'cognitive':
-					console.dir("Cognitive. Moving: " + isMoving);
-					//condition = parsedData;
-					if(!isMoving){
-						console.dir(">>> Robot is not moving. Make cognitive");
-						cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
-					} else {
-						/*
-							Robot is moving. Add listener, so that when the robot stops and 
-							changes the variable, this function will be executed
-						 */
-						console.dir(">>> Adding moveListener for cognitive");
-						addMoveListener(function(moving){
-							console.dir(">>> Calling moveListener for cognitive")
-							// check if the robot is done moving
-							if(!moving){
-								cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
-								// Return true so that this function is removed
-								return true;
-							} else {
-								// variable wasn't changed as expected. Don't remove the function
-								return false;
-							}
-						});
-					}
+					// if(!promptsOrdered)
+					// {
+					// 	cognitive_prompts.doPromptAction("randomizePrompts",data.value);
+					// 	promptsOrdered = true;
+					// }					
+					break;
+				case 'cognitive':
+					// console.dir("Cognitive. Moving: " + isMoving);
+					// //condition = parsedData;
+					// if(!isMoving){
+					// 	console.dir(">>> Robot is not moving. Make cognitive");
+					// 	cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+					// } else {
+					// 	/*
+					// 		Robot is moving. Add listener, so that when the robot stops and 
+					// 		changes the variable, this function will be executed
+					// 	 */
+					// 	console.dir(">>> Adding moveListener for cognitive");
+					// 	addMoveListener(function(moving){
+					// 		console.dir(">>> Calling moveListener for cognitive")
+					// 		// check if the robot is done moving
+					// 		if(!moving){
+					// 			cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+					// 			// Return true so that this function is removed
+					// 			return true;
+					// 		} else {
+					// 			// variable wasn't changed as expected. Don't remove the function
+					// 			return false;
+					// 		}
+					// 	});
+					// }
 					break;
 				case 'timecheck':
-					console.dir("Timecheck. Moving: " + isMoving);
-					if(!isMoving){
-						console.dir(">>> Robot is not moving. Make timecheck");
-						cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
-					} else {
-						/*
-							Robot is moving. Add listener, so that when the robot stops and 
-							changes the variable, this function will be executed
-						 */
-						console.dir(">>> Adding moveListener for timecheck");
-						addMoveListener(function(moving){
-							console.dir(">>> Calling moveListener for timecheck")
-							// check if the robot is done moving
-							if(!moving){
-								cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
-								// Return true so that this function is removed
-								return true;
-							} else {
-								// variable wasn't changed as expected. Don't remove the function
-								return false;
-							}
-						});
-					}
+					// console.dir("Timecheck. Moving: " + isMoving);
+					// if(!isMoving){
+					// 	console.dir(">>> Robot is not moving. Make timecheck");
+					// 	cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
+					// } else {
+					// 	/*
+					// 		Robot is moving. Add listener, so that when the robot stops and 
+					// 		changes the variable, this function will be executed
+					// 	 */
+					// 	console.dir(">>> Adding moveListener for timecheck");
+					// 	addMoveListener(function(moving){
+					// 		console.dir(">>> Calling moveListener for timecheck")
+					// 		// check if the robot is done moving
+					// 		if(!moving){
+					// 			cognitive_prompts.doPromptAction("timecheck",data.value,"dontcare");
+					// 			// Return true so that this function is removed
+					// 			return true;
+					// 		} else {
+					// 			// variable wasn't changed as expected. Don't remove the function
+					// 			return false;
+					// 		}
+					// 	});
+					// }
+					break;
 				case 'cognitive_skip':
-					cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
+					// cognitive_prompts.doPromptAction("skipPrompts",data.value,"dontCare");
 					break;
 				case 'dismiss_cognitive':
 					// Acknowledging response

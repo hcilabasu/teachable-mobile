@@ -1,3 +1,17 @@
+//Added by Abha to show incorrect message
+var plotpoint;
+var sign;
+var flip;
+var offbyone;
+var counter = 0;
+//Function to get message arrays from index.html
+function sendarray(plotpointparam, signparam, flipparam, offbyoneparam )
+{ plotpoint = plotpointparam;
+  sign = signparam;
+  flip = flipparam;
+  offbyone = offbyoneparam; 
+}
+
 var Attributions = function() {
 	var PROBLEMS = {};
 
@@ -71,14 +85,74 @@ var Attributions = function() {
 			console.log("Playing attribution message......." + attr.number);
 			if(attr.number != "540")
 			{
-				// Make robot speak
+				if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "PlotPoint")
+				{
+				   if(counter == plotpoint.length)
+				   {
+				      counter = 0;
+				   }
+				   var soundfile = plotpoint[counter].sound_file;
+				   speak(// Make robot speak
+					soundfile,
+					attr.emotion,
+					plotpoint[counter].text,
+					2500,
+					true
+				        ); counter++; 
+				}
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Sign")
+				{
+				   if(counter == sign.length)
+				   {
+				      counter = 0;
+				   }
+				   var soundfile = sign[counter].sound_file;
+				   speak(// Make robot speak
+					soundfile,
+					attr.emotion,
+					sign[counter].text,
+					2500,
+					true
+				        ); counter++; 
+				}
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Flip")
+				{
+				   if(counter == flip.length)
+				   {
+				      counter = 0;
+				   }
+				   var soundfile = flip[counter].sound_file;
+				   speak(// Make robot speak
+					soundfile,
+					attr.emotion,
+					flip[counter].text,
+					2500,
+					true
+				        ); counter++; 
+				}
+				else if((attr.emotion == "sad" || attr.emotion == "sadder") && attr.error == "Offbyone")
+				{
+				   if(counter == offbyone.length)
+				   {
+				      counter = 0;
+				   }
+				   var soundfile = offbyone[counter].sound_file;
+				   speak(// Make robot speak
+					soundfile,
+					attr.emotion,
+					offbyone[counter].text,
+					2500,
+					true
+				        ); counter++; 
+				}
+				else { // Make robot speak
 				speak(
 					attr.file,
 					attr.emotion,
 					attr.message,
 					2500,
 					true
-				); 
+				); }
 
 				var datum;
 				$.ajax({url : REQUEST_DATA_FROM_MOBILE,

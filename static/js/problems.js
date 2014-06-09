@@ -245,7 +245,7 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback-ok").click(function () {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
-        openEmoticonScreen();
+        openEmoticonScreen(appletMessage);
         
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
         log("",{"type":"correctness feedback","parameter":((String(solutionStatus).toLowerCase() == "true") ? "correct" : "incorrect"),"initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
@@ -373,9 +373,8 @@ function openPromptResponseScreen() {
 * Opens a "text message"-type interface on the Student iPod for
 * students to respond to Quinn and dismiss attribution messages 
 ****************************************************************/
-function openEmoticonScreen() {
+function openEmoticonScreen(appletMessage) {
     // alert("I'm emoting!!!");
-
     $("#emoticon").fadeIn('slow');
 
     var container = $('#emoticon');
@@ -450,7 +449,7 @@ function openEmoticonScreen() {
             APP.ATTRIBUTION_TRIGGERED == false;
             //make call to robot to check for cognitive prompts
 
-            $.ajax({url : APP.MAKE_COGNITIVE_PROMPT + "?trigger=hit&state=end&number=540"});
+            $.ajax({url : APP.MAKE_COGNITIVE_PROMPT + "?trigger=hit&state=end&number=540&error=" + appletMessage});
 
             //Telling the applet to unlock itself until further notice.
             var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));

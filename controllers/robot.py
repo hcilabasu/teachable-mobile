@@ -264,7 +264,6 @@ def __move_to(x, y, backwards, recursion):
 def make_attribution():
 	outcome = True if request.vars['out'] == 'success' else False # either success or failure
 	number = request.vars['number']
-	error = request.vars['error']
 	attribution = __search_attribution(outcome)
 	if not attribution:
 		__reset(outcome)
@@ -274,7 +273,7 @@ def make_attribution():
 	attribution.session = True
 	attribution.update_record()
 	# wrapping info in package
-	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s","number":"%s","error":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message,number,error)	
+	message_wrapper = '{"type":"attribution", "value":{"emotion":"%s","file":"%s.aiff","message":"%s","number":"%s"}}' % (attribution.emotion,attribution.file_name,attribution.message,number)	
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 	# websocket_send('http://' + ip + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 
@@ -301,10 +300,11 @@ def make_cognitive_prompt():
 	prob_num = int(request.vars['number'])
 	trig = request.vars['trigger']
 	ang = request.vars['angle']
+	error = request.vars['error']
 	# wrapping info in package
 	#message_wrapper = '{"type":"order", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
 	# message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
-	message_wrapper = '{"type":"timecheck", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s"}}' % (trig,ang,state,prob_num)	
+	message_wrapper = '{"type":"cognitive", "value":{"trigger":"%s","angle":"%s","state":"%s","number":"%s","error":"%s"}}' % (trig,ang,state,prob_num,error)	
 	
 
 	# This line caused a lot of grief while merging logs by me and Cognitive Prompts by Elissa.

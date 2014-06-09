@@ -4,9 +4,6 @@ var TEST_SESSION_JSON;
 var ordered_abstract_prompts = new Array();
 var ordered_action_prompts = new Array();
 var ordered_prompts = new Array();
-//added by Abha
-var plot_point
-
 var firsttotaltime = -1;
 var firsthour = 0;
 var firstminute = 0;
@@ -14,9 +11,30 @@ var firstsec = 0;
 var condition = 'Virtual';
 var promptsRandomized = false;
 var minutesThreshold = 2; // Sets how long the system waits before displaying another prompt
-
-function sendarray(plotpoint)
-{ plot_point = plotpoint; }
+//Added by Abha to show incorrect message
+var Nomoveonxplus;
+var Nomoveonxminus;
+var Nomoveonyplus;
+var Nomoveonyminus;
+var plotpoint;
+var sign;
+var flip;
+var offbyone;
+var counter = 0;
+var count = 0;
+//Function to get message arrays from index.html
+function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signparam, flipparam, offbyoneparamx, offbyoneparamy )
+{ 
+  Nomoveonxplus = Nomoveonxplusparam;
+  Nomoveonxminus = Nomoveonxminusparam;
+  Nomoveonyplus = Nomoveonyplusparam;
+  Nomoveonyminus = Nomoveonyminusparam;
+  plotpoint = plotpointparam;
+  sign = signparam;
+  flip = flipparam;
+  offbyonex = offbyoneparamx;
+  offbyoney = offbyoneparamy; 
+}
 
 //A function to store the session information in a Global Variable!!! That's bad.
 function storeTestSessionInformation(data) {
@@ -36,6 +54,8 @@ var CognitivePrompts = function() {
 		}
 		else if(name == "makePrompt")
 		{
+			//Added by Abha to show incorrect prompt
+			incorrectPrompt(info);
 			//makePrompt(info,condition)
 		}
 		else if(name == "hidePromptDialog")
@@ -155,11 +175,11 @@ var CognitivePrompts = function() {
 	{
 	   var newtime = new Date();
 	   var newhour = newtime.getHours();
-       var newhourinmin = newhour * 60;
+       	   var newhourinmin = newhour * 60;
 	   var newminute = newtime.getMinutes();
 	   var newsec = newtime.getSeconds();
-       var newsecinmin = newsec/60;
-       var newtotaltime = newhourinmin + newminute + newsecinmin;
+           var newsecinmin = newsec/60;
+           var newtotaltime = newhourinmin + newminute + newsecinmin;
        if (firsthour == 0 && firstminute == 0 && firstsec == 0 )
 	   {
 	    	//console.log("Time: " + newhour + ":" + newminute + ":" + newsec);
@@ -220,72 +240,13 @@ var CognitivePrompts = function() {
 	* Opens dialogue to display prompt text and plays audio
 	* file associated with current prompt
 	****************************************************************/
-	var displayTriggeredPrompt = function(prompt, condition) {
+	var displayTriggeredPrompt = function(prompt) {
 	    var firsttime = new Date();
 	    var firsthourinmin = firsthour * 60;
 	    var firstsecinmin = firstsec/60;
 	    var incremented = false;
 	    cognitivePromptFinished = false;
-	    //Added By Abha
-	    console.log(plot_point[currentPromptIndex].text);
-	    console.log(plot_point[currentPromptIndex].sound_file);
 
-
-
-	    if(currentPromptIndex == 0 && prompt.number == "540")
-	    {
-	    	currentPromptIndex++;
-	    }
-
-	    if(promptsRandomized == true) {
-
-	    //update the interface on the student iPod
-	    $.ajax({
-	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
-	        async: false,
-	        success: function() {
-	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
-	        }
-	    });
-
-	    firsthour = firsttime.getHours();
-	    firstminute = firsttime.getMinutes();
-	    firstsec = firsttime.getSeconds();   
-	    firsttotaltime = firsthourinmin + firstminute + firstsecinmin; 
-
-	    recordClickCount = 0;
-		// Set facial expression
-		$("body").removeClass().addClass("neutral");
-		// load sound
-		console.log("?????" + currentPromptIndex);
-		console.log("/mobileinterface/static/audio/" + plot_point[currentPromptIndex].sound_file);
-
-		AUDIO.setFile("promptSound", "/mobileinterface/static/audio/" + plot_point[currentPromptIndex].sound_file);
-		AUDIO.loadSound("promptSound");
-		// Attach handlers
-		AUDIO.addStartListener("promptSound", function(){
-			// When robot starts to speak
-			$("body").addClass("talking");
-			$("#speech").text(plot_point[currentPromptIndex].text).fadeIn('slow');
-			var datum;
-			$.ajax({url : REQUEST_DATA_FROM_MOBILE,
-					success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
-												var tmpArray = datum.split('@@@', 2);
-												current_problem_object = JSON.parse(tmpArray[0]);
-												current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
-												},
-					async : false});
-
-			log("", {"type":"prompt","parameter":plot_point[currentPromptIndex].text, "initial" : "", "final" : "", 
-				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
-
-			
-		});
-
-
-
-
-            /*
 	    if(currentPromptIndex == 0 && prompt.number == "540")
 	    {
 	    	currentPromptIndex++;
@@ -334,7 +295,7 @@ var CognitivePrompts = function() {
 				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
 
 			
-		}); */
+		});
 
 		AUDIO.addFinishListener("promptSound", finListener = function(){
 			// When robot finishes speaking
@@ -359,6 +320,280 @@ var CognitivePrompts = function() {
 		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
 		}
 	}
+
+	/**************************************************************** 
+	* Opens dialogue to display incorrect prompt text and plays audio
+	* file associated with current prompt
+	****************************************************************/
+	var incorrectPrompt = function(info) {
+
+	    //update the interface on the student iPod
+	    $.ajax({
+	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
+	        async: false,
+	        success: function() {
+	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
+	        }
+	    });
+
+	    if(info.error == "Nomoveonx+")
+	    {
+		   if(counter == Nomoveonxplus.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = Nomoveonxplus[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			Nomoveonxplus[counter].text,
+			0,
+			true
+		        ); counter++; 
+             }
+	    else if(info.error == "Nomoveonx-")
+	    {
+		   if(counter == Nomoveonxminus.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = Nomoveonxminus[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			Nomoveonxminus[counter].text,
+			0,
+			true
+		        ); counter++; 
+	     }
+	     else if(info.error == "Nomoveony+")
+	     {
+		   if(counter == Nomoveonyplus.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = Nomoveonyplus[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			Nomoveonyplus[counter].text,
+			0,
+			true
+		        ); counter++; 
+	    }
+	     else if(info.error == "Nomoveony-")
+		{
+		   if(counter == Nomoveonyminus.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = Nomoveonyminus[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			Nomoveonyminus[counter].text,
+			0,
+			true
+		        ); counter++;
+	    }
+	    else if(info.error == "PlotPoint")
+	    {
+		   if(counter == plotpoint.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = plotpoint[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			plotpoint[counter].text,
+			0,
+			true
+		        ); counter++; 
+	    }
+	    else if(info.error == "Sign")
+		{
+		   if(counter == sign.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = sign[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			sign[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		}
+	    else if(info.error == "Flip")
+		{
+		   if(counter == flip.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = flip[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			flip[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		}
+	   else if(info.error == "Offbyonex")
+		{
+		   if(counter == offbyonex.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = offbyonex[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			offbyonex[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		}
+	   else if(info.error == "Offbyoney")
+		{
+		   if(counter == offbyoney.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = offbyoney[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			offbyoney[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		}
+		else if(info.error == "Move") { // Make robot speak
+			speak(
+				"file",
+				"message",
+				2500,
+				true
+				); }
+		else if(info.error == "Firstquad") { // Make robot speak
+			speak(
+				"file",
+				"First Quadrant",
+				2500,
+				true
+				); }
+		else if(info.error == "Secondquad") { // Make robot speak
+			speak(
+				"file",
+				"Second Quadrant",
+				2500,
+				true
+				); }
+		else if(info.error == "Thirdquad") { // Make robot speak
+			speak(
+				"file",
+				"Third Quadrant",
+				2500,
+				true
+				); }
+		else if(info.error == "Fourthquad") { // Make robot speak
+			speak(
+				"file",
+				"Fourth Quadrant",
+				2500,
+				true
+				); }
+		else if(info.error == "xcorrect" || info.error == "xwrong" || info.error == "ycorrect" || info.error == "ywrong"))
+		{
+		    count = count + 1;
+		    if(count == 4) { count = 1;}
+		    if (count == 1)
+		    {		
+			if(info.error == "xcorrect") { // Make robot speak
+			speak(
+				"file",
+				"correct x",
+				2500,
+				true
+				); }
+			else if(info.error == "xwrong") { // Make robot speak
+			speak(
+				"file",
+				"Wrong x",
+				2500,
+				true
+				); }
+			else if(info.error == "ywrong") { // Make robot speak
+			speak(
+				"file",
+				"Wrong y",
+				2500,
+				true
+				); }
+			else if(info.error == "ycorrect") { // Make robot speak
+			speak(
+				"file",
+				"correct y",
+				2500,
+				true
+				); }
+			}
+		}
+		
+	}
+
+
+
+
+	var speak = function(file, message, delay, removeExtension){
+		// Set facial expression
+		$("body").removeClass().addClass("neutral");
+
+		// load sound
+		console.log("?????" + currentPromptIndex);
+		console.log("/mobileinterface/static/audio/" + file);
+
+		// format audio file location string
+		audioFile = "/mobileinterface/static/audio/" + file;
+		// checks if the original extension should be removed
+		if(removeExtension === true){
+			audioFileLength = audioFile.indexOf(".");
+			audioFile = audioFile.substring(0, audioFileLength) + ".mp3";
+		}
+		//load sound
+		AUDIO.setFile("promptSound", audioFile);
+		AUDIO.loadSound("promptSound");
+		// Attach handlers
+		AUDIO.addStartListener("promptSound", function(){
+			// When robot starts to speak
+			$("body").addClass("talking");
+			// Display the message if there is one
+			if(message !== undefined){
+				$("#speech").text(message).fadeIn('slow');
+			}
+						var datum;
+			$.ajax({url : REQUEST_DATA_FROM_MOBILE,
+					success: function(datum) {console.dir("DATA FROM MOBILE!!!" + datum);
+												var tmpArray = datum.split('@@@', 2);
+												current_problem_object = JSON.parse(tmpArray[0]);
+												current_problem_object["problemNumber"] = Number(tmpArray[1]) + 1;
+												},
+					async : false});
+
+			log("", {"type":"prompt","parameter":message, "initial" : "", "final" : "", 
+				"problem number" : current_problem_object.problemNumber, "problem desc" : current_problem_object.text, "problem id" : current_problem_object.id});
+
+			
+		});
+
+		AUDIO.addFinishListener("promptSound", finListener = function(){
+			// When robot finishes speaking
+			$("body").removeClass("talking");
+			// Remove listener
+			AUDIO.removeFinishListener("promptSound", finListener);
+		});
+		// play sound
+		window.setTimeout(function(){
+		AUDIO.play("promptSound");
+		}, 3000);
+
+		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
+	};
+
 
 	/*
 	var skipPrompts = function(problem) {

@@ -21,7 +21,6 @@ var sign;
 var flip;
 var offbyone;
 var counter = 0;
-var count = 0;
 //Function to get message arrays from index.html
 function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signparam, flipparam, offbyoneparamx, offbyoneparamy )
 { 
@@ -327,16 +326,11 @@ var CognitivePrompts = function() {
 	****************************************************************/
 	var incorrectPrompt = function(info) {
 
+		var prompttrigger = false;
 	    //update the interface on the student iPod
-	    $.ajax({
-	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
-	        async: false,
-	        success: function() {
-	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
-	        }
-	    });
 
-	    if(info.error == "Nomoveonx+")
+
+	    if(info.error == "Nomoveonxplus")
 	    {
 		   if(counter == Nomoveonxplus.length)
 		   {
@@ -349,8 +343,9 @@ var CognitivePrompts = function() {
 			0,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
              }
-	    else if(info.error == "Nomoveonx-")
+	    else if(info.error == "Nomoveonxneg")
 	    {
 		   if(counter == Nomoveonxminus.length)
 		   {
@@ -363,8 +358,9 @@ var CognitivePrompts = function() {
 			0,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
 	     }
-	     else if(info.error == "Nomoveony+")
+	     else if(info.error == "Nomoveonyplus")
 	     {
 		   if(counter == Nomoveonyplus.length)
 		   {
@@ -377,8 +373,9 @@ var CognitivePrompts = function() {
 			0,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
 	    }
-	     else if(info.error == "Nomoveony-")
+	     else if(info.error == "Nomoveonyneg")
 		{
 		   if(counter == Nomoveonyminus.length)
 		   {
@@ -391,6 +388,7 @@ var CognitivePrompts = function() {
 			0,
 			true
 		        ); counter++;
+		   prompttrigger = true;
 	    }
 	    else if(info.error == "PlotPoint")
 	    {
@@ -405,6 +403,7 @@ var CognitivePrompts = function() {
 			0,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
 	    }
 	    else if(info.error == "Sign")
 		{
@@ -419,6 +418,7 @@ var CognitivePrompts = function() {
 			2500,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
 		}
 	    else if(info.error == "Flip")
 		{
@@ -432,7 +432,8 @@ var CognitivePrompts = function() {
 			flip[counter].text,
 			2500,
 			true
-		        ); counter++; 
+		        ); counter++;
+		        prompttrigger = true; 
 		}
 	   else if(info.error == "Offbyonex")
 		{
@@ -447,6 +448,7 @@ var CognitivePrompts = function() {
 			2500,
 			true
 		        ); counter++; 
+		   prompttrigger = true;
 		}
 	   else if(info.error == "Offbyoney")
 		{
@@ -461,6 +463,7 @@ var CognitivePrompts = function() {
 			2500,
 			true
 		        ); counter++; 
+		prompttrigger = true;
 		}
 		else if(info.error == "Move") { // Make robot speak
 			speak(
@@ -468,70 +471,76 @@ var CognitivePrompts = function() {
 				"message",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 		else if(info.error == "Firstquad") { // Make robot speak
 			speak(
 				"file",
 				"First Quadrant",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 		else if(info.error == "Secondquad") { // Make robot speak
 			speak(
 				"file",
 				"Second Quadrant",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 		else if(info.error == "Thirdquad") { // Make robot speak
 			speak(
 				"file",
 				"Third Quadrant",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 		else if(info.error == "Fourthquad") { // Make robot speak
 			speak(
 				"file",
 				"Fourth Quadrant",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 		else if(info.error == "xcorrect" || info.error == "xwrong" || info.error == "ycorrect" || info.error == "ywrong")
-		{
-		    count = count + 1;
-		    if(count == 4) { count = 1;}
-		    if (count == 1)
-		    {		
+		{		
 			if(info.error == "xcorrect") { // Make robot speak
 			speak(
 				"file",
 				"correct x",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 			else if(info.error == "xwrong") { // Make robot speak
 			speak(
 				"file",
 				"Wrong x",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 			else if(info.error == "ywrong") { // Make robot speak
 			speak(
 				"file",
 				"Wrong y",
 				2500,
 				true
-				); }
+				); prompttrigger = true;}
 			else if(info.error == "ycorrect") { // Make robot speak
 			speak(
 				"file",
 				"correct y",
 				2500,
 				true
-				); }
-			}
+				); prompttrigger = true;}
+		}
+
+		if(prompttrigger == true)
+	    {
+	    $.ajax({
+	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
+	        async: false,
+	        success: function() {
+	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
+	        }
+	    });
 		}
 		
 	}

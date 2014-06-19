@@ -17,22 +17,39 @@ var Nomoveonxminus;
 var Nomoveonyplus;
 var Nomoveonyminus;
 var plotpoint;
-var sign;
+var signx;
+var signy;
 var flip;
-var offbyone;
+var offbyonex;
+var Offbyoney;
+var firstquad;
+var secondquad;
+var thirdquad;
+var fourthquad;
+var flipmove;
+var xwrong;
+var ywrong;
 var counter = 0;
 //Function to get message arrays from index.html
-function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signparam, flipparam, offbyoneparamx, offbyoneparamy )
+function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signxparam, signyparam, flipparam, offbyoneparamx, offbyoneparamy, firstquadparam, secondquadparam, thirdquadparam, fourthquadparam, flipmoveparam, xwrongparam, ywrongparam )
 { 
   Nomoveonxplus = Nomoveonxplusparam;
   Nomoveonxminus = Nomoveonxminusparam;
   Nomoveonyplus = Nomoveonyplusparam;
   Nomoveonyminus = Nomoveonyminusparam;
   plotpoint = plotpointparam;
-  sign = signparam;
+  signx = signxparam;
+  signy = signyparam;
   flip = flipparam;
   offbyonex = offbyoneparamx;
   offbyoney = offbyoneparamy; 
+  firstquad = firstquadparam;
+  secondquad = secondquadparam;
+  thirdquad = thirdquadparam;
+  fourthquad = fourthquadparam;
+  flipmove = flipmoveparam;
+  xwrong = xwrongparam;
+  ywrong = ywrongparam;
 }
 
 //A function to store the session information in a Global Variable!!! That's bad.
@@ -405,16 +422,31 @@ var CognitivePrompts = function() {
 		        ); counter++; 
 		   prompttrigger = true;
 	    }
-	    else if(info.error == "Sign")
+	    else if(info.error == "Signx")
 		{
-		   if(counter == sign.length)
+		   if(counter == signx.length)
 		   {
 		      counter = 0;
 		   }
-		   var soundfile = sign[counter].sound_file;
+		   var soundfile = signx[counter].sound_file;
 		   speak(// Make robot speak
 			soundfile,
-			sign[counter].text,
+			signx[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		   prompttrigger = true;
+		}
+		else if(info.error == "Signy")
+		{
+		   if(counter == signy.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = signy[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			signy[counter].text,
 			2500,
 			true
 		        ); counter++; 
@@ -465,71 +497,99 @@ var CognitivePrompts = function() {
 		        ); counter++; 
 		prompttrigger = true;
 		}
-		else if(info.error == "Move") { // Make robot speak
-			speak(
-				"file",
-				"message",
-				2500,
-				true
-				); prompttrigger = true;}
 		else if(info.error == "Firstquad") { // Make robot speak
-			speak(
-				"file",
-				"First Quadrant",
-				2500,
-				true
-				); prompttrigger = true;}
+			 if(counter == firstquad.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = firstquad[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			firstquad[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		prompttrigger = true;}
 		else if(info.error == "Secondquad") { // Make robot speak
-			speak(
-				"file",
-				"Second Quadrant",
-				2500,
-				true
-				); prompttrigger = true;}
+			if(counter == secondquad.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = secondquad[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			secondquad[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		prompttrigger = true;}
 		else if(info.error == "Thirdquad") { // Make robot speak
-			speak(
-				"file",
-				"Third Quadrant",
-				2500,
-				true
-				); prompttrigger = true;}
+			if(counter == thirdquad.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = thirdquad[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			thirdquad[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		prompttrigger = true;}
 		else if(info.error == "Fourthquad") { // Make robot speak
-			speak(
-				"file",
-				"Fourth Quadrant",
-				2500,
-				true
-				); prompttrigger = true;}
-		else if(info.error == "xcorrect" || info.error == "xwrong" || info.error == "ycorrect" || info.error == "ywrong")
+			if(counter == fourthquad.length)
+		   {
+		      counter = 0;
+		   }
+		   var soundfile = fourthquad[counter].sound_file;
+		   speak(// Make robot speak
+			soundfile,
+			fourthquad[counter].text,
+			2500,
+			true
+		        ); counter++; 
+		prompttrigger = true;}
+		else if(info.error == "xcorrect" || info.error == "xwrong" || info.error == "ycorrect" || info.error == "ywrong" || info.error == "flipmove")
 		{		
-			if(info.error == "xcorrect") { // Make robot speak
-			speak(
-				"file",
-				"correct x",
-				2500,
-				true
-				); prompttrigger = true;}
+			if(info.error == "flipmove") { // Make robot speak
+				if(counter == flipmove.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = flipmove[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					flipmove[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
 			else if(info.error == "xwrong") { // Make robot speak
-			speak(
-				"file",
-				"Wrong x",
-				2500,
-				true
-				); prompttrigger = true;}
+				if(counter == xwrong.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = xwrong[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					xwrong[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
 			else if(info.error == "ywrong") { // Make robot speak
-			speak(
-				"file",
-				"Wrong y",
-				2500,
-				true
-				); prompttrigger = true;}
-			else if(info.error == "ycorrect") { // Make robot speak
-			speak(
-				"file",
-				"correct y",
-				2500,
-				true
-				); prompttrigger = true;}
+				if(counter == ywrong.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = ywrong[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					ywrong[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
 		}
 
 		if(prompttrigger == true)

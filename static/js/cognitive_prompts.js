@@ -27,11 +27,17 @@ var secondquad;
 var thirdquad;
 var fourthquad;
 var flipmove;
-var xwrong;
-var ywrong;
+var xwrongpos;
+var xwrongneg;
+var ywrongpos;
+var ywrongneg;
+var xcorrectpos;
+var xcorrectneg;
+var ycorrectpos;
+var ycorrectneg;
 var counter = 0;
 //Function to get message arrays from index.html
-function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signxparam, signyparam, flipparam, offbyoneparamx, offbyoneparamy, firstquadparam, secondquadparam, thirdquadparam, fourthquadparam, flipmoveparam, xwrongparam, ywrongparam )
+function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signxparam, signyparam, flipparam, offbyoneparamx, offbyoneparamy, firstquadparam, secondquadparam, thirdquadparam, fourthquadparam, flipmoveparam, xwrongposparam, xwrongnegparam, ywrongposparam, ywrongnegparam, xcorrectposparam, xcorrectnegparam, ycorrectposparam, ycorrectnegparam )
 { 
   Nomoveonxplus = Nomoveonxplusparam;
   Nomoveonxminus = Nomoveonxminusparam;
@@ -48,8 +54,14 @@ function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, 
   thirdquad = thirdquadparam;
   fourthquad = fourthquadparam;
   flipmove = flipmoveparam;
-  xwrong = xwrongparam;
-  ywrong = ywrongparam;
+  xwrongpos = xwrongposparam;
+  xwrongneg = xwrongnegparam;
+  ywrongpos = ywrongposparam;
+  ywrongneg = ywrongnegparam;
+  xcorrectpos = xcorrectposparam;
+  xcorrectneg = xcorrectnegparam;
+  ycorrectpos = ycorrectposparam;
+  ycorrectneg = ycorrectnegparam;
 }
 
 //A function to store the session information in a Global Variable!!! That's bad.
@@ -357,7 +369,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonxplus[counter].text,
-			0,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -372,7 +384,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonxminus[counter].text,
-			0,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -387,7 +399,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonyplus[counter].text,
-			0,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -402,7 +414,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonyminus[counter].text,
-			0,
+			7000,
 			true
 		        ); counter++;
 		   prompttrigger = true;
@@ -417,7 +429,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			plotpoint[counter].text,
-			0,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -432,7 +444,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			signx[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -447,7 +459,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			signy[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -462,7 +474,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			flip[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++;
 		        prompttrigger = true; 
@@ -477,7 +489,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			offbyonex[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -492,7 +504,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			offbyoney[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		prompttrigger = true;
@@ -506,7 +518,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			firstquad[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -519,7 +531,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			secondquad[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -532,7 +544,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			thirdquad[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -545,11 +557,11 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			fourthquad[counter].text,
-			2500,
+			7000,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
-		else if(info.error == "xcorrect" || info.error == "xwrong" || info.error == "ycorrect" || info.error == "ywrong" || info.error == "flipmove")
+		else if(info.error == "xcorrectneg" || info.error == "xwrongneg" || info.error == "xcorrectpos" || info.error == "xwrongpos" || info.error == "ycorrectneg" || info.error == "ywrongneg" || info.error == "ycorrectpos" || info.error == "ywrongpos" || info.error == "flipmove")
 		{		
 			if(info.error == "flipmove") { // Make robot speak
 				if(counter == flipmove.length)
@@ -564,28 +576,106 @@ var CognitivePrompts = function() {
 					true
 		        	); counter++; 
 			prompttrigger = true;}
-			else if(info.error == "xwrong") { // Make robot speak
-				if(counter == xwrong.length)
+			else if(info.error == "xwrongpos") { // Make robot speak
+				if(counter == xwrongpos.length)
 		   		{
 		      		counter = 0;
 		   		}
-		   		var soundfile = xwrong[counter].sound_file;
+		   		var soundfile = xwrongpos[counter].sound_file;
 		   		speak(// Make robot speak
 					soundfile,
-					xwrong[counter].text,
+					xwrongpos[counter].text,
 					2500,
 					true
 		        	); counter++; 
 			prompttrigger = true;}
-			else if(info.error == "ywrong") { // Make robot speak
-				if(counter == ywrong.length)
+			else if(info.error == "xwrongneg") { // Make robot speak
+				if(counter == xwrongneg.length)
 		   		{
 		      		counter = 0;
 		   		}
-		   		var soundfile = ywrong[counter].sound_file;
+		   		var soundfile = xwrongneg[counter].sound_file;
 		   		speak(// Make robot speak
 					soundfile,
-					ywrong[counter].text,
+					xwrongneg[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "xcorrectpos") { // Make robot speak
+				if(counter == xcorrectpos.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = xcorrectpos[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					xcorrectpos[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "xcorrectneg") { // Make robot speak
+				if(counter == xcorrectneg.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = xcorrectneg[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					xcorrectneg[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "ywrongneg") { // Make robot speak
+				if(counter == ywrongneg.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = ywrongneg[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					ywrongneg[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "ywrongpos") { // Make robot speak
+				if(counter == ywrongpos.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = ywrongpos[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					ywrongpos[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "ycorrectneg") { // Make robot speak
+				if(counter == ycorrectneg.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = ycorrectneg[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					ycorrectneg[counter].text,
+					2500,
+					true
+		        	); counter++; 
+			prompttrigger = true;}
+			else if(info.error == "ycorrectpos") { // Make robot speak
+				if(counter == ycorrectpos.length)
+		   		{
+		      		counter = 0;
+		   		}
+		   		var soundfile = ycorrectpos[counter].sound_file;
+		   		speak(// Make robot speak
+					soundfile,
+					ycorrectpos[counter].text,
 					2500,
 					true
 		        	); counter++; 
@@ -658,7 +748,7 @@ var CognitivePrompts = function() {
 		// play sound
 		window.setTimeout(function(){
 		AUDIO.play("promptSound");
-		}, 3000);
+		}, delay);
 
 		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
 	};

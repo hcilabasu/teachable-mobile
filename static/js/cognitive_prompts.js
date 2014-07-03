@@ -369,7 +369,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonxplus[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -384,7 +384,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonxminus[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -399,7 +399,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonyplus[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -414,7 +414,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			Nomoveonyminus[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++;
 		   prompttrigger = true;
@@ -429,7 +429,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			plotpoint[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -444,7 +444,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			signx[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -459,7 +459,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			signy[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -474,7 +474,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			flip[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++;
 		        prompttrigger = true; 
@@ -489,7 +489,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			offbyonex[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		   prompttrigger = true;
@@ -504,7 +504,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			offbyoney[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		prompttrigger = true;
@@ -518,7 +518,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			firstquad[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -531,7 +531,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			secondquad[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -544,7 +544,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			thirdquad[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		prompttrigger = true;}
@@ -557,7 +557,7 @@ var CognitivePrompts = function() {
 		   speak(// Make robot speak
 			soundfile,
 			fourthquad[counter].text,
-			7000,
+			5500,
 			true
 		        ); counter++; 
 		prompttrigger = true;}

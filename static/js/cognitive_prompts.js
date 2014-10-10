@@ -11,58 +11,8 @@ var firstsec = 0;
 var condition = 'Virtual';
 var promptsRandomized = false;
 var minutesThreshold = 2; // Sets how long the system waits before displaying another prompt
-//Added by Abha to show incorrect message
-var Nomoveonxplus;
-var Nomoveonxminus;
-var Nomoveonyplus;
-var Nomoveonyminus;
-var plotpoint;
-var signx;
-var signy;
-var flip;
-var offbyonex;
-var Offbyoney;
-var firstquad;
-var secondquad;
-var thirdquad;
-var fourthquad;
-var flipmove;
-var xwrongpos;
-var xwrongneg;
-var ywrongpos;
-var ywrongneg;
-var xcorrectpos;
-var xcorrectneg;
-var ycorrectpos;
-var ycorrectneg;
+var constant = 0;
 var counter = 0;
-//Function to get message arrays from index.html
-function sendarray(Nomoveonxplusparam, Nomoveonxminusparam, Nomoveonyplusparam, Nomoveonyminusparam, plotpointparam, signxparam, signyparam, flipparam, offbyoneparamx, offbyoneparamy, firstquadparam, secondquadparam, thirdquadparam, fourthquadparam, flipmoveparam, xwrongposparam, xwrongnegparam, ywrongposparam, ywrongnegparam, xcorrectposparam, xcorrectnegparam, ycorrectposparam, ycorrectnegparam )
-{ 
-  Nomoveonxplus = Nomoveonxplusparam;
-  Nomoveonxminus = Nomoveonxminusparam;
-  Nomoveonyplus = Nomoveonyplusparam;
-  Nomoveonyminus = Nomoveonyminusparam;
-  plotpoint = plotpointparam;
-  signx = signxparam;
-  signy = signyparam;
-  flip = flipparam;
-  offbyonex = offbyoneparamx;
-  offbyoney = offbyoneparamy; 
-  firstquad = firstquadparam;
-  secondquad = secondquadparam;
-  thirdquad = thirdquadparam;
-  fourthquad = fourthquadparam;
-  flipmove = flipmoveparam;
-  xwrongpos = xwrongposparam;
-  xwrongneg = xwrongnegparam;
-  ywrongpos = ywrongposparam;
-  ywrongneg = ywrongnegparam;
-  xcorrectpos = xcorrectposparam;
-  xcorrectneg = xcorrectnegparam;
-  ycorrectpos = ycorrectposparam;
-  ycorrectneg = ycorrectnegparam;
-}
 
 //A function to store the session information in a Global Variable!!! That's bad.
 function storeTestSessionInformation(data) {
@@ -350,352 +300,27 @@ var CognitivePrompts = function() {
 	}
 
 	/**************************************************************** 
-	* Opens dialogue to display incorrect prompt text and plays audio
-	* file associated with current prompt
+	This function calls the GET_PROMPT function with the error value and gets
+	the database value from GET_PROMP and pass it to promptcall function
 	****************************************************************/
 	var incorrectPrompt = function(info) {
 
-		var prompttrigger = false;
-	    //update the interface on the student iPod
-
-
-	    if(info.error == "Nomoveonxplus")
-	    {
-		   if(counter == Nomoveonxplus.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = Nomoveonxplus[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			Nomoveonxplus[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-             }
-	    else if(info.error == "Nomoveonxneg")
-	    {
-		   if(counter == Nomoveonxminus.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = Nomoveonxminus[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			Nomoveonxminus[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-	     }
-	     else if(info.error == "Nomoveonyplus")
-	     {
-		   if(counter == Nomoveonyplus.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = Nomoveonyplus[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			Nomoveonyplus[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-	    }
-	     else if(info.error == "Nomoveonyneg")
-		{
-		   if(counter == Nomoveonyminus.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = Nomoveonyminus[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			Nomoveonyminus[counter].text,
-			5500,
-			true
-		        ); counter++;
-		   prompttrigger = true;
-	    }
-	    else if(info.error == "PlotPoint")
-	    {
-		   if(counter == plotpoint.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = plotpoint[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			plotpoint[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-	    }
-	    else if(info.error == "Signx")
-		{
-		   if(counter == signx.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = signx[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			signx[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-		}
-		else if(info.error == "Signy")
-		{
-		   if(counter == signy.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = signy[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			signy[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-		}
-	    else if(info.error == "Flip")
-		{
-		   if(counter == flip.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = flip[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			flip[counter].text,
-			5500,
-			true
-		        ); counter++;
-		        prompttrigger = true; 
-		}
-	   else if(info.error == "Offbyonex")
-		{
-		   if(counter == offbyonex.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = offbyonex[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			offbyonex[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		   prompttrigger = true;
-		}
-	   else if(info.error == "Offbyoney")
-		{
-		   if(counter == offbyoney.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = offbyoney[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			offbyoney[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		prompttrigger = true;
-		}
-		else if(info.error == "Firstquad") { // Make robot speak
-			 if(counter == firstquad.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = firstquad[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			firstquad[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		prompttrigger = true;}
-		else if(info.error == "Secondquad") { // Make robot speak
-			if(counter == secondquad.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = secondquad[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			secondquad[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		prompttrigger = true;}
-		else if(info.error == "Thirdquad") { // Make robot speak
-			if(counter == thirdquad.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = thirdquad[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			thirdquad[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		prompttrigger = true;}
-		else if(info.error == "Fourthquad") { // Make robot speak
-			if(counter == fourthquad.length)
-		   {
-		      counter = 0;
-		   }
-		   var soundfile = fourthquad[counter].sound_file;
-		   speak(// Make robot speak
-			soundfile,
-			fourthquad[counter].text,
-			5500,
-			true
-		        ); counter++; 
-		prompttrigger = true;}
-		else if(info.error == "xcorrectneg" || info.error == "xwrongneg" || info.error == "xcorrectpos" || info.error == "xwrongpos" || info.error == "ycorrectneg" || info.error == "ywrongneg" || info.error == "ycorrectpos" || info.error == "ywrongpos" || info.error == "flipmove")
-		{		
-			if(info.error == "flipmove") { // Make robot speak
-				if(counter == flipmove.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = flipmove[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					flipmove[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "xwrongpos") { // Make robot speak
-				if(counter == xwrongpos.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = xwrongpos[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					xwrongpos[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "xwrongneg") { // Make robot speak
-				if(counter == xwrongneg.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = xwrongneg[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					xwrongneg[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "xcorrectpos") { // Make robot speak
-				if(counter == xcorrectpos.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = xcorrectpos[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					xcorrectpos[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "xcorrectneg") { // Make robot speak
-				if(counter == xcorrectneg.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = xcorrectneg[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					xcorrectneg[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "ywrongneg") { // Make robot speak
-				if(counter == ywrongneg.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = ywrongneg[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					ywrongneg[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "ywrongpos") { // Make robot speak
-				if(counter == ywrongpos.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = ywrongpos[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					ywrongpos[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "ycorrectneg") { // Make robot speak
-				if(counter == ycorrectneg.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = ycorrectneg[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					ycorrectneg[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-			else if(info.error == "ycorrectpos") { // Make robot speak
-				if(counter == ycorrectpos.length)
-		   		{
-		      		counter = 0;
-		   		}
-		   		var soundfile = ycorrectpos[counter].sound_file;
-		   		speak(// Make robot speak
-					soundfile,
-					ycorrectpos[counter].text,
-					2500,
-					true
-		        	); counter++; 
-			prompttrigger = true;}
-		}
-
-		if(prompttrigger == true)
-	    {
-	    $.ajax({
-	        url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
-	        async: false,
-	        success: function() {
-	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
-	        }
-	    });
-		}
+		//Testing Abha
+		$.ajax({
+			url : GET_PROMPT + "?data=" + info.error,
+			async : false,
+			success: function(datum)
+			{
+				promptcall(datum);
+			}
+			});
 		
 	}
 
-
+	/**************************************************************** 
+	This function gets the input values from the promptcall function
+	and plays the audio file alongwith displaying the respective prompt.
+	****************************************************************/
 
 
 	var speak = function(file, message, delay, removeExtension){
@@ -753,105 +378,50 @@ var CognitivePrompts = function() {
 		console.log("prompt: " + currentPromptIndex + ", problem: " + localProblemIndex);
 	};
 
+	/**************************************************************** 
+	This function calls the GET_PROMPT function with the error value and gets
+	the database value from GET_PROMP and pass it to promptcall function
+	****************************************************************/
 
-	/*
-	var skipPrompts = function(problem) {
-		// TEMPORARILY HARDCODING PROMPTS, SHOULD FIX THIS LATER
-        var prompts = '[ {"problem_num":540, "problem_state":"end", "orientation":"", "text":"Are you ready to teach me geometry?", "sound_file":"0.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"beg", "orientation":"", "text":"In (4, 0), does the 4 tell me to move on the x-axis or on the y-axis?", "sound_file":"1.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"mid", "orientation":"","text":"Come over here and see the point I plotted at x equals 4 and y equals 0.", "sound_file":"2.aiff", "another_prompt":"true"}, {"problem_num":541, "problem_state":"end_correct", "orientation":"", "text":"Neat! Now I know that the first number tells me to go left or right on the x-axis!", "sound_file":"3.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"end_correct", "orientation":"", "text":"Hey can you show me where 4 is on the x-axis again?", "sound_file":"4_correct.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"end_incorrect", "orientation":"", "text":"Hey can you stand where 4 is on the x-axis", "sound_file":"4_incorrect.aiff", "another_prompt":"false"}, {"problem_num":542, "problem_state":"end", "orientation":"", "text":"I can\'t remember which way the y-axis goes! Do you? Can you walk along the y-axis for me?", "sound_file":"6.aiff", "another_prompt":"true"}, {"problem_num":542, "problem_state":"end", "orientation":"", "text":"Cool! I learned that the y-axis runs from top to bottom across the cartesian plane!", "sound_file":"7.aiff", "another_prompt":"false"}, {"problem_num":543, "problem_state":"beg", "orientation":"", "text":"I’m trying to remember where all the x’s are positive. Is it to the left or the right of the y-axis?", "sound_file":"8.aiff", "another_prompt":"true"}, {"problem_num":543, "problem_state":"beg", "orientation":"", "text":"Hmmm our x coordinate is 1. Does this mean we should move left or right along the x-axis?", "sound_file":"9.aiff", "another_prompt":"false"}, {"problem_num":543, "problem_state":"end", "orientation":"", "text":"Where are the y’s all positive? Is it below or above the x-axis?", "sound_file":"10.aiff", "another_prompt":"true"}, {"problem_num":543, "problem_state":"end", "orientation":"", "text":"I forgot something... Can you walk around the area where the y’s are all positive?", "sound_file":"11.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"beg", "orientation":"", "text":"coordinate is -2. Does this mean we should move left or right along the x-axis?", "sound_file":"12.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"mid", "orientation":"270", "text":"I have a feeling the y\'s are all negative below the x-axis…", "sound_file":"12.aiff", "another_prompt":"true"}, {"problem_num":544, "problem_state":"mid", "orientation":"270", "text":"If we walk to the bottom edge of the cartesian plane, are the y’s positive or negative?", "sound_file":"12.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"end", "orientation":"", "text":"I forgot where the x’s are all negative! Can you show me?", "sound_file":"12.aiff", "another_prompt":"false"}]';
-        prompts = prompts.replace(/&#x27;/g, "'");
-        prompts = JSON.parse(prompts);
-
-        if(problem.number == -1)
-        {
-        	//simply refreshing current problem, skip back beginning prompt?
-        }
-        else
-        {
-        	//changing problem number, update prompt index accordingly
-	        localProblemIndex = problem.number + 540;
-			currentPromptIndex = 0;
-			while(prompts[currentPromptIndex].problem_num < localProblemIndex)
-			{
-				currentPromptIndex = currentPromptIndex + 1;
+	var promptcall = function(datum) {
+	
+		var ArrayDatum = JSON.parse(datum);
+		var length = ArrayDatum[0].length;
+		console.log(length); 
+		var prompttrigger = false;
+		if (length > 0)
+		{
+			if(counter == length)
+		   	{
+		   		counter = 0;
 			}
+	   		var textfile = ArrayDatum[constant][counter];
+	   		var soundfile = ArrayDatum[constant + 1][counter];
+	   		// Pass the text and audio file 
+		   	speak(// Make robot speak
+				soundfile,
+				textfile,
+				5500,
+				true
+		        );
+		   	counter++; 
+		    prompttrigger = true;
+
 		}
-	}
+		//update the interface on the student iPod
 
-	var makePrompt = function(prompt, condition){
-		// TEMPORARILY HARDCODING PROMPTS, SHOULD FIX THIS LATER
-        var prompts = '[ {"problem_num":540, "problem_state":"end", "orientation":"", "text":"Are you ready to teach me geometry?", "sound_file":"0.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"beg", "orientation":"", "text":"In (4, 0), does the 4 tell me to move on the x-axis or on the y-axis?", "sound_file":"1.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"mid", "orientation":"","text":"Come over here and see the point I plotted at x equals 4 and y equals 0.", "sound_file":"2.aiff", "another_prompt":"true"}, {"problem_num":541, "problem_state":"end_correct", "orientation":"", "text":"Neat! Now I know that the first number tells me to go left or right on the x-axis!", "sound_file":"3.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"end_correct", "orientation":"", "text":"Hey can you show me where 4 is on the x-axis again?", "sound_file":"4_correct.aiff", "another_prompt":"false"}, {"problem_num":541, "problem_state":"end_incorrect", "orientation":"", "text":"Hey can you stand where 4 is on the x-axis", "sound_file":"4_incorrect.aiff", "another_prompt":"false"}, {"problem_num":542, "problem_state":"end", "orientation":"", "text":"I can\'t remember which way the y-axis goes! Do you? Can you walk along the y-axis for me?", "sound_file":"6.aiff", "another_prompt":"true"}, {"problem_num":542, "problem_state":"end", "orientation":"", "text":"Cool! I learned that the y-axis runs from top to bottom across the cartesian plane!", "sound_file":"7.aiff", "another_prompt":"false"}, {"problem_num":543, "problem_state":"beg", "orientation":"", "text":"I’m trying to remember where all the x’s are positive. Is it to the left or the right of the y-axis?", "sound_file":"8.aiff", "another_prompt":"true"}, {"problem_num":543, "problem_state":"beg", "orientation":"", "text":"Hmmm our x coordinate is 1. Does this mean we should move left or right along the x-axis?", "sound_file":"9.aiff", "another_prompt":"false"}, {"problem_num":543, "problem_state":"end", "orientation":"", "text":"Where are the y’s all positive? Is it below or above the x-axis?", "sound_file":"10.aiff", "another_prompt":"true"}, {"problem_num":543, "problem_state":"end", "orientation":"", "text":"I forgot something... Can you walk around the area where the y’s are all positive?", "sound_file":"11.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"beg", "orientation":"", "text":"coordinate is -2. Does this mean we should move left or right along the x-axis?", "sound_file":"12.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"mid", "orientation":"270", "text":"I have a feeling the y\'s are all negative below the x-axis…", "sound_file":"12.aiff", "another_prompt":"true"}, {"problem_num":544, "problem_state":"mid", "orientation":"270", "text":"If we walk to the bottom edge of the cartesian plane, are the y’s positive or negative?", "sound_file":"12.aiff", "another_prompt":"false"}, {"problem_num":544, "problem_state":"end", "orientation":"", "text":"I forgot where the x’s are all negative! Can you show me?", "sound_file":"12.aiff", "another_prompt":"false"}]';
-        prompts = prompts.replace(/&#x27;/g, "'");
-        prompts = JSON.parse(prompts);
-        var trigger = true;
-        promptsFinished = false;
-
-        //if we just transitioned from problem state "end" to problem state "beg", increment  
-        //mobile problem number index
-        if(prompt.state == "beg")
-        {
-        	//sometimes we will encounter consecutive prompts with problem state "beg"
-        	if(!begLast) {
-        		localProblemIndex = localProblemIndex + 1;
-        		begLast = true;
-
-        		//delay next prompt to allow time for robot rese
-        		//window.setTimeout(function(){
-  				//checkForSecondPrompt(solutionStatus, "end", problemNumber);
-  				//}, 17000);
-        	}
-        }
-        else {
-        	begLast = false;
-        }
-
-        //check trigger criteria
-        if(prompt.trigger == "hit")
-        {
-        	console.log(prompts[currentPromptIndex].problem_num + " " + localProblemIndex);
-			if(prompts[currentPromptIndex].problem_num == localProblemIndex)//prompt.number)
-			{	
-			    //next prompt is associated with this problem
-			    if(prompts[currentPromptIndex].problem_state == prompt.state || (prompts[currentPromptIndex].problem_state == "mid" && prompt.state == "end"))
-			    {
-			    	console.log("2");
-				    // and is associated with current problem state OR the student's procedure skipped mid-problem prompt triggers
-				    // so check for special mid-problem case
-				    if(prompt.state == "mid")
-				    {
-				    	if(prompts[currentPromptIndex].orientation != prompt.angle)
-				    	{
-				    		trigger = false;
-				    	}
-
-				    }
-				    else if(prompt.state == "end_correct" || prompt.state == "end_incorrect" || prompt.state == "end")
-				    {
-				    	if(prompt.state == "end_incorrect")
-				    	{
-				    		currentPromptIndex = 4;
-				    	}
-				    	if(prompt.state == "end_correct")
-				    	{
-				    		currentPromptIndex = 2;
-				    	}
-				    	//skip mid-problem prompts in the case student did not trigger them
-				    	while(prompts[currentPromptIndex].problem_state == "mid")
-				    	{
-				    		currentPromptIndex = currentPromptIndex +1;
-				    	}
-				    }
-
-
-				    if(trigger)
-				    {
-				    	console.log("3");
-					    displayTriggeredPrompt(prompt, condition);
-					}
-				}	
-			}
+		 if(prompttrigger == true)
+	    {
+	    	$.ajax({
+	        	url: SET_COGNITIVE_TRIGGERED + "?data=" + JSON.stringify({"type":"setcognitivetrigger"}),
+	        	async: false,
+	        	success: function() {
+	            console.dir("Sending message to student iPod that cognitive prompt has been triggered.....");
+	        	}
+	    	});
 		}
-	}
-	*/
+
+}
 
 	return {
 		doPromptAction : doPromptAction

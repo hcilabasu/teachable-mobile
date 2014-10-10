@@ -123,3 +123,13 @@ timestamp: 2014-02-16T16:07:53.921808
 ALTER TABLE sessions ADD start_time TIMESTAMP;
 timestamp: 2014-02-26T21:19:39.119086
 ALTER TABLE sessions ADD comments CHAR(512);
+timestamp: 2014-09-11T14:17:28.631617
+CREATE TABLE prompts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompt_id CHAR(512),
+    prompt CHAR(512),
+    audio_file CHAR(512)
+);
+success!
+timestamp: 2014-09-11T14:24:40.538459
+ALTER TABLE prompts ADD count INTEGER;

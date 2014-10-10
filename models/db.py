@@ -132,3 +132,12 @@ db.define_table('sessions',
     Field('end_time', type='datetime'),
     Field('comments', type='string')
 )
+
+##Cognitive Prompts
+db.define_table('prompts',
+    Field('prompt_id', type='string'),
+    Field('prompt', type='string'),
+    Field('audio_file', type='string'),
+    Field('count', type='integer')
+)
+

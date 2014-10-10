@@ -492,3 +492,19 @@ def send_data_to_robot():
 def set_cognitive_prompt_triggered():
     data = request.vars.data
     websocket_send('http://' + __current_ip + ':' + __socket_port, data, 'mykey', 'interface')
+
+# Function to get the error and pass the database value
+def get_prompt():
+
+    data = request.vars.data
+    r = db((db.prompts.prompt_id == data)).select()
+    a1 = json.dumps([x.prompt for x in r])
+    a2 = json.dumps([x.audio_file for x in r])
+    datum = "["
+    datum += a1
+    datum += ","
+    datum += a2
+    datum += "]"
+    return datum
+
+

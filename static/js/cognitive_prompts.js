@@ -387,16 +387,19 @@ var CognitivePrompts = function() {
 	
 		var ArrayDatum = JSON.parse(datum);
 		var length = ArrayDatum[0].length;
-		console.log(length); 
+		console.log("LENGTH IS" +length); 
 		var prompttrigger = false;
 		if (length > 0)
 		{
-			if(counter == length)
+			console.log("counter is" + counter);
+			if(counter >= length)
 		   	{
 		   		counter = 0;
 			}
 	   		var textfile = ArrayDatum[constant][counter];
+	   		console.log("TEXT IS"+ textfile);
 	   		var soundfile = ArrayDatum[constant + 1][counter];
+	   		console.log("SOUND FILE IS" + soundfile);
 	   		// Pass the text and audio file 
 		   	speak(// Make robot speak
 				soundfile,

@@ -11,6 +11,8 @@ import urllib
 import collections
 import sys
 import pdb
+from datetime import datetime 
+from datetime import timedelta
 from copy import copy
 from gluon.contrib.websocket_messaging import websocket_send
 
@@ -25,10 +27,11 @@ direction = 0
 position = (0,0)
 gateway = JavaGateway()
 
-angle_threshold = 13
+angle_threshold = 15
 small_angle_threshold = 4
 distance_threshold = 0.25
 small_distance_threshold = 0.25
+time_delta = timedelta(seconds = 2.5)
 
 lap_time = 4.4
 
@@ -191,7 +194,8 @@ def __move_to(x, y, backwards, recursion):
 		# print('Move to #' + str(recursion))
 		
 		m = __move_forward if not backwards else __move_backward # based on the backwards variable, determine function for robot movement
-		
+		time = datetime.now()
+
 		if recursion < recursion_cutoff:
 			# retrieving current position
 			curr_position = __get_position()
@@ -236,13 +240,16 @@ def __move_to(x, y, backwards, recursion):
 					# print('Prev: ' + str(prev))
 					if curr < prev:
 						progress = 0
+						time = datetime.now()
 					else:
 						progress = progress + 1
 					prev = curr
+					print(datetime.now() - time)
 					# determine if it's time to stop
-					if (False and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
+					if (datetime.now() - time > time_delta and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
 						if progress > 100:
 							print('Progress: ' + str(progress))
+							print(time - datetime.now())
 						__stop()
 						break
 			# Obtaining position again
@@ -407,28 +414,28 @@ def test_d():
 	return RobotController.d
 
 def get_direction():
-	return (gateway.getCurrentOrientation() + 180) % 360
-	# if not RobotController.d:
+	orientation = (gateway.getCurrentOrientation())# + 180) % 360
+	if not RobotController.d:
 		# info from iPod not available
-		# return gateway.getCurrentOrientation()
+		return orientation
 	
 	#info from iPod available. Using it.
-	# h = float(RobotController.d) # Info from secondary orientation source
-	# o1 = gateway.getCurrentOrientation() # Info from primary orientation source (may be flipped 180º)
-	# o2 = (o1 + 180) % 360 # flipped o1
+	h = float(RobotController.d) # Info from secondary orientation source
+	o1 = orientation #gateway.getCurrentOrientation() # Info from primary orientation source (may be flipped 180º)
+	o2 = (o1 + 180) % 360 # flipped o1
 	
 	# # Calculating orientation based on two sources.
 	# # The primary source is precise(ish), but it may be flipped 180 degrees. So we check the secondary source for the closest point.
-	# d1 = math.fabs(o1 - h)
-	# d2 = math.fabs(o2 - h)
+	d1 = math.fabs(o1 - h)
+	d2 = math.fabs(o2 - h)
 	# # Calculating the distance
-	# h1 = d1 if d1 <= 180 else 360 - d1
-	# h2 = d2 if d2 <= 180 else 360 - d2
+	h1 = d1 if d1 <= 180 else 360 - d1
+	h2 = d2 if d2 <= 180 else 360 - d2
 
-	# if h1 < h2:
-	# 	return o1
-	# else:
-	# 	return o2
+	if h1 < h2:
+		return o1
+	else:
+	 	return o2
 
 
 ## private functions

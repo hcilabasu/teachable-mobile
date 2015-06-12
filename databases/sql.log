@@ -133,3 +133,22 @@ CREATE TABLE prompts(
 success!
 timestamp: 2014-09-11T14:24:40.538459
 ALTER TABLE prompts ADD count INTEGER;
+timestamp: 2015-01-12T13:32:15.216189
+CREATE TABLE report(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id CHAR(512),
+    problem_no INTEGER,
+    incorrect_attempt INTEGER,
+    time_taken CHAR(512)
+);
+success!
+timestamp: 2015-01-12T13:32:15.219356
+CREATE TABLE report_detail(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id CHAR(512),
+    problem_no INTEGER,
+    plotted_x INTEGER,
+    plotted_y INTEGER,
+    error CHAR(512)
+);
+success!

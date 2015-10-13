@@ -152,3 +152,5 @@ CREATE TABLE report_detail(
     error CHAR(512)
 );
 success!
+timestamp: 2015-09-03T08:36:59.636824
+ALTER TABLE problemBank ADD robotlocation CHAR(512);

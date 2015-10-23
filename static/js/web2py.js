@@ -5,7 +5,7 @@ function popup(url) {
 }
 function collapse(id) { jQuery('#'+id).slideToggle(); }
 function fade(id,value) { if(value>0) jQuery('#'+id).hide().fadeIn('slow'); else jQuery('#'+id).show().fadeOut('slow'); }
-function ajax(u,s,t) {
+function ajax(u,s,t,c) {
     query = '';
     if (typeof s == "string") {
         d = jQuery(s).serialize();
@@ -18,7 +18,7 @@ function ajax(u,s,t) {
         }
         if (pcs.length>0){query = pcs.join("&");}
     }
-    jQuery.ajax({type: "POST", url: u, data: query, success: function(msg) { if(t) { if(t==':eval') eval(msg); else if(typeof t=='string') jQuery("#"+t).html(msg); else t(msg); } } });
+    jQuery.ajax({type: "POST", url: u, data: query, complete: function(){if(c) c()}() , success: function(msg) { if(t) { if(t==':eval') eval(msg); else if(typeof t=='string') jQuery("#"+t).html(msg); else t(msg); } } });
 }
 
 String.prototype.reverse = function () { return this.split('').reverse().join('');};

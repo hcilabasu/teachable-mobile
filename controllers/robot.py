@@ -300,6 +300,14 @@ def set_is_moving(moving):
 	message_wrapper = '{"type":"moving", "value":%s}' % (str(moving).lower())
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 
+def say_number():
+	print("Say number")
+	state = request.vars['state']
+	number = request.vars['number']
+	coordinate = request.vars['coordinate'] if request.vars['coordinate'] != None else "{}"
+	message_wrapper = ('{"type":"say_number", "value":{"state":"%s","number":"%s","coordinate":%s}}' % (state, number, coordinate))
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+
 
 def make_cognitive_prompt():
 	outcome = True if request.vars['trigger'] == 'hit' else False # either success or failure

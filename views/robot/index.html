@@ -12,6 +12,7 @@
 	<script src="{{=URL('static','js/audio.js')}}"></script>
 	<script src="{{=URL('static','js/problems.js')}}"></script>
 	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
+	<script src="{{=URL('static','js/number_audio.js')}}"></script>
 	<script src="{{=URL('static','js/attributions.js')}}"></script>
 
 	
@@ -172,6 +173,15 @@
 					 		}
 					 	});
 					 }
+					break;
+				case 'say_number':
+					var value = data.value;
+					if(value.state == "animating"){
+						number_audio.sayNumber(value.number)
+					} else {
+						number_audio.sayCoordinate(value.coordinate)
+					}
+					
 					break;
 				case 'timecheck':
 					 console.dir("Timecheck. Moving: " + isMoving);

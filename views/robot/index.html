@@ -14,6 +14,7 @@
 	<script src="{{=URL('static','js/cognitive_prompts.js')}}"></script>
 	<script src="{{=URL('static','js/number_audio.js')}}"></script>
 	<script src="{{=URL('static','js/attributions.js')}}"></script>
+	<script src="{{=URL('static','js/communications.js')}}"></script>
 
 	
 	<script src="{{=URL('static','js/log.js')}}"></script>
@@ -26,6 +27,7 @@
 		var SET_COGNITIVE_TRIGGERED = "{{=URL('mobileinterface','default','set_cognitive_prompt_triggered')}}";
 		var REQUEST_SESSION_DATA = "{{=URL('mobileinterface','session','current_session')}}";
 		var GET_PROMPT = "{{=URL('mobileinterface','default','get_prompt')}}";
+		var COMM = "{{=URL('comm', 'send_message')}}";
 
 		//Called this asynchronously. Can't believe this worked.
     	$.ajax({
@@ -219,6 +221,9 @@
 				case 'reset':
 					offset = 360 - raw_direction;
 					break;
+				case 'echo':
+					// This is used for testing the communication channels
+					alert(data.value);
 				default:
 					console.dir("Nothing to do here " + data);
 			}

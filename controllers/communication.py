@@ -1,4 +1,5 @@
 import config
+import config
 from gluon.contrib.websocket_messaging import websocket_send
 
 __current_user_name = config.TORNADO_USER

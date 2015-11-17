@@ -142,19 +142,9 @@ db.define_table('prompts',
 )
 
 ##Report
-db.define_table('report',
-    Field('user_id', type='string'),
-    Field('problem_no', type='integer'),
-    Field('incorrect_attempt', type='integer'),
-    Field('time_taken', type='string')
+db.define_table('mistake',
+    Field('error_type', type='string'),
+    Field('message', type='string')
 )
 
-##Report Detail
-db.define_table('report_detail',
-    Field('user_id', type='string'),
-    Field('problem_no', type='integer'),
-    Field('plotted_x', type='integer'),
-    Field('plotted_y', type='integer'),
-    Field('error', type='string')
-)
 

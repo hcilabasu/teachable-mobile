@@ -507,4 +507,12 @@ def get_prompt():
     datum += "]"
     return datum
 
+# Function to get the error for report and pass the message
+def get_mistake():
+
+    data = request.vars.data
+    r = db((db.mistake.error_type == data)).select()
+    msg = json.dumps([x.message for x in r])
+    return msg
+
 

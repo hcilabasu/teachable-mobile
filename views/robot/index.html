@@ -152,7 +152,7 @@
 					 //condition = parsedData;
 					 if(!isMoving){
 					 	console.dir(">>> Robot is not moving. Make cognitive");
-					 	cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+					 	//cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
 					 } else {
 					 	/*
 					 		Robot is moving. Add listener, so that when the robot stops and 
@@ -163,7 +163,7 @@
 					 		console.dir(">>> Calling moveListener for cognitive")
 					 		// check if the robot is done moving
 					 		if(!moving){
-					 			cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
+					 			//cognitive_prompts.doPromptAction("makePrompt",data.value,parsedData ? parsedData.condition_name : "");
 					 			// Return true so that this function is removed
 					 			return true;
 					 		} else {

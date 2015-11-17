@@ -16,7 +16,7 @@ time, mark, audio, video {
 	border: 0;
 	font-size: 100%;
 	font: inherit;
-	vertical-align: baseline;
+
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -743,3 +743,111 @@ a.action-button > span {
 		text-shadow: 0 -1px black;
 		font-weight: bolder;
 	}
+
+#report-wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: #E5E4EA;
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+	text-align: center;
+	z-index: 999999;
+	color: black;
+	text-shadow: 0 1px 0 #b05b8c;
+	font-size: 1.4em;
+	display: none;
+}
+
+#initialreport-wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: #E5E4EA;
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+	text-align: center;
+	z-index: 999999;
+	color: black;
+	text-shadow: 0 1px 0 #b05b8c;
+	font-size: 1.4em;
+	display: none;
+}
+
+#initialreport-wrapper h2{
+		font-size: 1em;
+		margin-top: 0px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		background: #E5E4EA;
+		text-align: center;
+		color: black;
+		font-weight: bolder;
+		color: #844569;
+		text-shadow: none;
+}
+
+#mistake > span {
+		display: block;
+		padding-bottom: 10px;
+		padding-top: 10px;
+	}
+
+
+#header {
+    color:white;
+    text-align: center;
+    font-family: arial;
+    font-size: 1.3em;
+    font-weight: bold;
+    padding-top:15px;
+    padding-bottom:10px;
+    background: #844569;
+}
+
+table.report {
+    border:1px solid #844569;
+    overflow:scroll;
+    width: 100%;
+    height: 80%;
+    padding: 15px;
+}
+table.report tr{
+    border:1px solid #844569;
+    text-align: center;
+}
+
+table.initialreport {
+    border:1px solid #844569;
+    overflow:scroll;
+    width: 100%;
+    height: 50%;
+}
+
+
+	#report-yes {
+		display: inline-block;
+		margin-top: 15px;
+		text-decoration: none;
+		text-shadow: none;
+		color: white;
+		background: #3699FC;
+		width:100px;
+		border-radius: 10px;
+		padding: 5px;
+	}
+
+		#report-no {
+		display: inline-block;
+		margin-top: 15px;
+		text-decoration: none;
+		text-shadow: none;
+		color: white;
+		background: #3699FC;
+		width:100px;
+		border-radius: 10px;
+		padding: 5px;
+	}
+

@@ -161,6 +161,10 @@ function moveToNext(callback) {
     
     APP.currentProblemIndex++;
     APP.currentProblem = APP.PROBLEMS[APP.currentProblemIndex];
+
+    //This is to open the initial report for any problem
+    openInitialReport();
+
     setCurrentProblem(); // Call #1
     refreshProblem(undefined, false); // Call #2
     
@@ -177,8 +181,9 @@ function moveToNext(callback) {
 }
 
 
+
 // !!! Read this and see the changes Victor made and learn from them.
-function openFeedbackScreen(solutionStatus, appletMessage) {
+function openFeedbackScreen(solutionStatus, appletMessage, incorrectattempt, elapsedtime, incorrectPoints, incorrectMessage) {
     //Telling the applet to lock itself until further notice.
     var problemObject = JSON.parse(JSON.stringify(APP.currentProblem));
     problemObject.type = "lockapplet";
@@ -245,8 +250,18 @@ function openFeedbackScreen(solutionStatus, appletMessage) {
     $("#feedback-ok").click(function () {
         // window.location.reload(true);
         $("#feedback").fadeOut('slow');
-        openEmoticonScreen(appletMessage);
-        
+
+        //Changed for opening Report Screen instead of Emoticon screen when the solution is correct
+        if(!solutionStatus)
+        {
+            openEmoticonScreen(appletMessage);            
+        }
+        else
+        {
+            openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorrectMessage);
+        }
+
+     
         // log("Student's solution is " + ((String(solutionStatus).toLowerCase() == "true") ? "wrong" : "correct"), {"source":__SOURCE__});
         log("",{"type":"correctness feedback","parameter":((String(solutionStatus).toLowerCase() == "true") ? "correct" : "incorrect"),"initial":CURRENT_GEOGEBRA_STATE, "final":CURRENT_GEOGEBRA_STATE});
         // log("System's response to solution '" + responseArray[rndIndx] + "'", {"source":__SOURCE__});
@@ -368,6 +383,197 @@ function openPromptResponseScreen() {
         j = 0;
     //}
 }
+
+
+/**************************************************************** 
+* Opens a "text message"-type interface on the Student iPod for
+* students to see the feedback report and dismiss attribution messages 
+****************************************************************/
+function openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorrectMessage) {
+
+    $("#emoticon").fadeIn('slow');
+
+    var container = $('#emoticon');
+    var inputs = container.find('input');
+    var currentEmotion = "TextMessages";
+    var currentEmotionContainer = $('#' + currentEmotion);
+    attributionFinished = false;
+    var msg = "";
+    var count = 1;
+    var incorrect = "../static/images/incorrect.gif";
+    var correct = "../static/images/correct.gif";
+
+
+    //add text message interface to make it look like students are talking to Quinn
+    $('<div />', {id : currentEmotion}).appendTo(container);
+    var textMessage = $('<p />', {text: "Would you like to see Quinn's Report?"});
+    $('<span/>', {'class':'dialog-detail'}).appendTo(textMessage);
+    textMessage.appendTo("#TextMessages");
+
+    currentEmotion = "MessageEntry";
+    currentEmotionContainer = $('#' + currentEmotion);
+    $('<div />', {id : currentEmotion}).appendTo(container);
+
+    $('<a/>', {id : "report-yes", href: "#", text : "Yes", click : function() {
+            $("#emoticon").fadeOut('slow');
+
+            $('#emoticon').empty();
+
+            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+            APP.ATTRIBUTION_TRIGGERED == false;
+            console.log("TIME IN REPORT" + elapsedtime);
+
+                currentEmotion = "report-wrapper";
+                currentEmotionContainer = $('#' + currentEmotion);
+
+                $("#report-wrapper").fadeIn('slow');
+
+                container = $('#report-wrapper');
+
+
+                if(incorrectattempt == 0)
+                {
+                    $("#mistakes").append($('<div />').text('Awesome ! You got it all right in the first attempt!'));
+                }
+                else
+                {
+                    for (i = 0; i < incorrectattempt; i++) { 
+                        if(incorrectMessage[i] != "General")
+                        {
+                            $.ajax({
+                            url : APP.GET_MISTAKE + "?data=" + incorrectMessage[i],
+                            async : false,
+                            success: function(msg)
+                            {
+                                $("#mistakes").append($('<div />').text(count + " . " + incorrectPoints[i] + "-" + JSON.parse(msg)));
+                            }
+                            });
+                        }
+                        else
+                        {
+                            $("#mistakes").append($('<div />').text(count + " . " + incorrectPoints[i]));
+                        }
+
+                        count++;
+                    }
+
+                }
+
+
+            $('#problem').html($("<div/>").html(APP.currentProblem.text).text());
+            $('#incorrectattempts').text(incorrectattempt);
+            $('#timetaken').text(elapsedtime);
+            for(var i=0; i < incorrectattempt; i++){
+                $("#Performance").append($('<img>', {src: incorrect}));
+            }
+            $("#Performance").append($('<img>', {src: correct}));
+
+            
+        }}).appendTo("#MessageEntry");
+
+        $('<a/>', {id : "report-no", href : "#", text : "No  ", click : function() {
+            $("#emoticon").fadeOut('slow');
+
+            $('#emoticon').empty();
+
+            $.ajax({url : APP.DISMISS_PROMPT + "?trigger=hit&state=end&number=540" });
+            APP.ATTRIBUTION_TRIGGERED == false;
+            
+        }}).appendTo("#MessageEntry");
+
+
+        $(document).ready(function() {
+        $("#close").click(function(){
+
+
+            $("#report-wrapper").fadeOut('slow');
+
+            $('#report-wrapper').empty();
+            $("#emoticon").fadeOut('slow');
+            });
+        });
+
+    $(document).ready(function() {
+        $("#proreport").click(function(){
+            alert("button");
+        }); 
+    });
+
+}
+
+
+/**************************************************************** 
+* Opens a "text message"-type interface on the Student iPod for
+* displaying the common mistakes made by students previously on 
+* the particular problem 
+****************************************************************/
+
+function openInitialReport() {
+
+    var count = 1;
+
+    $("#initialreport-wrapper").fadeIn('slow');
+
+    $("#prob").text(APP.currentProblem.text);
+
+    var mistake = commonmistake(APP.currentProblem.id);
+    console.log("MISTAKE LIST" + mistake);
+
+    for (i = 0; i < mistake.length; i++) { 
+
+        $.ajax({
+        url : APP.GET_MISTAKE + "?data=" + mistake[i],
+        async : false,
+        success: function(msg)
+        {
+            $("#mistake").append($('<span />').text(count + "." + " " + JSON.parse(msg)));
+        }
+        });
+        count++;
+    }
+
+        $(document).ready(function() {
+        $("#gotit").click(function(){
+
+            $("#initialreport-wrapper").fadeOut('slow');
+
+            });
+        });
+
+}
+
+
+/*********************************************************
+Function to determine what previous mistake Quinn made for
+the given problem
+**********************************************************/
+
+function commonmistake(probid)
+{
+    var mistakelist = [];
+    if(probid == 543 || probid == 545 || probid == 549 || probid == 551 || probid == 556)
+    {
+        commonmistake = ["Offbyonex" , "Flip" , "Offbyoney"]
+        return commonmistake;
+    }
+     else if(probid == 541 || probid == 542 || probid == 546 || probid == 554)
+    {
+        commonmistake = ["Nomoveonyplus" , "Signx" , "Nomoveonxneg"]
+        return commonmistake;
+    }
+    else if(probid == 544 || probid == 548 || probid == 552)
+    {
+        commonmistake = ["Signx" , "Signy"]
+        return commonmistake;
+    }
+    else if(probid == 547 || probid == 550 || probid == 553 || probid == 557)
+    {
+        commonmistake = ["Flip" , "Nomoveonyneg" , "Nomoveonxplus"]
+        return commonmistake;
+    }
+
+}
+
 
 /**************************************************************** 
 * Opens a "text message"-type interface on the Student iPod for

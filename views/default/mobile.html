@@ -48,6 +48,7 @@
         	APP.STORE_CURR_PROB = "{{=URL('store_curr_prob')}}"
         	APP.DISMISS_PROMPT = "{{=URL('mobileinterface','robot','dismiss_cognitive')}}";
         	APP.DISMISS_ATTRIBUTION = "{{=URL('mobileinterface','robot','dismiss_attribution')}}";
+        	APP.GET_MISTAKE = "{{=URL('mobileinterface','default','get_mistake')}}";
 
 
         	// Adding problems variable to global variable
@@ -163,7 +164,7 @@
 				      		 		// AUDIO.play("audio-attention");
 				      		 	}
 				      		 	APP.ATTRIBUTION_TRIGGERED == true;
-				      		 	openFeedbackScreen(incoming.status, incoming.message);
+				      		 	openFeedbackScreen(incoming.status, incoming.message, incoming.incorrectattempt, incoming.elapsedtime, incoming.incorrectPoints, incoming.incorrectMessage);
 				      		}
 			      		}
  			      		else if(incoming.type == "alert"){
@@ -373,6 +374,91 @@
 		<div id="manual-click" style="{{= 'display: block;' if 'click' in request.vars.keys() else 'display: none;'}}">
 			<a href="#" id="manual-click-btn">Click</a>
 		</div>
+
+
+<!-- This is for Feedback Report Screen -->
+		<div id="emoticon">
+			<h2>Quinn</h2>
+		</div>
+
+<div id="report-wrapper">
+	
+		<div id="header">
+			<h1>Performance Report</h1>
+		</div>
+
+			<table class = "report">
+			<tr>
+  				<th>
+    				Problem
+  				</th>
+  				<td>
+    				<div id="problem"></div>
+  				</td>
+  			</tr>
+  			<tr>
+  				 <th>
+    				Incorrect Attempts
+  				</th>
+  				<td>
+    				<div id="incorrectattempts"></div>
+  				</td>
+			</tr>
+			<tr>
+  				 <th>
+    				Time Taken
+  				</th>
+  				<td>
+    				<div id="timetaken"></div>
+  				</td>
+			</tr>
+			<tr>
+  				 <th>
+    				Mistakes Made
+  				</th>
+  				<td>
+    				<div id="mistakes"></div>
+  				</td>
+			</tr>
+			<tr>
+  				 <th>
+    				Performance
+  				</th>
+  				<td>
+    				<div id="Performance"></div>
+  				</td>
+			</tr>
+			</table>
+
+			<div id="header">
+				<!--<button id = "proreport" style="width:140px;height:40px;font-weight: bold;">Progress Report</button>-->
+				<button id = "close" style="width:60px;height:40px;font-weight: bold;">Close</button>
+
+			</div>
+	
+</div>
+
+
+<div id="initialreport-wrapper">
+	
+		<div id="header">
+			<h1>Next Problem : <div id="prob"></div> </h1>
+		</div>
+		<h2> These are the common mistakes Quinn has previously made for this problem ! </h2>
+
+		<table class = "initialreport">
+		<tr>
+		<td>
+			  <div id="mistake"></div>
+		</td>
+		</tr>
+		</table>
+
+		<div id="header">
+			<button id = "gotit" style="width:60px;height:40px;font-weight: bold;">Got It!</button>
+		</div>
+	
+</div>
 
 		<audio src="{{=URL('static','audio/alert.m4a')}}" id="audio-attention" type="audio/m4a" preload="auto" ></audio>
 		<audio src="{{=URL('static','audio/buzz.m4a')}}" id="wrong-solution" type = "audio/m4a" preload="auto" ></audio>

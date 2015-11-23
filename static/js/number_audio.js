@@ -8,6 +8,9 @@ var NumberAudio = function(){
 	 */
 	var speak = function(file){
 
+		// Adjust file name
+		file = file.replace("-", "Neg");
+
 		// format audio file location string
 		audioFile = "/mobileinterface/static/audio/numbers/" + file + ".mp3";
 

@@ -415,7 +415,7 @@ function openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorr
     $('<div />', {id : currentEmotion}).appendTo(container);
 
     $('<a/>', {id : "report-yes", href: "#", text : "Yes", click : function() {
-            $("#emoticon").fadeOut('slow');
+            //$("#emoticon").fadeOut('slow');
 
             $('#emoticon').empty();
 
@@ -430,6 +430,7 @@ function openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorr
 
                 container = $('#report-wrapper');
 
+                $("#mistakes").html("");
 
                 if(incorrectattempt == 0)
                 {
@@ -463,6 +464,7 @@ function openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorr
             $('#problem').html($("<div/>").html(APP.currentProblem.text).text());
             $('#incorrectattempts').text(incorrectattempt);
             $('#timetaken').text(elapsedtime);
+            $("#Performance").html("");
             for(var i=0; i < incorrectattempt; i++){
                 $("#Performance").append($('<img>', {src: incorrect}));
             }
@@ -488,16 +490,10 @@ function openReportScreen(incorrectattempt, elapsedtime, incorrectPoints, incorr
 
             $("#report-wrapper").fadeOut('slow');
 
-            $('#report-wrapper').empty();
+            //$('#report-wrapper').empty();
             $("#emoticon").fadeOut('slow');
             });
         });
-
-    $(document).ready(function() {
-        $("#proreport").click(function(){
-            alert("button");
-        }); 
-    });
 
 }
 
@@ -516,13 +512,14 @@ function openInitialReport() {
 
     $("#prob").text(APP.currentProblem.text);
 
-    var mistake = commonmistake(APP.currentProblem.id);
-    console.log("MISTAKE LIST" + mistake);
+    var mistakearr = findcommonmistake(APP.currentProblem.id);
+    console.log("MISTAKE LIST" + mistakearr);
+    $("#mistake").html("");
 
-    for (i = 0; i < mistake.length; i++) { 
+    for (i = 0; i < mistakearr.length; i++) { 
 
         $.ajax({
-        url : APP.GET_MISTAKE + "?data=" + mistake[i],
+        url : APP.GET_MISTAKE + "?data=" + mistakearr[i],
         async : false,
         success: function(msg)
         {
@@ -548,7 +545,7 @@ Function to determine what previous mistake Quinn made for
 the given problem
 **********************************************************/
 
-function commonmistake(probid)
+function findcommonmistake(probid)
 {
     var mistakelist = [];
     if(probid == 543 || probid == 545 || probid == 549 || probid == 551 || probid == 556)

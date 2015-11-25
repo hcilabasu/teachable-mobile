@@ -6,10 +6,11 @@ var NumberAudio = function(){
 	 @param message (optional): message to be displayed together with the audio
 	 @param delay: delay before the message is played 
 	 */
-	var speak = function(file){
+	var speak = function(file, coordinate){
 
 		// Adjust file name
-		file = file.replace("-", "Neg");
+		if(file[0] === "-") // This condition is important to avoid replacing - on the coordinates
+			file = file.replace("-", "Neg");
 
 		// format audio file location string
 		audioFile = "/mobileinterface/static/audio/numbers/" + file + ".mp3";
@@ -26,18 +27,27 @@ var NumberAudio = function(){
 			this.removeEventListener('play', arguments.callee, false);
 		});
 
-		AUDIO.addFinishListener("attributionSound", function(){
-			// When robot finishes speaking
-			$("body").removeClass("talking");
-			// Remove listener
-			this.removeEventListener('ended', arguments.callee, false);
-		});
+		(function(){
+			var localCoordinate = coordinate;
+
+			AUDIO.addFinishListener("attributionSound", function(){
+				// When robot finishes speaking
+				$("body").removeClass("talking");
+				// Remove listener
+				this.removeEventListener('ended', arguments.callee, false);
+
+				if(localCoordinate !== undefined){
+					var coordFile = ("positions/coord" + localCoordinate.x) + localCoordinate.y;
+					speak(coordFile);
+				}
+			});
+		}());
 		// Play audo
 		AUDIO.play("attributionSound");
 	};
 
-	var sayNumber = function(number){
-		speak(number);
+	var sayNumber = function(number, coordinate){
+		speak(number, coordinate);
 	};
 
 	var sayCoordinate = function(coordinate){

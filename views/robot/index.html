@@ -178,7 +178,7 @@
 					break;
 				case 'say_number':
 					var value = data.value;
-					number_audio.sayNumber(value.number, value.coordinate)
+					number_audio.sayNumber(value.type, value.number, value.coordinate)
 					break;
 				case 'timecheck':
 					 console.dir("Timecheck. Moving: " + isMoving);

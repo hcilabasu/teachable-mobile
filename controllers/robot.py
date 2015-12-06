@@ -299,13 +299,14 @@ def set_is_moving(moving):
 		page, saying if the robot is moving or not'''
 	message_wrapper = '{"type":"moving", "value":%s}' % (str(moving).lower())
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
+	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'applet')
 
 def say_number():
-	print("Say number")
-	state = request.vars['state']
+	''' Sends a message to the robot face to speak a number or coordinate '''
+	typeMessage = request.vars['type']
 	number = request.vars['number']
 	coordinate = request.vars['coordinate'] if request.vars['coordinate'] != None else "{}"
-	message_wrapper = ('{"type":"say_number", "value":{"state":"%s","number":"%s","coordinate":%s}}' % (state, number, coordinate))
+	message_wrapper = ('{"type":"say_number", "value":{"type":"%s","number":"%s","coordinate":%s}}' % (typeMessage, number, coordinate))
 	websocket_send('http://' + 'localhost' + ':' + __socket_port, message_wrapper, 'mykey', 'robot')
 
 

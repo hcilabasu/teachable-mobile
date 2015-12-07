@@ -1,3 +1,6 @@
+// version: 1
+// Increment every time a change is made
+
 COMM = {}
 
 COMM.sendToApplet = function(message){

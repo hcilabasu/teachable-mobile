@@ -27,7 +27,7 @@
 		var SET_COGNITIVE_TRIGGERED = "{{=URL('mobileinterface','default','set_cognitive_prompt_triggered')}}";
 		var REQUEST_SESSION_DATA = "{{=URL('mobileinterface','session','current_session')}}";
 		var GET_PROMPT = "{{=URL('mobileinterface','default','get_prompt')}}";
-		var COMM = "{{=URL('comm', 'send_message')}}";
+		var COMM_ADDR = "{{=URL('comm', 'send_message')}}";
 
 		//Called this asynchronously. Can't believe this worked.
     	$.ajax({
@@ -178,7 +178,18 @@
 					break;
 				case 'say_number':
 					var value = data.value;
-					number_audio.sayNumber(value.type, value.number, value.coordinate)
+					// Notify robot that it is talking
+					$.ajax({
+                      url: "{{=URL('update_talking')}}",
+                      data: {talking: "talking"}
+                    });
+					number_audio.sayNumber(value.type, value.number, value.coordinate, function(){
+						// Notify robot that talking is done
+						$.ajax({
+	                      url: "{{=URL('update_talking')}}",
+	                      data: {talking: ""}
+	                    });
+					});
 					break;
 				case 'timecheck':
 					 console.dir("Timecheck. Moving: " + isMoving);

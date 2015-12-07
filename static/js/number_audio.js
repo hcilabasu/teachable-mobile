@@ -6,7 +6,7 @@ var NumberAudio = function(){
 	 @param message (optional): message to be displayed together with the audio
 	 @param delay: delay before the message is played 
 	 */
-	var speak = function(type, file, coordinate){
+	var speak = function(type, file, coordinate, callback){
 
 		// Adjust file name
 		if(type === "number"){
@@ -34,20 +34,23 @@ var NumberAudio = function(){
 
 		(function(){
 			var localCoordinate = coordinate;
+			var localCallback = callback;
 
 			AUDIO.addFinishListener("attributionSound", function(){
 				// When robot finishes speaking
 				$("body").removeClass("talking");
 				// Remove listener
 				this.removeEventListener('ended', arguments.callee, false);
+				// Call callback
+				localCallback();
 			});
 		}());
 		// Play audo
 		AUDIO.play("attributionSound");
 	};
 
-	var sayNumber = function(type, number, coordinate){
-		speak(type, number, coordinate);
+	var sayNumber = function(type, number, coordinate, callback){
+		speak(type, number, coordinate, callback);
 	};
 
 

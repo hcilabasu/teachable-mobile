@@ -52,6 +52,11 @@ def update_direction():
 	RobotController.d = request.vars['d']
 	return RobotController.d
 
+def update_talking():
+	__set_talking(bool(request.vars['talking']))
+	print('Update talking: ' + str(__talking()))
+	return __talking()
+
 def see_position():
 	return str(session.position)
 
@@ -81,8 +86,8 @@ def move_to():
 	c_x = curr_position[0]
 	c_y = curr_position[1]
 	# retrieving target position
-	t_x = float(request.vars['x'])
-	t_y = float(request.vars['y'])
+	t_x = int(request.vars['x'])
+	t_y = int(request.vars['y'])
 	# should the robot move backwards?
 	backwards = 'backwards' in request.vars
 	# final angle
@@ -114,18 +119,44 @@ def __call_turn_to(angle, backwards):
 	print("Finished turn to!")
 
 def __call_move_to(x, y, angle, backwards):
-	set_is_moving(True) # Warn interface that robot is moving
+	pausing = True # TODO move to parameter
+	# retrieving current position
+	curr_position = __get_position()
+	c_x, c_y = int(round(curr_position[0])), int(round(curr_position[1]))
+
+	if pausing:
+		if c_x == x: # if the current x is the same as the target x, robot is moving in y
+			for i in range(c_y+1, y+1): # move individually to each integer step between current position and destination
+				__inner_call_move_to(x, i, angle, backwards) # move one unit
+				if i < y: # check if it's not the last iteration
+					__wait_for_voice() # loop until face stops talking
+		else: # else, robot is moving in x
+			for i in range(c_x+1, x+1):
+				print("Iteration " + str(i))
+				__inner_call_move_to(i, y, angle, backwards)
+				if i < x:
+					__wait_for_voice()
+	else:
+		__inner_call_move_to(x, y, angle, backwards)
+	print("Finished move to!")
+
+def __wait_for_voice():
+	__set_talking(True)
+	print("Wait for voice. Talking: " + str(__talking()))
+	while __talking() and __auto():
+		print(__talking())
+
+def __inner_call_move_to(x, y, angle, backwards):
 	print("Starting move to!")
+	set_is_moving(True) # Warn interface that robot is moving
 	__move_to(x,y,backwards,0)
 	if angle != None:
 		print(">>> STARTING TURN")
 		__turn_to(angle, False, 0)
 		print("FINISHING TURN <<<")
-	print('angle! ' + str(angle))
 	__set_auto(True)
 	__stop()
 	set_is_moving(False) # Warn interface that robot is NOT moving anymore
-	print("Finished move to!")
 
 def __turn_to(angle, backwards, recursion):
 	print("Turn (recursion #%d)" % (recursion))
@@ -244,12 +275,10 @@ def __move_to(x, y, backwards, recursion):
 					else:
 						progress = progress + 1
 					prev = curr
-					print(datetime.now() - time)
 					# determine if it's time to stop
 					if (datetime.now() - time > time_delta and progress > 100) or ((move_x and math.fabs(x - c_x) < small_distance_threshold)  or (move_y and math.fabs(c_y - y) < small_distance_threshold)): # TODO cases where x is + and c_x is -. Same for y
 						if progress > 100:
-							print('Progress: ' + str(progress))
-							print(time - datetime.now())
+							pass
 						__stop()
 						break
 			# Obtaining position again
@@ -450,6 +479,12 @@ def get_direction():
 ## private functions
 def __auto():
 	return rc.auto
+
+def __talking():
+	return rc.talking
+
+def __set_talking(talking):
+	rc.set_talking(talking)
 
 def __set_auto(auto):
 	rc.set_auto(auto)

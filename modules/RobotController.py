@@ -15,6 +15,7 @@ class RobotController:
 	r = None
 	d = None
 	auto = True
+	talking = False
 
 	def get_robot(self):
 		if RobotController.r != None:
@@ -30,6 +31,10 @@ class RobotController:
 	def set_auto(self, auto):
 		RobotController.auto = auto
 		return RobotController.auto
+
+	def set_talking(self, talking):
+		RobotController.talking = talking
+		return RobotController.talking
 
 	def control_window(self):
 		root = Tk()

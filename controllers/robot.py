@@ -164,9 +164,12 @@ def __inner_call_move_to(x, y, angle, backwards):
 
 def __turn_to(angle, backwards, recursion):
 	print("Turn (recursion #%d)" % (recursion))
+	if angle < 0:
+		angle = 360 + angle
 	if __auto():
 		if backwards: 
 			angle = (angle + 180) % 360
+		print("ANGLE: %d" % (angle))
 		# print('%s' % str(angle))
 		if not __within_threshold(angle, small_angle_threshold):
 			direction = get_direction()
@@ -180,7 +183,7 @@ def __turn_to(angle, backwards, recursion):
 				__turn_right(small_turn)
 			while __auto():
 				if __within_threshold(angle, small_angle_threshold if small_turn else angle_threshold):
-					print("- %d: Within big threshold" % (recursion))
+					print("- %d: Within big threshold: %f" % (recursion, get_direction()))
 					__stop()
 					break
 			if (not __within_threshold(angle, small_angle_threshold)) and (recursion < recursion_cutoff):
@@ -190,6 +193,7 @@ def __turn_to(angle, backwards, recursion):
 			else:
 				print("- %d: Within small threshold, angle: %f" % (recursion, get_direction()))
 			print('- %d: Finished turn recursion' % (recursion))
+			print('Current: %f, Desired: %f' %(get_direction(), angle))
 
 def __should_turn_left(current, target):
 	'''Determines if the shortest turn is through the left (true) or through the right (false)'''

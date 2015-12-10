@@ -90,12 +90,13 @@ def move_to():
 	t_y = int(request.vars['y'])
 	# should the robot move backwards?
 	backwards = 'backwards' in request.vars
+	pausing = 'pausing' in request.vars
 	# final angle
 	angle = None
 	if 'angle' in request.vars:
 		angle = int(request.vars['angle'])
 	# # moving robot
-	Thread(target=__call_move_to, args=(t_x, t_y, angle, backwards)).start()
+	Thread(target=__call_move_to, args=(t_x, t_y, angle, backwards, pausing)).start()
 	# trigger next cognitive prompt if at beginning of new problem
 
 
@@ -118,20 +119,23 @@ def __call_turn_to(angle, backwards):
 	set_is_moving(False) # Warn interface that robot is NOT moving anymore
 	print("Finished turn to!")
 
-def __call_move_to(x, y, angle, backwards):
-	pausing = True # TODO move to parameter
+def __call_move_to(x, y, angle, backwards, pausing):
 	# retrieving current position
 	curr_position = __get_position()
 	c_x, c_y = int(round(curr_position[0])), int(round(curr_position[1]))
-
+	print("Pausing: " + str(pausing))
+	print("c_x, c_y: %d, %d" % (c_x, c_y))
+	print("x, y: %d, %d" % (x, y))
 	if pausing:
 		if c_x == x: # if the current x is the same as the target x, robot is moving in y
-			for i in range(c_y+1, y+1): # move individually to each integer step between current position and destination
+			step = 1 if c_y < y else -1
+			for i in range(c_y+step, y+step, step): # move individually to each integer step between current position and destination
 				__inner_call_move_to(x, i, angle, backwards) # move one unit
 				if i < y: # check if it's not the last iteration
 					__wait_for_voice() # loop until face stops talking
 		else: # else, robot is moving in x
-			for i in range(c_x+1, x+1):
+			step = 1 if c_x < x else -1
+			for i in range(c_x+step, x+step, step):
 				print("Iteration " + str(i))
 				__inner_call_move_to(i, y, angle, backwards)
 				if i < x:

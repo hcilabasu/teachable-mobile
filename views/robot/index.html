@@ -187,8 +187,13 @@
 						// Notify robot that talking is done
 						$.ajax({
 	                      url: "{{=URL('update_talking')}}",
-	                      data: {talking: ""}
+	                      data: {
+	                      	talking: "", 
+	                      	said: value.number
+	                      }
 	                    });
+	                    // Notify applet that talking is done
+	                    COMM.sendMessage(COMM_ADDR, 'applet', 'doneTalking', {});
 					});
 					break;
 				case 'timecheck':

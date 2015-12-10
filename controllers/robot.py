@@ -126,7 +126,7 @@ def __call_move_to(x, y, angle, backwards, pausing):
 	print("Pausing: " + str(pausing))
 	print("c_x, c_y: %d, %d" % (c_x, c_y))
 	print("x, y: %d, %d" % (x, y))
-	if pausing:
+	'''if pausing:
 		if c_x == x: # if the current x is the same as the target x, robot is moving in y
 			step = 1 if c_y < y else -1
 			for i in range(c_y+step, y+step, step): # move individually to each integer step between current position and destination
@@ -140,8 +140,8 @@ def __call_move_to(x, y, angle, backwards, pausing):
 				__inner_call_move_to(i, y, angle, backwards)
 				if i < x:
 					__wait_for_voice()
-	else:
-		__inner_call_move_to(x, y, angle, backwards)
+	else:'''
+	__inner_call_move_to(x, y, angle, backwards)
 	print("Finished move to!")
 
 def __wait_for_voice():
